@@ -1,0 +1,34 @@
+{
+  "name": "myappin/elasticsearchpredicate",
+  "homepage": "https://github.com/myappin/elasticsearchpredicate",
+  "description": "ElasticSearch nested predicate generator",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "elasticsearch",
+    "predicate"
+  ],
+  "config": {
+    "discard-changes": true
+  },
+  "require": {
+    "php": ">=7",
+    "elasticsearch/elasticsearch": "dev-master",
+    "phpunit/phpunit": "^5.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "ElasticSearchPredicate\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ElasticSearchPredicateTest\\": "test/"
+    }
+  },
+  "scripts": {
+    "check": [
+      "@test"
+    ],
+    "test": "phpunit"
+  }
+}
