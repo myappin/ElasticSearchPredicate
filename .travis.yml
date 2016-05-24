@@ -10,6 +10,9 @@ install:
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - composer install
 
+before_script:
+  - sleep 10
+
 script:
   - ./vendor/bin/phpunit
 
