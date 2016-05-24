@@ -113,7 +113,7 @@ class Search implements EndpointInterface, QueryInterface {
 	public function execute() : array{
 		$_result = $this->_client->search($this->getPreparedParams());
 
-		$this->reset();
+		$this->clearParams();
 
 		return $_result;
 	}
@@ -164,7 +164,7 @@ class Search implements EndpointInterface, QueryInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
-	public function reset() : EndpointInterface{
+	public function clearParams() : EndpointInterface{
 		$this->_prepared_params = [];
 		$this->_is_prepared     = false;
 
