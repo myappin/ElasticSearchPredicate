@@ -10,43 +10,12 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicate\Predicate;
-use DusanKasan\Knapsack\Collection;
 
 /**
  * Interface PredicateInterface
  * @package ElasticSearchPredicate\Predicate
  */
 interface PredicateInterface {
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
-	 */
-	public function andPredicate(PredicateInterface $predicate) : PredicateInterface;
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
-	 */
-	public function orPredicate(PredicateInterface $predicate) : PredicateInterface;
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
-	 */
-	public function nest() : PredicateInterface;
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
-	 */
-	public function unnest() : PredicateInterface;
 
 
 	/**
@@ -59,9 +28,9 @@ interface PredicateInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return Collection
+	 * @return array
 	 */
-	public function getPredicates() : Collection;
+	public function toArray() : array;
 
 
 }

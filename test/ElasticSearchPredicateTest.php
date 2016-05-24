@@ -10,6 +10,8 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicateTest;
+
+
 use ElasticSearchPredicate\Client;
 
 
@@ -33,7 +35,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
-	public function testSearchBaseParams(){
+	public function test_search_base_params(){
 		$_search          = $this->_client->search();
 		$_prepared_params = $_search->getPreparedParams();
 		$this->assertArrayNotHasKey('index', $_prepared_params);
@@ -57,14 +59,17 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
-	public function testIndexAndBasicSearch(){
-		for($i = 0; $i < 20; $i++){
+	public function test_index_and_basic_search(){
+		for($i = 0; $i < 50; $i++){
 			$this->_client->getElasticSearchClient()->index([
 																'index' => 'test',
 																'type'  => 'TestType',
 																'id'    => $i,
 																'body'  => [
-																	'name' => 'test' . $i,
+																	'name'        => 'test' . $i,
+																	'test_param1' => ($i % 2 !== 0 ? 1 : 0),
+																	'test_param2' => ($i % 2 === 0 ? 1 : 0),
+																	'test_param3' => ($i % 5 === 0 ? 1 : 0),
 																],
 															]);
 		}
@@ -75,14 +80,25 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(10, count($_result['hits']['hits']));
 
 		$_search->setLimit(10);
-		$_search->setOffset(1);
+		$_search->setOffset(4);
 		$_result = $_search->execute();
 		$this->assertSame(10, count($_result['hits']['hits']));
 
 		$_search->setLimit(10);
-		$_search->setOffset(2);
+		$_search->setOffset(5);
 		$_result = $_search->execute();
 		$this->assertSame(0, count($_result['hits']['hits']));
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 */
+	public function test_term_predicate(){
+		$_search    = $this->_client->search('test');
+		$_predicate = $_search->getPredicate();
+		$_predicate->Term('name', 'test');
+		var_dump($_search->getPreparedParams());
 	}
 
 

@@ -52,4 +52,15 @@ class Term extends AbstractPredicate {
 	}
 
 
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return array
+	 */
+	public function toArray() : array{
+		return [
+			'term' => [
+				$this->_term => $this->_value,
+			],
+		];
+	}
 }

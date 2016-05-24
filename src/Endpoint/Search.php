@@ -13,13 +13,20 @@ namespace ElasticSearchPredicate\Endpoint;
 
 
 use Elasticsearch\Client;
+use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
+use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 
 /**
  * Class Search
  * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
+ * @property PredicateSet predicate
  */
-class Search implements EndpointInterface {
+class Search implements EndpointInterface, QueryInterface {
+
+
+	use QueryTrait;
 
 
 	/**
@@ -70,6 +77,20 @@ class Search implements EndpointInterface {
 		$this->_client = $client;
 		$this->_index  = $index;
 		$this->_type   = $type;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $name
+	 * @return null
+	 */
+	public function __get($name){
+		if(strtolower($name) === 'predicate'){
+			return $this->getPredicate();
+		}
+
+		return null;
 	}
 
 
@@ -173,6 +194,10 @@ class Search implements EndpointInterface {
 		}
 
 		$_prepared_params['body'] = [];
+
+		if(!empty($_query = $this->getQuery())){
+			$_prepared_params['query'] = $_query;
+		}
 
 		$this->_prepared_params = $_prepared_params;
 		$this->_is_prepared     = true;
