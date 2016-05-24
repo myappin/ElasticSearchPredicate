@@ -100,14 +100,8 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$_predicate->Term('name', 'test0');
 
 		$this->assertSame([
-							  'query' => [
-								  'bool' => [
-									  'must' => [
-										  'term' => [
-											  'name' => 'test0',
-										  ],
-									  ],
-								  ],
+							  'term' => [
+								  'name' => 'test0',
 							  ],
 						  ], $_search->getQuery());
 	}

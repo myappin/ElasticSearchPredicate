@@ -197,8 +197,16 @@ class PredicateSet implements PredicateSetInterface {
 	 */
 	public function toArray() : array{
 		$_predicates = $this->getPredicates();
-
-		return [];
+		$_size       = $_predicates->size();
+		if($_size < 1){
+			return [];
+		}
+		if($_size === 1){
+			return $_predicates->values()->current()->toArray();
+		}
+		else{
+			return [];
+		}
 	}
 
 
