@@ -61,7 +61,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function test_index_and_basic_search(){
 		for($i = 0; $i < 50; $i++){
-			$this->_client->getElasticSearchClient()->index([
+			$this->_client->getElasticSearchClient()->create([
 																'index' => 'test',
 																'type'  => 'TestType',
 																'id'    => $i + 1,
