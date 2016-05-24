@@ -10,13 +10,17 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicate\Predicate;
+
+
 use DusanKasan\Knapsack\Collection;
+use ElasticSearchPredicate\Predicate\Predicates\Term;
 
 
 /**
  * Class AbstractPredicate
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
+ * @method Term term
  */
 class AbstractPredicate implements PredicateInterface {
 
@@ -43,6 +47,30 @@ class AbstractPredicate implements PredicateInterface {
 	 * @var string
 	 */
 	protected $_combiner = self::C_AND;
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $name
+	 * @param $arguments
+	 * @return $this
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function __call($name, $arguments){
+		$name   = preg_replace('/[^a-z0-9\_]+/i', '', $name);
+		$_class = 'ElasticSearchPredicate\Predicate\Predicates\\' . $name;
+		if(!class_exists($_class)){
+			throw new PredicateException(sprintf('Predicate %s does not exist', $name));
+		}
+		if(empty($arguments)){
+			$this->_predicates[] = new $_class;
+		}
+		else{
+			$this->_predicates[] = (new \ReflectionClass($_class))->newInstanceArgs($arguments);
+		}
+
+		return $this;
+	}
 
 
 	/**
