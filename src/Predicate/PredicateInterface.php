@@ -33,4 +33,11 @@ interface PredicateInterface {
 	public function toArray() : array;
 
 
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param array $options
+	 */
+	public function configure(array $options);
+
+
 }
