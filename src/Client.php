@@ -13,7 +13,7 @@ namespace ElasticSearchPredicate;
 
 
 use Elasticsearch\ClientBuilder;
-use ElasticSearchPredicate\Predicate\SearchPredicate;
+use ElasticSearchPredicate\Endpoint\Search;
 
 /**
  * Class Client
@@ -56,10 +56,10 @@ class Client {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $index
 	 * @param string $type
-	 * @return \ElasticSearchPredicate\Predicate\SearchPredicate
+	 * @return \ElasticSearchPredicate\Endpoint\Search
 	 */
-	public function search(string $index = '', string $type = '') : SearchPredicate{
-		return new SearchPredicate($this->getElasticSearchClient(), $index, $type);
+	public function search(string $index = '', string $type = '') : Search{
+		return new Search($this->getElasticSearchClient(), $index, $type);
 	}
 
 

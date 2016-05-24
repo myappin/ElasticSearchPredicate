@@ -9,15 +9,15 @@ declare(strict_types = 1);
  * Time: 15:24
  */
 
-namespace ElasticSearchPredicate\Predicate;
+namespace ElasticSearchPredicate\Endpoint;
 
 
 /**
- * Class PredicateException
- * @package   ElasticSearchPredicate\Predicate
+ * Class EndpointException
+ * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class PredicateException extends \Exception {
+class EndpointException extends \Exception {
 
 
 }

@@ -9,17 +9,17 @@ declare(strict_types = 1);
  * Time: 13:48
  */
 
-namespace ElasticSearchPredicate\Predicate;
+namespace ElasticSearchPredicate\Endpoint;
 
 
 use Elasticsearch\Client;
 
 /**
- * Class SearchPredicate
- * @package   ElasticSearchPredicate\Predicate
+ * Class Search
+ * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class SearchPredicate {
+class Search implements EndpointInterface {
 
 
 	/**
@@ -89,7 +89,7 @@ class SearchPredicate {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
-	public function execute(){
+	public function execute() : array{
 		$_result = $this->_client->search($this->getPreparedParams());
 
 		$this->reset();
@@ -143,9 +143,11 @@ class SearchPredicate {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
-	public function reset(){
+	public function reset() : EndpointInterface{
 		$this->_prepared_params = [];
 		$this->_is_prepared     = false;
+
+		return $this;
 	}
 
 
@@ -165,7 +167,7 @@ class SearchPredicate {
 		}
 		if(!empty($this->_offset)){
 			if(empty($this->_limit)){
-				throw new PredicateException('Offset must be used with limit');
+				throw new EndpointException('Offset must be used with limit');
 			}
 			$_prepared_params['from'] = $this->_limit * $this->_offset;
 		}
