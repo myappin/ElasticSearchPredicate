@@ -21,6 +21,10 @@ use ElasticSearchPredicate\Predicate\Predicates\Term;
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @method Term Term(string $term, $value)
+ * @property PredicateSet AND
+ * @property PredicateSet and
+ * @property PredicateSet OR
+ * @property PredicateSet or
  */
 class PredicateSet implements PredicateSetInterface {
 
@@ -35,6 +39,12 @@ class PredicateSet implements PredicateSetInterface {
 	 * @var bool
 	 */
 	protected $_unnest = false;
+
+
+	/**
+	 * @var string
+	 */
+	protected $_combiner = self::C_AND;
 
 
 	/**
@@ -78,12 +88,34 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $name
+	 * @return $this|null
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function __get($name){
+		if(in_array($_combiner = strtoupper($name), [
+			self::C_AND,
+			self::C_OR,
+		])){
+			$this->setCombiner($_combiner);
+
+			return $this;
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
 	 */
 	public function andPredicate(PredicateInterface $predicate) : PredicateInterface{
 		$predicate->setCombiner(self::C_AND);
 		$this->_predicates[] = $predicate;
+
+		$this->_combiner = self::C_AND;
 
 		return $this;
 	}
@@ -98,6 +130,8 @@ class PredicateSet implements PredicateSetInterface {
 		$predicate->setCombiner(self::C_OR);
 		$this->_predicates[] = $predicate;
 
+		$this->_combiner = self::C_AND;
+
 		return $this;
 	}
 
@@ -107,7 +141,12 @@ class PredicateSet implements PredicateSetInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
 	 */
 	public function nest() : PredicateInterface{
-		return new PredicateSet($this);
+		$_combiner = new PredicateSet($this);
+		$_combiner->setCombiner($this->_combiner);
+
+		$this->_combiner = self::C_AND;
+
+		return $_combiner;
 	}
 
 
@@ -133,6 +172,23 @@ class PredicateSet implements PredicateSetInterface {
 	 */
 	public function getPredicates() : Collection{
 		return new Collection($this->_predicates);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $combiner
+	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function setCombiner(string $combiner) : PredicateInterface{
+		$combiner = strtoupper($combiner);
+		if($combiner !== PredicateSet::C_AND && $combiner !== PredicateSet::C_OR){
+			throw new PredicateException('Unsupported combiner');
+		}
+		$this->_combiner = $combiner;
+
+		return $this;
 	}
 
 

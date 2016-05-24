@@ -23,6 +23,14 @@ interface PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $combiner
+	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 */
+	public function setCombiner(string $combiner) : PredicateInterface;
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
 	 */

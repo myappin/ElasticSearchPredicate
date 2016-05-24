@@ -97,8 +97,19 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	public function test_term_predicate(){
 		$_search    = $this->_client->search('test');
 		$_predicate = $_search->getPredicate();
-		$_predicate->Term('name', 'test');
-		var_dump($_search->getPreparedParams());
+		$_predicate->Term('name', 'test0');
+
+		$this->assertSame([
+							  'query' => [
+								  'bool' => [
+									  'must' => [
+										  'term' => [
+											  'name' => 'test0',
+										  ],
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
 	}
 
 
