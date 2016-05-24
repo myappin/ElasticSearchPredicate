@@ -102,7 +102,7 @@ class PredicateSet implements PredicateSetInterface {
 			return $this;
 		}
 
-		return null;
+		throw new PredicateException(sprintf('Property %s does not exist', $name));
 	}
 
 

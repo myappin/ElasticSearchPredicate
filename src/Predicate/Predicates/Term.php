@@ -37,6 +37,18 @@ class Term extends AbstractPredicate {
 
 
 	/**
+	 * @var bool
+	 */
+	protected $_simple = true;
+
+
+	/**
+	 * @var
+	 */
+	protected $_boost;
+
+
+	/**
 	 * Term constructor.
 	 * @param string $term
 	 * @param        $value
@@ -54,13 +66,39 @@ class Term extends AbstractPredicate {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param int $boost
+	 */
+	public function boost(int $boost){
+		$this->_boost = $boost;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
 	 */
 	public function toArray() : array{
-		return [
+		$_term = $this->_term;
+		if($this->_simple){
+			return [
+				'term' => [
+					$_term => $this->_value,
+				],
+			];
+		}
+
+		$_ret = [
 			'term' => [
-				$this->_term => $this->_value,
+				$_term => [
+					'value' => $this->_value,
+				],
 			],
 		];
+
+		if(!empty($this->_boost)){
+			$_ret['term'][$_term]['boost'] = $this->_boost;
+		}
+
+		return $_ret;
 	}
 }
