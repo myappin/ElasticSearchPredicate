@@ -42,13 +42,13 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertArrayNotHasKey('type', $_prepared_params);
 		$this->assertArrayHasKey('body', $_prepared_params);
 
-		$_search          = $this->_client->search('test');
+		$_search          = $this->_client->search('elasticsearchpredicate');
 		$_prepared_params = $_search->getPreparedParams();
 		$this->assertArrayHasKey('index', $_prepared_params);
 		$this->assertArrayNotHasKey('type', $_prepared_params);
 		$this->assertArrayHasKey('body', $_prepared_params);
 
-		$_search          = $this->_client->search('test', 'TestType');
+		$_search          = $this->_client->search('elasticsearchpredicate', 'TestType');
 		$_prepared_params = $_search->getPreparedParams();
 		$this->assertArrayHasKey('index', $_prepared_params);
 		$this->assertArrayHasKey('type', $_prepared_params);
@@ -60,11 +60,25 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
 	public function test_index_and_basic_search(){
+		$_search = $this->_client->search('elasticsearchpredicate');
+		$_passed = false;
+		try{
+			$_result = $_search->execute();
+			if($_result['hits']['total'] > 0){
+				$_passed = true;
+			}
+		}
+		catch(\Exception $e){
+		}
+		if($_passed){
+			throw new \Exception('non existing index passed');
+		}
+
 		for($i = 0; $i < 50; $i++){
 			$this->_client->getElasticSearchClient()->index([
-																'index' => 'test',
+																'index' => 'elasticsearchpredicate',
 																'type'  => 'TestType',
-																'id'    => $i,
+																'id'    => $i + 1,
 																'body'  => [
 																	'name'        => 'test' . $i,
 																	'test_param1' => ($i % 2 !== 0 ? 1 : 0),
@@ -74,7 +88,11 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 															]);
 		}
 
-		$_search = $this->_client->search('test');
+		$this->_client->getElasticSearchClient()->indices()->refresh([
+																		 'index' => 'elasticsearchpredicate',
+																	 ]);
+
+		$_search = $this->_client->search('elasticsearchpredicate');
 		$_search->setLimit(10);
 		$_result = $_search->execute();
 		$this->assertSame(10, count($_result['hits']['hits']));
@@ -88,6 +106,32 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$_search->setOffset(5);
 		$_result = $_search->execute();
 		$this->assertSame(0, count($_result['hits']['hits']));
+
+		$_search->setLimit(50);
+		$_search->setOffset(null);
+		$_result = $_search->execute();
+		$this->assertSame(50, count($_result['hits']['hits']));
+
+
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->setLimit(10);
+		$_result = $_search->execute();
+		$this->assertSame(10, count($_result['hits']['hits']));
+
+		$_search->setLimit(10);
+		$_search->setOffset(4);
+		$_result = $_search->execute();
+		$this->assertSame(10, count($_result['hits']['hits']));
+
+		$_search->setLimit(10);
+		$_search->setOffset(5);
+		$_result = $_search->execute();
+		$this->assertSame(0, count($_result['hits']['hits']));
+
+		$_search->setLimit(50);
+		$_search->setOffset(null);
+		$_result = $_search->execute();
+		$this->assertSame(50, count($_result['hits']['hits']));
 	}
 
 
@@ -95,7 +139,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
 	public function test_term_predicate(){
-		$_search    = $this->_client->search('test');
+		$_search    = $this->_client->search();
 		$_predicate = $_search->getPredicate();
 		$_predicate->Term('name', 'test0');
 
@@ -104,6 +148,23 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 								  'name' => 'test0',
 							  ],
 						  ], $_search->getQuery());
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 */
+	public function tearDown(){
+		try{
+			$this->_client->getElasticSearchClient()->deleteByQuery([
+																		'index' => 'elasticsearchpredicate',
+																		'type'  => 'TestType',
+																		'body'  => [],
+																	]);
+		}
+		catch(\Exception $e){
+		}
+		parent::tearDown();
 	}
 
 
