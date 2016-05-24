@@ -130,10 +130,15 @@ class Search implements EndpointInterface, QueryInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param int|null $limit
+	 * @param $limit
 	 * @return $this
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
 	public function setLimit($limit){
+		if(!is_int($limit) && $limit !== null){
+			throw new EndpointException(sprintf('Limit has wrong type %s', gettype($limit)));
+		}
+
 		$this->_limit = $limit;
 
 		return $this;
@@ -151,10 +156,14 @@ class Search implements EndpointInterface, QueryInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param int|null $offset
+	 * @param $offset
 	 * @return $this
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
 	public function setOffset($offset){
+		if(!is_int($offset) && $offset !== null){
+			throw new EndpointException(sprintf('Offset has wrong type %s', gettype($offset)));
+		}
 		$this->_offset = $offset;
 
 		return $this;

@@ -69,7 +69,13 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		}
 		catch(\Exception $e){
 		}
+
 		sleep(1);
+
+		$_search = $this->_client->search('elasticsearchpredicate');
+		$_result = $_search->execute();
+		$this->assertSame(0, count($_result['hits']['hits']));
+
 		for($i = 0; $i < 50; $i++){
 			$this->_client->getElasticSearchClient()->index([
 																'index' => 'elasticsearchpredicate',
@@ -100,6 +106,32 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$_search->setOffset(5);
 		$_result = $_search->execute();
 		$this->assertSame(0, count($_result['hits']['hits']));
+
+		$_search->setLimit(50);
+		$_search->setOffset(null);
+		$_result = $_search->execute();
+		$this->assertSame(50, count($_result['hits']['hits']));
+
+
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->setLimit(10);
+		$_result = $_search->execute();
+		$this->assertSame(10, count($_result['hits']['hits']));
+
+		$_search->setLimit(10);
+		$_search->setOffset(4);
+		$_result = $_search->execute();
+		$this->assertSame(10, count($_result['hits']['hits']));
+
+		$_search->setLimit(10);
+		$_search->setOffset(5);
+		$_result = $_search->execute();
+		$this->assertSame(0, count($_result['hits']['hits']));
+
+		$_search->setLimit(50);
+		$_search->setOffset(null);
+		$_result = $_search->execute();
+		$this->assertSame(50, count($_result['hits']['hits']));
 	}
 
 
