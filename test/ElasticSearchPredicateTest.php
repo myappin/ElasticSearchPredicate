@@ -60,19 +60,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 */
 	public function test_index_and_basic_search(){
-		try{
-			$this->_client->getElasticSearchClient()->deleteByQuery([
-																		'index' => 'elasticsearchpredicate',
-																		'type'  => 'TestType',
-																		'body'  => [],
-																	]);
-			$this->_client->getElasticSearchClient()->indices()->refresh([
-																			 'index' => 'elasticsearchpredicate',
-																		 ]);
-		}
-		catch(\Exception $e){
-		}
-
 		$_search = $this->_client->search('elasticsearchpredicate');
 		$_passed = false;
 		try{
@@ -161,6 +148,23 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 								  'name' => 'test0',
 							  ],
 						  ], $_search->getQuery());
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 */
+	public function tearDown(){
+		try{
+			$this->_client->getElasticSearchClient()->deleteByQuery([
+																		'index' => 'elasticsearchpredicate',
+																		'type'  => 'TestType',
+																		'body'  => [],
+																	]);
+		}
+		catch(\Exception $e){
+		}
+		parent::tearDown();
 	}
 
 
