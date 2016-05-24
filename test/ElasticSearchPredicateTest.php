@@ -66,15 +66,26 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 																		'type'  => 'TestType',
 																		'body'  => [],
 																	]);
+			$this->_client->getElasticSearchClient()->indices()->refresh([
+																			 'index' => 'elasticsearchpredicate',
+																		 ]);
 		}
 		catch(\Exception $e){
 		}
 
-		sleep(1);
-
 		$_search = $this->_client->search('elasticsearchpredicate');
-		$_result = $_search->execute();
-		$this->assertSame(0, count($_result['hits']['hits']));
+		$_passed = false;
+		try{
+			$_result = $_search->execute();
+			if($_result['hits']['total'] > 0){
+				$_passed = true;
+			}
+		}
+		catch(\Exception $e){
+		}
+		if($_passed){
+			throw new \Exception('non existing index passed');
+		}
 
 		for($i = 0; $i < 50; $i++){
 			$this->_client->getElasticSearchClient()->index([
@@ -90,7 +101,9 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 															]);
 		}
 
-		sleep(1);
+		$this->_client->getElasticSearchClient()->indices()->refresh([
+																		 'index' => 'elasticsearchpredicate',
+																	 ]);
 
 		$_search = $this->_client->search('elasticsearchpredicate');
 		$_search->setLimit(10);
