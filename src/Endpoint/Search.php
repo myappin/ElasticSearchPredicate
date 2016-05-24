@@ -134,7 +134,7 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @return $this
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function setLimit($limit){
+	public function limit($limit){
 		if(!is_int($limit) && $limit !== null){
 			throw new EndpointException(sprintf('Limit has wrong type %s', gettype($limit)));
 		}
@@ -160,7 +160,7 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @return $this
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function setOffset($offset){
+	public function offset($offset){
 		if(!is_int($offset) && $offset !== null){
 			throw new EndpointException(sprintf('Offset has wrong type %s', gettype($offset)));
 		}
@@ -205,7 +205,7 @@ class Search implements EndpointInterface, QueryInterface {
 		$_prepared_params['body'] = [];
 
 		if(!empty($_query = $this->getQuery())){
-			$_prepared_params['query'] = $_query;
+			$_prepared_params['body']['query'] = $_query;
 		}
 
 		$this->_prepared_params = $_prepared_params;

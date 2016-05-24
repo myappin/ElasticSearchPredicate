@@ -13,14 +13,13 @@ namespace ElasticSearchPredicate\Predicate;
 
 
 use DusanKasan\Knapsack\Collection;
-use ElasticSearchPredicate\Predicate\Predicates\Term;
 
 
 /**
  * Class PredicateSet
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
- * @method Term Term(string $term, $value)
+ * @method PredicateSet Term(string $term, $value)
  * @property PredicateSet AND
  * @property PredicateSet and
  * @property PredicateSet OR
@@ -205,6 +204,7 @@ class PredicateSet implements PredicateSetInterface {
 			return $_predicates->values()->current()->toArray();
 		}
 		else{
+			//@TODO
 			return [];
 		}
 	}
