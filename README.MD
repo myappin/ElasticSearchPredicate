@@ -1,0 +1,1 @@
+![status](https://travis-ci.org/myappin/ElasticSearchPredicate.svg?branch=master)
