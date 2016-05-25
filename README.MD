@@ -1,7 +1,7 @@
 [![status](https://travis-ci.org/myappin/ElasticSearchPredicate.svg?branch=master)](https://travis-ci.org/myappin/ElasticSearchPredicate)
 ElasticSearchPredicate
 ======================
-is simple PHP API fr ElasticSearch. It simulates Zend-Db predicates.
+is simple PHP API for ElasticSearch. It simulates Zend-Db predicates.
 
 **Please create issue while missing something or finding a bug**
 
