@@ -458,6 +458,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 						  ], $_search->getQuery());
 
 		$_result = $_search->execute();
+
 		$this->assertSame(1, $_result['hits']['total']);
 	}
 

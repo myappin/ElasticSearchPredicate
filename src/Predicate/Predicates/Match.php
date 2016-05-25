@@ -14,6 +14,12 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 use ElasticSearchPredicate\Predicate\AbstractPredicate;
 use ElasticSearchPredicate\Predicate\PredicateException;
+use ElasticSearchPredicate\Predicate\PredicateInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
+use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
+use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
 
 
 /**
@@ -21,7 +27,10 @@ use ElasticSearchPredicate\Predicate\PredicateException;
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Match extends AbstractPredicate {
+class Match extends AbstractPredicate implements BoostInterface, SimpleInterface, TypeInterface {
+
+
+	use BoostTrait, SimpleTrait;
 
 
 	/**
@@ -37,30 +46,9 @@ class Match extends AbstractPredicate {
 
 
 	/**
-	 * @var bool
-	 */
-	protected $_simple = true;
-
-
-	/**
-	 * @var int
-	 */
-	protected $_boost;
-
-
-	/**
 	 * @var string
 	 */
 	protected $_type;
-
-
-	/**
-	 * @var array
-	 */
-	protected $_allowed_options = [
-		'boost',
-		'type',
-	];
 
 
 	/**
@@ -85,31 +73,11 @@ class Match extends AbstractPredicate {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $boost
-	 * @return $this
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function boost($boost){
-		if(is_int($boost) || is_float($boost)){
-			throw new PredicateException('Boost must be int or float');
-		}
-		if($boost < 0){
-			throw new PredicateException('Boost must be greater than 0');
-		}
-		$this->_boost  = $boost;
-		$this->_simple = false;
-
-		return $this;
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $type
-	 * @return $this
+	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function type(string $type){
+	public function type(string $type) : PredicateInterface{
 		if(!in_array($type, [
 			'phrase',
 			'phrase_prefix',
