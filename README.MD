@@ -3,6 +3,8 @@ ElasticSearchPredicate
 ======================
 is simple PHP API fr ElasticSearch. It simulates Zend-Db predicates.
 
+**Please create issue while missing something or finding a bug**
+
 Install
 =======
 composer: [HERE](https://packagist.org/packages/myappin/elasticsearchpredicate)
