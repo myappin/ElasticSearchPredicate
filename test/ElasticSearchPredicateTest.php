@@ -445,20 +445,20 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function test_match_phrase(){
 		$_search = $this->_client->search();
-		$_search->limit(1)->order('_uid', 'asc');
-		$_search->getPredicate()->and((new Match('name', 'test*'))->type('phrase'));
+		$_search->limit(1);
+		$_search->getPredicate()->and((new Match('name', 'test1'))->type('phrase'));
 
 		$this->assertSame([
 							  'match' => [
 								  'name' => [
-									  'query' => 'test*',
+									  'query' => 'test1',
 									  'type'  => 'phrase',
 								  ],
 							  ],
 						  ], $_search->getQuery());
 
 		$_result = $_search->execute();
-		$this->assertSame(112, $_result['hits']['total']);
+		$this->assertSame(1, $_result['hits']['total']);
 	}
 
 
