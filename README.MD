@@ -5,11 +5,9 @@ is simple PHP API fr ElasticSearch. It simulates Zend-Db predicates.
 
 Install
 =======
-```
 composer: [HERE](https://packagist.org/packages/myappin/elasticsearchpredicate)
-```
 OR
-```
+```sh
 gic clone https://github.com/myappin/ElasticSearchPredicate.git
 ```
 
