@@ -164,10 +164,29 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function nest() : PredicateSetInterface{
+	public function and (PredicateInterface $predicate) : PredicateSetInterface{
+		return $this->andPredicate($predicate);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+	 */
+	public function or (PredicateInterface $predicate) : PredicateSetInterface{
+		return $this->andPredicate($predicate);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
+	 */
+	public function nest() : PredicateSet{
 		if($this->_predicates->size() > 0){
 			$this->_predicates->last()->setCombiner($this->_combiner);
 		}
@@ -183,10 +202,10 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function unnest() : PredicateSetInterface{
+	public function unnest() : PredicateSet{
 		if(empty($this->_unnest)){
 			throw new PredicateException('Can not unnest not nested predicate');
 		}

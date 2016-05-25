@@ -47,16 +47,16 @@ interface PredicateSetInterface extends PredicateInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function nest() : PredicateSetInterface;
+	public function nest() : PredicateSet;
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function unnest() : PredicateSetInterface;
+	public function unnest() : PredicateSet;
 
 
 	/**

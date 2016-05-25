@@ -286,4 +286,67 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(9, intval($_result['hits']['hits'][2]['_id']));
 	}
 
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_nesting(){
+		$_search = $this->_client->search();
+		$_search->limit(1);
+		$_search->getPredicate()->nest()->Term('name', 'test10')->unnest();
+
+		$this->assertSame([
+							  'term' => [
+								  'name' => 'test10',
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+		$this->assertSame(1, $_result['hits']['total']);
+		$this->assertSame(11, intval($_result['hits']['hits'][0]['_id']));
+
+
+		$_search = $this->_client->search();
+		$_search->limit(2)->order('_uid', 'asc');
+		$_search->getPredicate()->nest()->Term('name', 'test2')->or->Term('name', 'test3')
+																   ->unnest()
+																   ->Term('test_param3', 0);
+
+		$this->assertSame([
+							  'bool' => [
+								  'must' => [
+									  [
+										  'bool' => [
+											  'should' => [
+												  [
+													  'term' => [
+														  'name' => 'test2',
+													  ],
+												  ],
+												  [
+													  'term' => [
+														  'name' => 'test3',
+													  ],
+												  ],
+											  ],
+										  ],
+									  ],
+									  [
+										  'term' => [
+											  'test_param3' => 0,
+										  ],
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+		$this->assertSame(2, $_result['hits']['total']);
+		$this->assertSame(3, intval($_result['hits']['hits'][0]['_id']));
+		$this->assertSame(4, intval($_result['hits']['hits'][1]['_id']));
+	}
+
+
 }
