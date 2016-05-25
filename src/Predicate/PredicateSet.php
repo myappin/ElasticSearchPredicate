@@ -20,6 +20,7 @@ use DusanKasan\Knapsack\Collection;
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @method PredicateSet Term(string $term, $value, array $options = [])
+ * @method PredicateSet Match(string $match, $query, array $options = [])
  * @method PredicateSet Range(string $term, $from, $to, array $options = [])
  * @property PredicateSet AND
  * @property PredicateSet and
