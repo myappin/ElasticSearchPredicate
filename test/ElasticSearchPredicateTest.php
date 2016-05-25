@@ -358,7 +358,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	public function test_range(){
 		$_search = $this->_client->search();
 		$_search->limit(20)->order('range_param', 'asc');
-		$_search->getPredicate()->nest()->Range('range_param', 10, 20)->unnest();
+		$_search->getPredicate()->Range('range_param', 10, 20);
 
 		$this->assertSame([
 							  'range' => [
@@ -372,7 +372,46 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$_result = $_search->execute();
 		$this->assertSame(11, $_result['hits']['total']);
 		$this->assertSame(11, intval($_result['hits']['hits'][0]['_id']));
-		$this->assertSame(20, intval($_result['hits']['hits'][9]['_id']));
+		$this->assertSame(21, intval($_result['hits']['hits'][10]['_id']));
+		$this->assertSame(20, intval($_result['hits']['hits'][10]['_source']['range_param']));
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_term_and_range(){
+		$_search = $this->_client->search();
+		$_search->limit(20)->order('range_param', 'asc');
+		$_search->getPredicate()->Range('range_param', 10, 20)->Term('test_param3', 1);
+
+		$this->assertSame([
+							  'bool' => [
+								  'must' => [
+									  [
+										  'range' => [
+											  'range_param' => [
+												  'gte' => 10,
+												  'lte' => 20,
+											  ],
+										  ],
+									  ],
+									  [
+										  'term' => [
+											  'test_param3' => 1,
+										  ],
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+		$this->assertSame(3, $_result['hits']['total']);
+		$this->assertSame(11, intval($_result['hits']['hits'][0]['_id']));
+		$this->assertSame(21, intval($_result['hits']['hits'][2]['_id']));
+		$this->assertSame(20, intval($_result['hits']['hits'][2]['_source']['range_param']));
 	}
 
 
