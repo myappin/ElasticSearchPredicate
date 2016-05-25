@@ -17,17 +17,17 @@ use ElasticSearchPredicate\Predicate\PredicateException;
 
 
 /**
- * Class Term
+ * Class Match
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Term extends AbstractPredicate {
+class Match extends AbstractPredicate {
 
 
 	/**
 	 * @var string
 	 */
-	protected $_term;
+	protected $_match;
 
 
 	/**
@@ -49,26 +49,35 @@ class Term extends AbstractPredicate {
 
 
 	/**
-	 * @var array
+	 * @var string
 	 */
-	protected $_allowed_options = ['boost'];
+	protected $_type;
 
 
 	/**
-	 * Term constructor.
-	 * @param string     $term
-	 * @param            $value
+	 * @var array
+	 */
+	protected $_allowed_options = [
+		'boost',
+		'type',
+	];
+
+
+	/**
+	 * Match constructor.
+	 * @param string     $match
+	 * @param            $query
 	 * @param array      $options
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function __construct(string $term, $value, array $options = []){
-		$this->_term = $term;
+	public function __construct(string $match, $query, array $options = []){
+		$this->_match = $match;
 
-		if(!is_scalar($value)){
-			throw new PredicateException('Term value must be scalar');
+		if(!is_scalar($query)){
+			throw new PredicateException('Match value must be scalar');
 		}
 
-		$this->_value = $value;
+		$this->_value = $query;
 
 		$this->configure($options);
 	}
@@ -96,28 +105,54 @@ class Term extends AbstractPredicate {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $type
+	 * @return $this
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function type(string $type){
+		if(!in_array($type, [
+			'phrase',
+			'phrase_prefix',
+		])
+		){
+			throw new PredicateException('Type is not valid');
+		}
+
+		$this->_type   = $type;
+		$this->_simple = false;
+
+		return $this;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
 	 */
 	public function toArray() : array{
-		$_term = $this->_term;
+		$_match = $this->_match;
 		if($this->_simple){
 			return [
-				'term' => [
-					$_term => $this->_value,
+				'match' => [
+					$_match => $this->_value,
 				],
 			];
 		}
 
 		$_ret = [
-			'term' => [
-				$_term => [
-					'value' => $this->_value,
+			'match' => [
+				$_match => [
+					'query' => $this->_value,
 				],
 			],
 		];
 
 		if(!empty($this->_boost)){
-			$_ret['term'][$_term]['boost'] = $this->_boost;
+			$_ret['match'][$_match]['boost'] = $this->_boost;
+		}
+
+		if(!empty($this->_type)){
+			$_ret['match'][$_match]['type'] = $this->_type;
 		}
 
 		return $_ret;
