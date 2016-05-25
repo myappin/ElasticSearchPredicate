@@ -18,45 +18,45 @@ use DusanKasan\Knapsack\Collection;
  * Interface PredicateSetInterface
  * @package ElasticSearchPredicate\Predicate
  */
-interface PredicateSetInterface {
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $combiner
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
-	 */
-	public function setCombiner(string $combiner) : PredicateInterface;
+interface PredicateSetInterface extends PredicateInterface {
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
-	public function andPredicate(PredicateInterface $predicate) : PredicateInterface;
+	public function addPredicate(PredicateInterface $predicate) : PredicateSetInterface;
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
-	public function orPredicate(PredicateInterface $predicate) : PredicateInterface;
+	public function andPredicate(PredicateInterface $predicate) : PredicateSetInterface;
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
-	public function nest() : PredicateInterface;
+	public function orPredicate(PredicateInterface $predicate) : PredicateSetInterface;
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
-	public function unnest() : PredicateInterface;
+	public function nest() : PredicateSetInterface;
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+	 */
+	public function unnest() : PredicateSetInterface;
 
 
 	/**
@@ -64,13 +64,6 @@ interface PredicateSetInterface {
 	 * @return Collection
 	 */
 	public function getPredicates() : Collection;
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function toArray() : array;
 
 
 }
