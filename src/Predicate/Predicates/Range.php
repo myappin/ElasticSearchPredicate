@@ -17,11 +17,11 @@ use ElasticSearchPredicate\Predicate\PredicateException;
 
 
 /**
- * Class Term
+ * Class Range
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Term extends AbstractPredicate {
+class Range extends AbstractPredicate {
 
 
 	/**
@@ -31,15 +31,15 @@ class Term extends AbstractPredicate {
 
 
 	/**
-	 * @var bool|float|int|string
+	 * @var int|float
 	 */
-	protected $_value;
+	protected $_from;
 
 
 	/**
-	 * @var bool
+	 * @var int|float
 	 */
-	protected $_simple = true;
+	protected $_to;
 
 
 	/**
@@ -55,20 +55,30 @@ class Term extends AbstractPredicate {
 
 
 	/**
-	 * Term constructor.
-	 * @param string     $term
-	 * @param            $value
-	 * @param array      $options
+	 * Range constructor.
+	 * @param string $term
+	 * @param        $from
+	 * @param        $to
+	 * @param array  $options
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function __construct(string $term, $value, array $options = []){
+	public function __construct(string $term, $from, $to, array $options = []){
 		$this->_term = $term;
 
-		if(!is_scalar($value)){
-			throw new PredicateException('Term value must be scalar');
+		if(!is_int($from) && !is_float($from)){
+			throw new PredicateException('Range from must be scalar');
 		}
 
-		$this->_value = $value;
+		if(!is_int($to) && !is_float($to)){
+			throw new PredicateException('Range to must be scalar');
+		}
+
+		if($to < $from){
+			throw new PredicateException('Value to must be greater than value to');
+		}
+
+		$this->_from = $from;
+		$this->_to   = $to;
 
 		$this->configure($options);
 	}
@@ -83,8 +93,7 @@ class Term extends AbstractPredicate {
 		if($boost < 0){
 			throw new PredicateException('Boost must be greater than 0');
 		}
-		$this->_boost  = $boost;
-		$this->_simple = false;
+		$this->_boost = $boost;
 	}
 
 
@@ -94,18 +103,11 @@ class Term extends AbstractPredicate {
 	 */
 	public function toArray() : array{
 		$_term = $this->_term;
-		if($this->_simple){
-			return [
-				'term' => [
-					$_term => $this->_value,
-				],
-			];
-		}
-
-		$_ret = [
-			'term' => [
+		$_ret  = [
+			'range' => [
 				$_term => [
-					'value' => $this->_value,
+					'gte' => $this->_from,
+					'lte' => $this->_to,
 				],
 			],
 		];
