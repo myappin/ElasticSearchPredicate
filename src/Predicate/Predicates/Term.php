@@ -14,6 +14,10 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 use ElasticSearchPredicate\Predicate\AbstractPredicate;
 use ElasticSearchPredicate\Predicate\PredicateException;
+use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
+use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
 
 
 /**
@@ -21,7 +25,10 @@ use ElasticSearchPredicate\Predicate\PredicateException;
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Term extends AbstractPredicate {
+class Term extends AbstractPredicate implements BoostInterface, SimpleInterface {
+
+
+	use BoostTrait, SimpleTrait;
 
 
 	/**
@@ -34,24 +41,6 @@ class Term extends AbstractPredicate {
 	 * @var bool|float|int|string
 	 */
 	protected $_value;
-
-
-	/**
-	 * @var bool
-	 */
-	protected $_simple = true;
-
-
-	/**
-	 * @var int
-	 */
-	protected $_boost;
-
-
-	/**
-	 * @var array
-	 */
-	protected $_allowed_options = ['boost'];
 
 
 	/**
@@ -71,26 +60,6 @@ class Term extends AbstractPredicate {
 		$this->_value = $value;
 
 		$this->configure($options);
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $boost
-	 * @return $this
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function boost($boost){
-		if(is_int($boost) || is_float($boost)){
-			throw new PredicateException('Boost must be int or float');
-		}
-		if($boost < 0){
-			throw new PredicateException('Boost must be greater than 0');
-		}
-		$this->_boost  = $boost;
-		$this->_simple = false;
-
-		return $this;
 	}
 
 

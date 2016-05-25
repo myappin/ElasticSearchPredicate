@@ -13,7 +13,8 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 
 use ElasticSearchPredicate\Predicate\AbstractPredicate;
-use ElasticSearchPredicate\Predicate\PredicateException;
+use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 
 
 /**
@@ -21,7 +22,10 @@ use ElasticSearchPredicate\Predicate\PredicateException;
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Range extends AbstractPredicate {
+class Range extends AbstractPredicate implements BoostInterface {
+
+
+	use BoostTrait;
 
 
 	/**
@@ -43,24 +47,9 @@ class Range extends AbstractPredicate {
 
 
 	/**
-	 * @var int|float
-	 */
-	protected $_boost;
-
-
-	/**
 	 * @var string
 	 */
 	protected $_format;
-
-
-	/**
-	 * @var array
-	 */
-	protected $_allowed_options = [
-		'boost',
-		'format',
-	];
 
 
 	/**
@@ -78,26 +67,6 @@ class Range extends AbstractPredicate {
 		$this->_to   = $to;
 
 		$this->configure($options);
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $boost
-	 * @return $this
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function boost($boost){
-		if(is_int($boost) || is_float($boost)){
-			throw new PredicateException('Boost must be int or float');
-		}
-		if($boost < 0){
-			throw new PredicateException('Boost must be greater than 0');
-		}
-		$this->_boost  = $boost;
-		$this->_simple = false;
-
-		return $this;
 	}
 
 

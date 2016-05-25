@@ -23,7 +23,9 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
 trait QueryTrait {
 
 
-	/** @var PredicateSet */
+	/**
+	 * @var PredicateSet
+	 */
 	protected $_predicate;
 
 

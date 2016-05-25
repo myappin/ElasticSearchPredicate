@@ -256,7 +256,6 @@ class Search implements EndpointInterface, QueryInterface {
 		if(!empty($_query = $this->getQuery())){
 			$_prepared_params['body']['query'] = $_query;
 		}
-
 		if(!empty($this->_order)){
 			$_prepared_params['body']['sort'] = $this->_order;
 		}

@@ -62,22 +62,27 @@ abstract class AbstractPredicate implements PredicateInterface {
 	 * @param array $options
 	 */
 	public function configure(array $options){
+		$_implements = class_implements($this);
 		if(!empty($options)){
 			foreach($options as $key => $opt){
-				$key = strtolower($key);
-				if(!in_array($key, $this->_allowed_options)){
+				$_method = strtolower($key);
+				$_key    = ucfirst($_method);
+				if(!in_array('ElasticSearchPredicate\Predicate\\Predicates\\' . $_key . '\\' . $_key . 'Interface', $_implements)){
 					continue;
 				}
 				if(empty($opt)){
 					call_user_func([
 									   $this,
-									   $key,
+									   $_method,
 								   ]);
 				}
 				else{
+					if(is_scalar($opt)){
+						$opt = [$opt];
+					}
 					call_user_func_array([
 											 $this,
-											 $key,
+											 $_method,
 										 ], $opt);
 				}
 			}
