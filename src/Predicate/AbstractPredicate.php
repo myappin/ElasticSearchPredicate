@@ -27,6 +27,21 @@ abstract class AbstractPredicate implements PredicateInterface {
 
 
 	/**
+	 * @var array
+	 */
+	protected $_allowed_options = [];
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return string
+	 */
+	public function getCombiner() : string{
+		return $this->_combiner;
+	}
+
+
+	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $combiner
 	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
@@ -39,6 +54,34 @@ abstract class AbstractPredicate implements PredicateInterface {
 		$this->_combiner = $combiner;
 
 		return $this;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param array $options
+	 */
+	public function configure(array $options){
+		if(!empty($options)){
+			foreach($options as $key => $opt){
+				$key = strtolower($key);
+				if(!in_array($key, $this->_allowed_options)){
+					continue;
+				}
+				if(empty($opt)){
+					call_user_func([
+									   $this,
+									   $key,
+								   ]);
+				}
+				else{
+					call_user_func_array([
+											 $this,
+											 $key,
+										 ], $opt);
+				}
+			}
+		}
 	}
 
 

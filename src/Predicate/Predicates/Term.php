@@ -49,26 +49,40 @@ class Term extends AbstractPredicate {
 
 
 	/**
+	 * @var array
+	 */
+	protected $_allowed_options = ['boost'];
+
+
+	/**
 	 * Term constructor.
-	 * @param string $term
-	 * @param        $value
+	 * @param string     $term
+	 * @param            $value
+	 * @param array      $options
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function __construct(string $term, $value){
+	public function __construct(string $term, $value, array $options = []){
 		$this->_term = $term;
 
 		if(!is_scalar($value)){
 			throw new PredicateException('Term value must be scalar');
 		}
+
 		$this->_value = $value;
+
+		$this->configure($options);
 	}
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param int $boost
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function boost(int $boost){
+		if($boost < 0){
+			throw new PredicateException('Boost must be greater than 0');
+		}
 		$this->_boost = $boost;
 	}
 
