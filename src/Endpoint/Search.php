@@ -59,12 +59,22 @@ class Search implements EndpointInterface, QueryInterface {
 	protected $_is_prepared = false;
 
 
-	/** @var  int */
+	/**
+	 * @var int
+	 */
 	protected $_limit;
 
 
-	/** @var  int */
+	/**
+	 * @var int
+	 */
 	protected $_offset;
+
+
+	/**
+	 * @var array
+	 */
+	protected $_order = [];
 
 
 	/**
@@ -156,6 +166,38 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return int|null
 	 */
+	public function getOrder(){
+		return $this->_order;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $term
+	 * @param string $asc
+	 * @return $this
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 */
+	public function order(string $term, string $asc){
+		$asc = strtolower($asc);
+		if(!in_array($asc, [
+			'asc',
+			'desc',
+		])
+		){
+			throw new EndpointException('Order type must be asc or desc');
+		}
+
+		$this->_order[] = [$term => $asc];
+
+		return $this;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return int|null
+	 */
 	public function getOffset(){
 		return $this->_offset;
 	}
@@ -213,6 +255,10 @@ class Search implements EndpointInterface, QueryInterface {
 
 		if(!empty($_query = $this->getQuery())){
 			$_prepared_params['body']['query'] = $_query;
+		}
+
+		if(!empty($this->_order)){
+			$_prepared_params['body']['sort'] = $this->_order;
 		}
 
 		$this->_prepared_params = $_prepared_params;
