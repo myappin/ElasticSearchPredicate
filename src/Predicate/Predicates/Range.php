@@ -43,15 +43,24 @@ class Range extends AbstractPredicate {
 
 
 	/**
-	 * @var
+	 * @var int|float
 	 */
 	protected $_boost;
 
 
 	/**
+	 * @var string
+	 */
+	protected $_format;
+
+
+	/**
 	 * @var array
 	 */
-	protected $_allowed_options = ['boost'];
+	protected $_allowed_options = [
+		'boost',
+		'format',
+	];
 
 
 	/**
@@ -65,18 +74,6 @@ class Range extends AbstractPredicate {
 	public function __construct(string $term, $from, $to, array $options = []){
 		$this->_term = $term;
 
-		if(!is_int($from) && !is_float($from)){
-			throw new PredicateException('Range from must be scalar');
-		}
-
-		if(!is_int($to) && !is_float($to)){
-			throw new PredicateException('Range to must be scalar');
-		}
-
-		if($to < $from){
-			throw new PredicateException('Value to must be greater than value to');
-		}
-
 		$this->_from = $from;
 		$this->_to   = $to;
 
@@ -86,14 +83,34 @@ class Range extends AbstractPredicate {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param int $boost
+	 * @param $boost
+	 * @return $this
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function boost(int $boost){
+	public function boost($boost){
+		if(is_int($boost) || is_float($boost)){
+			throw new PredicateException('Boost must be int or float');
+		}
 		if($boost < 0){
 			throw new PredicateException('Boost must be greater than 0');
 		}
-		$this->_boost = $boost;
+		$this->_boost  = $boost;
+		$this->_simple = false;
+
+		return $this;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $format
+	 * @return $this
+	 */
+	public function format(string $format){
+		$this->_format = $format;
+		$this->_simple = false;
+
+		return $this;
 	}
 
 
@@ -114,6 +131,10 @@ class Range extends AbstractPredicate {
 
 		if(!empty($this->_boost)){
 			$_ret['term'][$_term]['boost'] = $this->_boost;
+		}
+
+		if(!empty($this->_format)){
+			$_ret['term'][$_term]['format'] = $this->_format;
 		}
 
 		return $_ret;
