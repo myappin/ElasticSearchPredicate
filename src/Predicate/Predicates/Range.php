@@ -83,7 +83,8 @@ class Range extends AbstractPredicate {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param int|float $boost
+	 * @param $boost
+	 * @return $this
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function boost($boost){
@@ -93,16 +94,23 @@ class Range extends AbstractPredicate {
 		if($boost < 0){
 			throw new PredicateException('Boost must be greater than 0');
 		}
-		$this->_boost = $boost;
+		$this->_boost  = $boost;
+		$this->_simple = false;
+
+		return $this;
 	}
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $format
+	 * @return $this
 	 */
 	public function format(string $format){
 		$this->_format = $format;
+		$this->_simple = false;
+
+		return $this;
 	}
 
 

@@ -13,6 +13,7 @@ namespace ElasticSearchPredicateTest;
 
 
 use ElasticSearchPredicate\Client;
+use ElasticSearchPredicate\Predicate\Predicates\Match;
 
 
 /**
@@ -412,6 +413,52 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(11, intval($_result['hits']['hits'][0]['_id']));
 		$this->assertSame(21, intval($_result['hits']['hits'][2]['_id']));
 		$this->assertSame(20, intval($_result['hits']['hits'][2]['_source']['range_param']));
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_match(){
+		$_search = $this->_client->search();
+		$_search->limit(2)->order('_uid', 'asc');
+		$_search->getPredicate()->Match('name', 'test1');
+
+		$this->assertSame([
+							  'match' => [
+								  'name' => 'test1',
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+		$this->assertSame(1, $_result['hits']['total']);
+		$this->assertSame(2, intval($_result['hits']['hits'][0]['_id']));
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_match_phrase(){
+		$_search = $this->_client->search();
+		$_search->limit(1)->order('_uid', 'asc');
+		$_search->getPredicate()->and((new Match('name', 'test'))->type('phrase'));
+
+		$this->assertSame([
+							  'match' => [
+								  'name' => [
+									  'query' => 'test',
+									  'type'  => 'phrase',
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+		$this->assertSame(112, $_result['hits']['total']);
 	}
 
 
