@@ -10,7 +10,7 @@ Install
 composer: [HERE](https://packagist.org/packages/myappin/elasticsearchpredicate)
 OR
 ```sh
-gic clone https://github.com/myappin/ElasticSearchPredicate.git
+git clone https://github.com/myappin/ElasticSearchPredicate.git
 ```
 
 Usage

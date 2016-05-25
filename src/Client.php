@@ -13,6 +13,7 @@ namespace ElasticSearchPredicate;
 
 
 use Elasticsearch\ClientBuilder;
+use ElasticSearchPredicate\Endpoint\EndpointException;
 use ElasticSearchPredicate\Endpoint\Search;
 
 /**
@@ -46,8 +47,13 @@ class Client {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return \Elasticsearch\ClientBuilder
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
 	public function getClientBuilder() : ClientBuilder{
+		if($this->_elasticsearch_builder === null){
+			throw new EndpointException('ElasticSearch client is already built.');
+		}
+
 		return $this->_elasticsearch_builder;
 	}
 
