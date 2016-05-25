@@ -250,7 +250,7 @@ class PredicateSet implements PredicateSetInterface {
 					'bool' => [
 						'must' => $_predicates->map(function(PredicateInterface $predicate){
 							return $predicate->toArray();
-						})->toArray(),
+						})->values()->toArray(),
 					],
 				];
 			}
@@ -259,14 +259,21 @@ class PredicateSet implements PredicateSetInterface {
 					'bool' => [
 						'should' => $_predicates->map(function(PredicateInterface $predicate){
 							return $predicate->toArray();
-						})->toArray(),
+						})->values()->toArray(),
 					],
 				];
 			}
 		}
 		else{
-			$_partitions = $_predicates->partitionBy(function(PredicateInterface $predicate){
-				return $predicate->getCombiner();
+			$_combiner   = null;
+			$_index      = 0;
+			$_partitions = $_predicates->partitionBy(function(PredicateInterface $predicate) use (&$_combiner, &$_index){
+				if($_combiner === PredicateSet::C_OR){
+					$_index++;
+				}
+				$_combiner = $predicate->getCombiner();
+
+				return $_index;
 			});
 			if($_partitions->size() === 1){
 				return [
@@ -275,14 +282,14 @@ class PredicateSet implements PredicateSetInterface {
 							return [
 								'must' => $partition->map(function(PredicateInterface $predicate){
 									return $predicate->toArray();
-								})->toArray(),
+								})->values()->toArray(),
 							];
 						}
 						else{
 							return [
 								'should' => $partition->map(function(PredicateInterface $predicate){
 									return $predicate->toArray();
-								})->toArray(),
+								})->values()->toArray(),
 							];
 						}
 					})->current(),
@@ -301,7 +308,7 @@ class PredicateSet implements PredicateSetInterface {
 										'bool' => [
 											'must' => $partition->map(function(PredicateInterface $predicate){
 												return $predicate->toArray();
-											})->toArray(),
+											})->values()->toArray(),
 										],
 									];
 								}
@@ -310,12 +317,12 @@ class PredicateSet implements PredicateSetInterface {
 										'bool' => [
 											'should' => $partition->map(function(PredicateInterface $predicate){
 												return $predicate->toArray();
-											})->toArray(),
+											})->values()->toArray(),
 										],
 									];
 								}
 							}
-						})->toArray(),
+						})->values()->toArray(),
 					],
 				];
 			}

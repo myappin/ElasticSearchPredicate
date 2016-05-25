@@ -215,16 +215,18 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 											  'name' => 'test10',
 										  ],
 									  ],
-									  'bool' => [
-										  'must' => [
-											  [
-												  'term' => [
-													  'name' => 'test11',
+									  [
+										  'bool' => [
+											  'must' => [
+												  [
+													  'term' => [
+														  'name' => 'test11',
+													  ],
 												  ],
-											  ],
-											  [
-												  'term' => [
-													  'test_param1' => 1,
+												  [
+													  'term' => [
+														  'test_param1' => 1,
+													  ],
 												  ],
 											  ],
 										  ],
@@ -232,6 +234,56 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 								  ],
 							  ],
 						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+		$this->assertSame(2, $_result['hits']['total']);
+		$this->assertSame(12, intval($_result['hits']['hits'][0]['_id']));
+		$this->assertSame(11, intval($_result['hits']['hits'][1]['_id']));
+
+
+		$_search = $this->_client->search();
+		$_search->limit(3);
+		$_search->getPredicate()->Term('name', 'test10')->or->Term('name', 'test11')
+															->Term('test_param1', 1)->or->Term('name', 'test8');
+
+		$this->assertSame([
+							  'bool' => [
+								  'should' => [
+									  [
+										  'term' => [
+											  'name' => 'test10',
+										  ],
+									  ],
+									  [
+										  'bool' => [
+											  'must' => [
+												  [
+													  'term' => [
+														  'name' => 'test11',
+													  ],
+												  ],
+												  [
+													  'term' => [
+														  'test_param1' => 1,
+													  ],
+												  ],
+											  ],
+										  ],
+									  ],
+									  [
+										  'term' => [
+											  'name' => 'test8',
+										  ],
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+		$this->assertSame(3, $_result['hits']['total']);
+		$this->assertSame(12, intval($_result['hits']['hits'][0]['_id']));
+		$this->assertSame(9, intval($_result['hits']['hits'][1]['_id']));
+		$this->assertSame(11, intval($_result['hits']['hits'][2]['_id']));
 	}
 
 }
