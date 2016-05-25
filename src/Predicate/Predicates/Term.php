@@ -43,7 +43,7 @@ class Term extends AbstractPredicate {
 
 
 	/**
-	 * @var
+	 * @var int
 	 */
 	protected $_boost;
 
@@ -76,15 +76,17 @@ class Term extends AbstractPredicate {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param int $boost
+	 * @param int|float $boost
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function boost(int $boost){
+	public function boost($boost){
+		if(is_int($boost) || is_float($boost)){
+			throw new PredicateException('Boost must be int or float');
+		}
 		if($boost < 0){
 			throw new PredicateException('Boost must be greater than 0');
 		}
-		$this->_boost  = $boost;
-		$this->_simple = false;
+		$this->_boost = $boost;
 	}
 
 
