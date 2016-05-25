@@ -28,16 +28,16 @@ interface PredicateInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
+	 * @return string
 	 */
-	public function toArray() : array;
+	public function getCombiner() : string;
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param array $options
+	 * @return array
 	 */
-	public function configure(array $options);
+	public function toArray() : array;
 
 
 }
