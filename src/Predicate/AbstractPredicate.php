@@ -34,6 +34,15 @@ abstract class AbstractPredicate implements PredicateInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return string
+	 */
+	public function getCombiner() : string{
+		return $this->_combiner;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $combiner
 	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException

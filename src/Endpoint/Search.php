@@ -109,9 +109,16 @@ class Search implements EndpointInterface, QueryInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return array
+	 * @throws \Exception
 	 */
 	public function execute() : array{
-		$_result = $this->_client->search($this->getPreparedParams());
+		try{
+			$_result = $this->_client->search($this->getPreparedParams());
+		}
+		catch(\Exception $e){
+			throw $e;
+		}
 
 		$this->clearParams();
 
