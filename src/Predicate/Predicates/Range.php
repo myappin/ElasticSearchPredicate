@@ -12,7 +12,6 @@ declare(strict_types = 1);
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
 
-use ElasticSearchPredicate\Predicate\AbstractPredicate;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 

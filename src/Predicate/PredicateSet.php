@@ -13,6 +13,7 @@ namespace ElasticSearchPredicate\Predicate;
 
 
 use DusanKasan\Knapsack\Collection;
+use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 
 
 /**
@@ -125,7 +126,7 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function addPredicate(PredicateInterface $predicate) : PredicateSetInterface{
@@ -143,7 +144,7 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function andPredicate(PredicateInterface $predicate) : PredicateSetInterface{
@@ -155,7 +156,7 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function orPredicate(PredicateInterface $predicate) : PredicateSetInterface{
@@ -167,7 +168,7 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function and (PredicateInterface $predicate) : PredicateSetInterface{
@@ -177,7 +178,7 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function or (PredicateInterface $predicate) : PredicateSetInterface{
@@ -240,7 +241,7 @@ class PredicateSet implements PredicateSetInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $combiner
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setCombiner(string $combiner) : PredicateInterface{

@@ -13,6 +13,7 @@ namespace ElasticSearchPredicate\Predicate;
 
 
 use DusanKasan\Knapsack\Collection;
+use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 
 /**
  * Interface PredicateSetInterface
@@ -23,7 +24,7 @@ interface PredicateSetInterface extends PredicateInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function addPredicate(PredicateInterface $predicate) : PredicateSetInterface;
@@ -31,7 +32,7 @@ interface PredicateSetInterface extends PredicateInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function andPredicate(PredicateInterface $predicate) : PredicateSetInterface;
@@ -39,7 +40,7 @@ interface PredicateSetInterface extends PredicateInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\PredicateInterface $predicate
+	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function orPredicate(PredicateInterface $predicate) : PredicateSetInterface;

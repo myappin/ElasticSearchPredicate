@@ -9,12 +9,16 @@ declare(strict_types = 1);
  * Time: 9:36
  */
 
-namespace ElasticSearchPredicate\Predicate;
+namespace ElasticSearchPredicate\Predicate\Predicates;
+
+
+use ElasticSearchPredicate\Predicate\PredicateException;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 
 
 /**
  * Class AbstractPredicate
- * @package   ElasticSearchPredicate\Predicate
+ * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 abstract class AbstractPredicate implements PredicateInterface {
@@ -44,7 +48,7 @@ abstract class AbstractPredicate implements PredicateInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $combiner
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setCombiner(string $combiner) : PredicateInterface{

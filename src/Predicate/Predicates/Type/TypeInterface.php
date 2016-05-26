@@ -12,7 +12,7 @@ declare(strict_types = 1);
 namespace ElasticSearchPredicate\Predicate\Predicates\Type;
 
 
-use ElasticSearchPredicate\Predicate\PredicateInterface;
+use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 
 
 /**

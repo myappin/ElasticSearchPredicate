@@ -12,9 +12,7 @@ declare(strict_types = 1);
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
 
-use ElasticSearchPredicate\Predicate\AbstractPredicate;
 use ElasticSearchPredicate\Predicate\PredicateException;
-use ElasticSearchPredicate\Predicate\PredicateInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
@@ -74,7 +72,7 @@ class Match extends AbstractPredicate implements BoostInterface, SimpleInterface
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $type
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function type(string $type) : PredicateInterface{
