@@ -22,6 +22,7 @@ use DusanKasan\Knapsack\Collection;
  * @method PredicateSet Term(string $term, $value, array $options = [])
  * @method PredicateSet Match(string $match, $query, array $options = [])
  * @method PredicateSet Range(string $term, $from, $to, array $options = [])
+ * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @property PredicateSet AND
  * @property PredicateSet and
  * @property PredicateSet OR
