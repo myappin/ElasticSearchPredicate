@@ -16,12 +16,21 @@ use Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
+use ElasticSearchPredicate\Predicate\PredicateSetInterface;
 
 /**
  * Class Search
  * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet predicate
+ * @method Search Term(string $term, $value, array $options = [])
+ * @method Search Match(string $match, $query, array $options = [])
+ * @method Search Range(string $term, $from, $to, array $options = [])
+ * @method Search QueryString($query, array $fields = [], array $options = [])
+ * @property PredicateSet AND
+ * @property PredicateSet and
+ * @property PredicateSet OR
+ * @property PredicateSet or
  */
 class Search implements EndpointInterface, QueryInterface {
 
@@ -99,14 +108,36 @@ class Search implements EndpointInterface, QueryInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
-	 * @return null
+	 * @param $arguments
+	 * @return PredicateSetInterface
 	 */
-	public function __get($name){
+	public function __call($name, $arguments) : PredicateSetInterface{
+		if(empty($arguments)){
+			return call_user_func([
+									  $this->getPredicate(),
+									  $name,
+								  ]);
+		}
+		else{
+			return call_user_func_array([
+											$this->getPredicate(),
+											$name,
+										], $arguments);
+		}
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $name
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+	 */
+	public function __get($name) : PredicateSetInterface{
 		if(strtolower($name) === 'predicate'){
 			return $this->getPredicate();
 		}
 
-		return null;
+		return $this->getPredicate()->{$name};
 	}
 
 
