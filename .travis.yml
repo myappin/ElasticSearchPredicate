@@ -6,6 +6,19 @@ services:
 php:
   - 7.0
 
+addons:
+  apt:
+    sources:
+      - elasticsearch-2.3
+    packages:
+      - elasticsearch
+
+services:
+  - elasticsearch
+
+before_install:
+  - sleep 10
+
 install:
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - composer install
@@ -15,13 +28,6 @@ before_script:
 
 script:
   - ./vendor/bin/phpunit
-
-addons:
-  apt:
-    sources:
-      - elasticsearch-2.3.3
-    packages:
-      - elasticsearch
 
 matrix:
   allow_failures:
