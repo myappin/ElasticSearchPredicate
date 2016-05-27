@@ -206,6 +206,26 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * nested mappings
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
+	 */
+	public function nested(string $path) : PredicateSet{
+		if($this->_predicates->size() > 0){
+			$this->_predicates->last()->setCombiner($this->_combiner);
+		}
+		$_nest = new Nested($this);
+		$_nest->setPath($path);
+		$this->_last       = $_nest;
+		$this->_predicates = $this->_predicates->append($_nest);
+
+		$this->_combiner = self::C_AND;
+
+		return $_nest;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
