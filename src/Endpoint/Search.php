@@ -190,7 +190,7 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @return $this
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function limit($limit){
+	public function limit($limit) : EndpointInterface{
 		if(!is_int($limit) && $limit !== null){
 			throw new EndpointException(sprintf('Limit has wrong type %s', gettype($limit)));
 		}
@@ -217,7 +217,7 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @return $this
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function order(string $term, string $asc){
+	public function order(string $term, string $asc) : EndpointInterface{
 		$asc = strtolower($asc);
 		if(!in_array($asc, [
 			'asc',
@@ -228,6 +228,17 @@ class Search implements EndpointInterface, QueryInterface {
 		}
 
 		$this->_order[] = [$term => $asc];
+
+		return $this;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return $this
+	 */
+	public function resetOrder() : EndpointInterface{
+		$this->_order = [];
 
 		return $this;
 	}
@@ -248,7 +259,7 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @return $this
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function offset($offset){
+	public function offset($offset) : EndpointInterface{
 		if(!is_int($offset) && $offset !== null){
 			throw new EndpointException(sprintf('Offset has wrong type %s', gettype($offset)));
 		}
