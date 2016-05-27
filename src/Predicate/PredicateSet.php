@@ -80,7 +80,7 @@ class PredicateSet implements PredicateSetInterface {
 			throw new PredicateException(sprintf('Predicate %s does not exist', $name));
 		}
 		if(empty($arguments)){
-			if($this->_predicates->size() > 0){
+			if($this->_predicates->isNotEmpty()){
 				$this->_predicates->last()->setCombiner($this->_combiner);
 			}
 			/** @var PredicateInterface $_predicate */
@@ -89,7 +89,7 @@ class PredicateSet implements PredicateSetInterface {
 			$this->_predicates = $this->_predicates->append($_predicate);
 		}
 		else{
-			if($this->_predicates->size() > 0){
+			if($this->_predicates->isNotEmpty()){
 				$this->_predicates->last()->setCombiner($this->_combiner);
 			}
 			/** @var PredicateInterface $_predicate */
@@ -130,7 +130,7 @@ class PredicateSet implements PredicateSetInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function addPredicate(PredicateInterface $predicate) : PredicateSetInterface{
-		if($this->_predicates->size() > 0){
+		if($this->_predicates->isNotEmpty()){
 			$this->_predicates->last()->setCombiner($this->_combiner);
 		}
 		$this->_last       = $predicate;
@@ -191,7 +191,7 @@ class PredicateSet implements PredicateSetInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
 	public function nest() : PredicateSet{
-		if($this->_predicates->size() > 0){
+		if($this->_predicates->isNotEmpty()){
 			$this->_predicates->last()->setCombiner($this->_combiner);
 		}
 		$_nest             = new PredicateSet($this);
@@ -210,7 +210,7 @@ class PredicateSet implements PredicateSetInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
 	public function nested(string $path) : PredicateSet{
-		if($this->_predicates->size() > 0){
+		if($this->_predicates->isNotEmpty()){
 			$this->_predicates->last()->setCombiner($this->_combiner);
 		}
 		$_nest = new Nested($this);
@@ -318,7 +318,7 @@ class PredicateSet implements PredicateSetInterface {
 
 				return $_index;
 			});
-			if($_partitions->size() === 1){
+			if($_partitions->sizeIs(1)){
 				return [
 					'bool' => $_partitions->map(function(Collection $partition){
 						if($partition->first()->getCombiner() === PredicateSet::C_AND){
@@ -342,7 +342,7 @@ class PredicateSet implements PredicateSetInterface {
 				return [
 					'bool' => [
 						'should' => $_partitions->map(function(Collection $partition){
-							if($partition->size() === 1){
+							if($partition->sizeIs(1)){
 								return $partition->first()->toArray();
 							}
 							else{
