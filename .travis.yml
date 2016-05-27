@@ -16,6 +16,13 @@ before_script:
 script:
   - ./vendor/bin/phpunit
 
+addons:
+  apt:
+    sources:
+      - elasticsearch-2.3.3
+    packages:
+      - elasticsearch
+
 matrix:
   allow_failures:
     - php: nightly
