@@ -494,6 +494,30 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 * @throws \Exception
 	 */
+	public function test_not_term(){
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->limit(1);
+		$_search->predicate->NotTerm('name', 'test1');
+
+		$this->assertSame([
+							  'not' => [
+								  'term' => [
+									  'name' => 'test1',
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(49, $_result['hits']['total']);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
 	public function test_query_string(){
 		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
 		$_search->limit(20)->order('_uid', 'asc');
