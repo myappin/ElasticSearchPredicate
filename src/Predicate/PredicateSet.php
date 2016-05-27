@@ -320,7 +320,7 @@ class PredicateSet implements PredicateSetInterface {
 
 				return $_index;
 			});
-			if($_partitions->size() === 1){
+			if($_partitions->sizeIs(1)){
 				return [
 					'bool' => $_partitions->map(function(Collection $partition){
 						if($partition->first()->getCombiner() === PredicateSet::C_AND){
@@ -344,7 +344,7 @@ class PredicateSet implements PredicateSetInterface {
 				return [
 					'bool' => [
 						'should' => $_partitions->map(function(Collection $partition){
-							if($partition->size() === 1){
+							if($partition->sizeIs(1)){
 								return $partition->first()->toArray();
 							}
 							else{

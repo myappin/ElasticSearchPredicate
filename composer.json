@@ -13,7 +13,7 @@
   "require": {
     "php": ">=7",
     "elasticsearch/elasticsearch": "^2.1",
-    "dusank/knapsack": "^6.1"
+    "dusank/knapsack": "^6.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.3"
