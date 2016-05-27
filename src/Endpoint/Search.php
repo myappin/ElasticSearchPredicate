@@ -78,6 +78,12 @@ class Search implements EndpointInterface, QueryInterface {
 
 
 	/**
+	 * @var \Exception
+	 */
+	protected $_exception;
+
+
+	/**
 	 * SearchPredicate constructor.
 	 * @param \Elasticsearch\Client $client
 	 * @param string                $index
@@ -127,6 +133,8 @@ class Search implements EndpointInterface, QueryInterface {
 			$_result = $this->_client->search($this->getPreparedParams());
 		}
 		catch(\Exception $e){
+			$this->clearParams();
+
 			throw $e;
 		}
 
@@ -227,6 +235,14 @@ class Search implements EndpointInterface, QueryInterface {
 		$this->_is_prepared     = false;
 
 		return $this;
+	}
+
+
+	/**
+	 * @return \Exception|null
+	 */
+	public function getException(){
+		return $this->_exception;
 	}
 
 
