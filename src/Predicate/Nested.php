@@ -12,6 +12,12 @@ declare(strict_types = 1);
 namespace ElasticSearchPredicate\Predicate;
 
 
+/**
+ * Class Nested
+ * nested mappings
+ * @package   ElasticSearchPredicate\Predicate
+ * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
+ */
 class Nested extends PredicateSet {
 
 

@@ -206,6 +206,7 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * nested mappings
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
 	public function nested(string $path) : PredicateSet{
