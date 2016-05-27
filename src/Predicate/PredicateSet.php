@@ -21,9 +21,7 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @method PredicateSet Term(string $term, $value, array $options = [])
- * @method PredicateSet NotTerm(string $not_term, $value, array $options = [])
  * @method PredicateSet Match(string $match, $query, array $options = [])
- * @method PredicateSet NotMatch(string $not_match, $query, array $options = [])
  * @method PredicateSet Range(string $term, $from, $to, array $options = [])
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @property PredicateSet AND
@@ -191,6 +189,25 @@ class PredicateSet implements PredicateSetInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function not() : PredicateSet{
+		if(isset($this->_last)){
+			$this->_last->setCombiner($this->_combiner);
+		}
+		$_not              = new NotPredicateSet($this);
+		$this->_last       = $_not;
+		$this->_predicates = $this->_predicates->append($_not);
+
+		$this->_combiner = self::C_AND;
+
+		return $_not;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
 	public function nest() : PredicateSet{
 		if(isset($this->_last)){
@@ -208,14 +225,15 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * nested mappings
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
+	 * @param string $path
+	 * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function nested(string $path) : PredicateSet{
+	public function nested(string $path) : NestedPredicateSet{
 		if(isset($this->_last)){
 			$this->_last->setCombiner($this->_combiner);
 		}
-		$_nest = new Nested($this);
+		$_nest = new NestedPredicateSet($this);
 		$_nest->setPath($path);
 		$this->_last       = $_nest;
 		$this->_predicates = $this->_predicates->append($_nest);

@@ -470,14 +470,13 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	public function test_not_match_phrase(){
 		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
 		$_search->limit(1);
-		$_search->predicate->and((new NotMatch('name', 'test1'))->type('phrase'));
+		$_search->predicate->not()->Match('name', 'test1')->unnest();
 
 		$this->assertSame([
-							  'not' => [
-								  'match' => [
-									  'name' => [
-										  'query' => 'test1',
-										  'type'  => 'phrase',
+							  'bool' => [
+								  'must_not' => [
+									  'match' => [
+										  'name' => 'test1',
 									  ],
 								  ],
 							  ],
@@ -497,12 +496,14 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	public function test_not_term(){
 		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
 		$_search->limit(1);
-		$_search->predicate->NotTerm('name', 'test1');
+		$_search->predicate->not()->Term('name', 'test1')->unnest();
 
 		$this->assertSame([
-							  'not' => [
-								  'term' => [
-									  'name' => 'test1',
+							  'bool' => [
+								  'must_not' => [
+									  'term' => [
+										  'name' => 'test1',
+									  ],
 								  ],
 							  ],
 						  ], $_search->getQuery());

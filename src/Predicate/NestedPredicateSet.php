@@ -13,12 +13,12 @@ namespace ElasticSearchPredicate\Predicate;
 
 
 /**
- * Class Nested
+ * Class NestedPredicateSet
  * nested mappings
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Nested extends PredicateSet {
+class NestedPredicateSet extends PredicateSet {
 
 
 	/**
@@ -30,9 +30,9 @@ class Nested extends PredicateSet {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $path
-	 * @return \ElasticSearchPredicate\Predicate\Nested
+	 * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
 	 */
-	public function setPath(string $path) : Nested{
+	public function setPath(string $path) : NestedPredicateSet{
 		$this->_path = $path;
 
 		return $this;
