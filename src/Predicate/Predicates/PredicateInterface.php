@@ -9,11 +9,11 @@ declare(strict_types = 1);
  * Time: 9:41
  */
 
-namespace ElasticSearchPredicate\Predicate;
+namespace ElasticSearchPredicate\Predicate\Predicates;
 
 /**
  * Interface PredicateInterface
- * @package ElasticSearchPredicate\Predicate
+ * @package ElasticSearchPredicate\Predicate\Predicates
  */
 interface PredicateInterface {
 
@@ -21,7 +21,7 @@ interface PredicateInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $combiner
-	 * @return \ElasticSearchPredicate\Predicate\PredicateInterface
+	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
 	 */
 	public function setCombiner(string $combiner) : PredicateInterface;
 
