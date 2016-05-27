@@ -187,7 +187,7 @@ class Search implements EndpointInterface, QueryInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $limit
-	 * @return $this
+	 * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
 	public function limit($limit) : EndpointInterface{
@@ -214,7 +214,7 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $term
 	 * @param string $asc
-	 * @return $this
+	 * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
 	public function order(string $term, string $asc) : EndpointInterface{

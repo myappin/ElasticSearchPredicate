@@ -484,4 +484,26 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_nested_term(){
+		$_search = $this->_client->search();
+		$_search->predicate->nested('nested_path')->Term('name', 'test1')->unnest();
+
+		$this->assertSame([
+							  'nested' => [
+								  'path'  => 'nested_path',
+								  'query' => [
+									  'term' => [
+										  'name' => 'test1',
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+	}
+
+
 }
