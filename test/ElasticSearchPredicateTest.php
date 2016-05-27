@@ -491,14 +491,60 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function test_nested_term(){
 		$_search = $this->_client->search();
-		$_search->predicate->nested('nested_path')->Term('name', 'test1')->unnest();
+		$_search->predicate->nest()
+						   ->nested('nested_path')
+						   ->Term('name', 'test1')
+						   ->Term('test_param1', 1)
+						   ->unnest()->or->nested('nested_path')
+										 ->Term('name', 'test2')
+										 ->Term('test_param1', 0)
+										 ->unnest()
+										 ->unnest();
 
 		$this->assertSame([
-							  'nested' => [
-								  'path'  => 'nested_path',
-								  'query' => [
-									  'term' => [
-										  'name' => 'test1',
+							  'bool' => [
+								  'should' => [
+									  [
+										  'nested' => [
+											  'path'  => 'nested_path',
+											  'query' => [
+												  'bool' => [
+													  'must' => [
+														  [
+															  'term' => [
+																  'name' => 'test1',
+															  ],
+														  ],
+														  [
+															  'term' => [
+																  'test_param1' => 1,
+															  ],
+														  ],
+													  ],
+												  ],
+											  ],
+										  ],
+									  ],
+									  [
+										  'nested' => [
+											  'path'  => 'nested_path',
+											  'query' => [
+												  'bool' => [
+													  'must' => [
+														  [
+															  'term' => [
+																  'name' => 'test2',
+															  ],
+														  ],
+														  [
+															  'term' => [
+																  'test_param1' => 0,
+															  ],
+														  ],
+													  ],
+												  ],
+											  ],
+										  ],
 									  ],
 								  ],
 							  ],

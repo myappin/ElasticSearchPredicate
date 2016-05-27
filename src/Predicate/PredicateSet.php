@@ -80,8 +80,8 @@ class PredicateSet implements PredicateSetInterface {
 			throw new PredicateException(sprintf('Predicate %s does not exist', $name));
 		}
 		if(empty($arguments)){
-			if($this->_predicates->size() > 0){
-				$this->_predicates->last()->setCombiner($this->_combiner);
+			if(isset($this->_last)){
+				$this->_last->setCombiner($this->_combiner);
 			}
 			/** @var PredicateInterface $_predicate */
 			$_predicate        = new $_class;
@@ -89,8 +89,8 @@ class PredicateSet implements PredicateSetInterface {
 			$this->_predicates = $this->_predicates->append($_predicate);
 		}
 		else{
-			if($this->_predicates->size() > 0){
-				$this->_predicates->last()->setCombiner($this->_combiner);
+			if(isset($this->_last)){
+				$this->_last->setCombiner($this->_combiner);
 			}
 			/** @var PredicateInterface $_predicate */
 			$_predicate        = (new \ReflectionClass($_class))->newInstanceArgs($arguments);
@@ -130,8 +130,8 @@ class PredicateSet implements PredicateSetInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function addPredicate(PredicateInterface $predicate) : PredicateSetInterface{
-		if($this->_predicates->size() > 0){
-			$this->_predicates->last()->setCombiner($this->_combiner);
+		if(isset($this->_last)){
+			$this->_last->setCombiner($this->_combiner);
 		}
 		$this->_last       = $predicate;
 		$this->_predicates = $this->_predicates->append($predicate);
@@ -191,8 +191,8 @@ class PredicateSet implements PredicateSetInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
 	public function nest() : PredicateSet{
-		if($this->_predicates->size() > 0){
-			$this->_predicates->last()->setCombiner($this->_combiner);
+		if(isset($this->_last)){
+			$this->_last->setCombiner($this->_combiner);
 		}
 		$_nest             = new PredicateSet($this);
 		$this->_last       = $_nest;
@@ -210,8 +210,8 @@ class PredicateSet implements PredicateSetInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
 	public function nested(string $path) : PredicateSet{
-		if($this->_predicates->size() > 0){
-			$this->_predicates->last()->setCombiner($this->_combiner);
+		if(isset($this->_last)){
+			$this->_last->setCombiner($this->_combiner);
 		}
 		$_nest = new Nested($this);
 		$_nest->setPath($path);
