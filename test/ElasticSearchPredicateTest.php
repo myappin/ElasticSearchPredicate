@@ -475,8 +475,10 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame([
 							  'bool' => [
 								  'must_not' => [
-									  'match' => [
-										  'name' => 'test1',
+									  [
+										  'match' => [
+											  'name' => 'test1',
+										  ],
 									  ],
 								  ],
 							  ],
@@ -501,8 +503,10 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame([
 							  'bool' => [
 								  'must_not' => [
-									  'term' => [
-										  'name' => 'test1',
+									  [
+										  'term' => [
+											  'name' => 'test1',
+										  ],
 									  ],
 								  ],
 							  ],
@@ -511,6 +515,39 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$_result = $_search->execute();
 
 		$this->assertSame(49, $_result['hits']['total']);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_not_term_combination(){
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->limit(1);
+		$_search->predicate->not()->Term('name', 'test1')->Term('name', 'test2')->unnest();
+
+		$this->assertSame([
+							  'bool' => [
+								  'must_not' => [
+									  [
+										  'term' => [
+											  'name' => 'test1',
+										  ],
+									  ],
+									  [
+										  'term' => [
+											  'name' => 'test2',
+										  ],
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(48, $_result['hits']['total']);
 	}
 
 
