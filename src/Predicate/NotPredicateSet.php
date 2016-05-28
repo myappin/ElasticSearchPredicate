@@ -31,10 +31,6 @@ class NotPredicateSet extends PredicateSet {
 		return [
 			'bool' => [
 				'must_not' => $this->_predicates->map(function(PredicateInterface $predicate){
-					if($predicate instanceof PredicateSetInterface){
-						throw new PredicateException('Only end predicates are allowed in NotPredicateSet');
-					}
-
 					return $predicate->toArray();
 				})->values()->toArray(),
 			],
