@@ -374,6 +374,23 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(11, intval($_result['hits']['hits'][0]['_id']));
 		$this->assertSame(21, intval($_result['hits']['hits'][10]['_id']));
 		$this->assertSame(20, intval($_result['hits']['hits'][10]['_source']['range_param']));
+
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->limit(20)->order('range_param', 'asc');
+		$_search->predicate->Range('range_param', 10);
+
+		$this->assertSame([
+							  'range' => [
+								  'range_param' => [
+									  'gte' => 10,
+								  ],
+							  ],
+						  ], $_search->getQuery());
+		$this->assertSame(11, $_result['hits']['total']);
+
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->limit(20)->order('range_param', 'asc');
+		$_search->predicate->Range('range_param', null, 10);
 	}
 
 
