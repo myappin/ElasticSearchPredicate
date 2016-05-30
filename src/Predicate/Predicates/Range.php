@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
 
+use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 
@@ -59,8 +60,12 @@ class Range extends AbstractPredicate implements BoostInterface {
 	 * @param array  $options
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function __construct(string $term, $from, $to, array $options = []){
+	public function __construct(string $term, $from, $to = null, array $options = []){
 		$this->_term = $term;
+
+		if($from === null && $to === null){
+			throw new PredicateException('Both of from and to can not be null');
+		}
 
 		$this->_from = $from;
 		$this->_to   = $to;
@@ -90,19 +95,24 @@ class Range extends AbstractPredicate implements BoostInterface {
 		$_term = $this->_term;
 		$_ret  = [
 			'range' => [
-				$_term => [
-					'gte' => $this->_from,
-					'lte' => $this->_to,
-				],
+				$_term => [],
 			],
 		];
 
+		if($this->_from !== null){
+			$_ret['range'][$_term]['gte'] = $this->_from;
+		}
+
+		if($this->_to !== null){
+			$_ret['range'][$_term]['lte'] = $this->_to;
+		}
+
 		if(!empty($this->_boost)){
-			$_ret['term'][$_term]['boost'] = $this->_boost;
+			$_ret['range'][$_term]['boost'] = $this->_boost;
 		}
 
 		if(!empty($this->_format)){
-			$_ret['term'][$_term]['format'] = $this->_format;
+			$_ret['range'][$_term]['format'] = $this->_format;
 		}
 
 		return $_ret;

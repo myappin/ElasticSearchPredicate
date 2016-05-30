@@ -22,7 +22,7 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @method PredicateSet Term(string $term, $value, array $options = [])
  * @method PredicateSet Match(string $match, $query, array $options = [])
- * @method PredicateSet Range(string $term, $from, $to, array $options = [])
+ * @method PredicateSet Range(string $term, $from, $to = null, array $options = [])
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @property PredicateSet AND
  * @property PredicateSet and
@@ -30,6 +30,9 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
  * @property PredicateSet or
  */
 class PredicateSet implements PredicateSetInterface {
+
+
+	use PredicateSetTrait;
 
 
 	const C_AND = 'AND';
@@ -70,10 +73,10 @@ class PredicateSet implements PredicateSetInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
 	 * @param $arguments
-	 * @return $this
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function __call($name, $arguments){
+	public function __call($name, $arguments) : PredicateSetInterface{
 		$name   = preg_replace('/[^a-z0-9\_]+/i', '', $name);
 		$_class = 'ElasticSearchPredicate\Predicate\Predicates\\' . $name;
 		if(!class_exists($_class)){
