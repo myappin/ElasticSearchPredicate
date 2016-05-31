@@ -659,4 +659,34 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_multimatch_string(){
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->limit(10);
+		$_search->predicate->MultiMatch(1, [
+			'test_param1',
+			'test_param3',
+		], ['type' => 'phrase']);
+
+		$this->assertSame([
+							  'multi_match' => [
+								  'query'  => 1,
+								  'fields' => [
+									  'test_param1',
+									  'test_param3',
+								  ],
+								  'type'   => 'phrase',
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(30, $_result['hits']['total']);
+	}
+
+
 }
