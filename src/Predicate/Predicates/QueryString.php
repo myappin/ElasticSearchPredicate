@@ -47,7 +47,7 @@ class QueryString extends AbstractPredicate implements BoostInterface {
 	 * @param array                 $options
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function __construct($query, array $fields = [], array $options = []){
+	public function __construct($query, $fields = [], array $options = []){
 		if(!is_scalar($query)){
 			throw new PredicateException('Query must be scalar');
 		}
@@ -55,12 +55,20 @@ class QueryString extends AbstractPredicate implements BoostInterface {
 		$this->_query = $query;
 
 		if(!empty($fields)){
-			foreach($fields as $field){
-				if(!is_scalar($field)){
-					throw new PredicateException('Filed must be scalar');
+			if(is_array($fields)){
+				foreach($fields as $field){
+					if(!is_scalar($field)){
+						throw new PredicateException('Filed must be scalar');
+					}
 				}
+				$this->_fields = $fields;
 			}
-			$this->_fields = $fields;
+			elseif(is_string($fields)){
+				$this->_fields = [$fields];
+			}
+			else{
+				throw new PredicateException('Unexpected field type');
+			}
 		}
 
 		$this->configure($options);
