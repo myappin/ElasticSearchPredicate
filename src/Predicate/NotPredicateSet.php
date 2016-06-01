@@ -25,6 +25,21 @@ class NotPredicateSet extends PredicateSet {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $combiner
+	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function setCombiner(string $combiner) : PredicateInterface{
+		if(strtoupper($combiner) === 'or'){
+			throw new PredicateException('Not allowed combiner inside not predicate');
+		}
+
+		return parent::setCombiner($combiner);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
 	 */
 	public function toArray() : array{

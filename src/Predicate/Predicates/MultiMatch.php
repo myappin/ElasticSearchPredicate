@@ -13,8 +13,6 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 
 use ElasticSearchPredicate\Predicate\PredicateException;
-use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
-use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
 
 
@@ -23,10 +21,7 @@ use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class MultiMatch extends AbstractPredicate implements BoostInterface, TypeInterface {
-
-
-	use BoostTrait;
+class MultiMatch extends AbstractPredicate implements TypeInterface {
 
 
 	/**
@@ -120,10 +115,6 @@ class MultiMatch extends AbstractPredicate implements BoostInterface, TypeInterf
 
 		if(!empty($this->_fields)){
 			$_ret['multi_match']['fields'] = $this->_fields;
-		}
-
-		if(!empty($this->_boost)){
-			$_ret['multi_match']['boost'] = $this->_boost;
 		}
 
 		if(!empty($this->_type)){
