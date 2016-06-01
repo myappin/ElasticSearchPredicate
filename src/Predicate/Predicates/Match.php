@@ -15,9 +15,12 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
+use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Type\TypeTrait;
 
 
 /**
@@ -25,10 +28,10 @@ use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Match extends AbstractPredicate implements BoostInterface, SimpleInterface, TypeInterface {
+class Match extends AbstractPredicate implements BoostInterface, SimpleInterface, TypeInterface, OperatorInterface {
 
 
-	use BoostTrait, SimpleTrait;
+	use BoostTrait, SimpleTrait, TypeTrait, OperatorTrait;
 
 
 	/**
@@ -41,12 +44,6 @@ class Match extends AbstractPredicate implements BoostInterface, SimpleInterface
 	 * @var bool|float|int|string
 	 */
 	protected $_value;
-
-
-	/**
-	 * @var string
-	 */
-	protected $_type;
 
 
 	/**
@@ -65,29 +62,12 @@ class Match extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 		$this->_value = $query;
 
-		$this->configure($options);
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $type
-	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function type(string $type) : PredicateInterface{
-		if(!in_array($type, [
+		$this->_types = [
 			'phrase',
 			'phrase_prefix',
-		])
-		){
-			throw new PredicateException('Type is not valid');
-		}
+		];
 
-		$this->_type   = $type;
-		$this->_simple = false;
-
-		return $this;
+		$this->configure($options);
 	}
 
 
@@ -119,6 +99,10 @@ class Match extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 		if(!empty($this->_type)){
 			$_ret['match'][$_match]['type'] = $this->_type;
+		}
+
+		if(!empty($this->_operator)){
+			$_ret['match'][$_match]['operator'] = $this->_operator;
 		}
 
 		return $_ret;

@@ -13,9 +13,10 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 
 use ElasticSearchPredicate\Predicate\PredicateException;
-use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
-use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
+use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Type\TypeTrait;
 
 
 /**
@@ -23,10 +24,10 @@ use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class MultiMatch extends AbstractPredicate implements BoostInterface, TypeInterface {
+class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInterface {
 
 
-	use BoostTrait;
+	use TypeTrait, OperatorTrait;
 
 
 	/**
@@ -42,9 +43,9 @@ class MultiMatch extends AbstractPredicate implements BoostInterface, TypeInterf
 
 
 	/**
-	 * @var string
+	 * @var float|int
 	 */
-	protected $_type;
+	protected $_tie_breaker;
 
 
 	/**
@@ -81,27 +82,33 @@ class MultiMatch extends AbstractPredicate implements BoostInterface, TypeInterf
 
 		$this->_query = $query;
 
+		$this->_other_options = ['tie_breaker'];
+		$this->_types         = [
+			'phrase',
+			'phrase_prefix',
+			'cross_fields',
+			'most_fields ',
+			'best_fields ',
+		];
+
 		$this->configure($options);
 	}
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $type
+	 * @param $tie_breaker
 	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function type(string $type) : PredicateInterface{
-		if(!in_array($type, [
-			'phrase',
-			'phrase_prefix',
-		])
-		){
-			throw new PredicateException('Type is not valid');
+	public function tie_breaker($tie_breaker) : PredicateInterface{
+		if(!is_int($tie_breaker) && is_float($tie_breaker)){
+			throw new PredicateException('Tie breaker must be int or float');
 		}
-
-		$this->_type   = $type;
-		$this->_simple = false;
+		if($tie_breaker < 0 || $tie_breaker > 1){
+			throw new PredicateException('Tie breaker must be between 0 and 1');
+		}
+		$this->_tie_breaker = $tie_breaker;
 
 		return $this;
 	}
@@ -122,13 +129,18 @@ class MultiMatch extends AbstractPredicate implements BoostInterface, TypeInterf
 			$_ret['multi_match']['fields'] = $this->_fields;
 		}
 
-		if(!empty($this->_boost)){
-			$_ret['multi_match']['boost'] = $this->_boost;
-		}
-
 		if(!empty($this->_type)){
 			$_ret['multi_match']['type'] = $this->_type;
 		}
+
+		if(!empty($this->_operator)){
+			$_ret['multi_match']['operator'] = $this->_operator;
+		}
+
+		if(!empty($this->_tie_breaker)){
+			$_ret['multi_match']['tie_breaker'] = $this->_tie_breaker;
+		}
+
 
 		return $_ret;
 	}

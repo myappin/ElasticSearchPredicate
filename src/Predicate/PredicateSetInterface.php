@@ -27,14 +27,6 @@ interface PredicateSetInterface extends PredicateInterface {
 	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
-	public function addPredicate(PredicateInterface $predicate) : PredicateSetInterface;
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
-	 */
 	public function andPredicate(PredicateInterface $predicate) : PredicateSetInterface;
 
 
