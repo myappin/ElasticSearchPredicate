@@ -13,6 +13,8 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 
 use ElasticSearchPredicate\Predicate\PredicateException;
+use ElasticSearchPredicate\Predicate\Predicates\Analyzer\AnalyzerInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Analyzer\AnalyzerTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 
@@ -22,10 +24,10 @@ use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class QueryString extends AbstractPredicate implements BoostInterface {
+class QueryString extends AbstractPredicate implements BoostInterface, AnalyzerInterface {
 
 
-	use BoostTrait;
+	use BoostTrait, AnalyzerTrait;
 
 
 	/**
@@ -92,6 +94,10 @@ class QueryString extends AbstractPredicate implements BoostInterface {
 
 		if(!empty($this->_boost)){
 			$_ret['query_string']['boost'] = $this->_boost;
+		}
+
+		if(!empty($this->_analyzer)){
+			$_ret['query_string']['analyzer'] = $this->_analyzer;
 		}
 
 		return $_ret;

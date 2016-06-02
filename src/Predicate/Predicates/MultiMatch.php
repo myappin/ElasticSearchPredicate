@@ -87,8 +87,8 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 			'phrase',
 			'phrase_prefix',
 			'cross_fields',
-			'most_fields ',
-			'best_fields ',
+			'most_fields',
+			'best_fields',
 		];
 
 		$this->configure($options);
