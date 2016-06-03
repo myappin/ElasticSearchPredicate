@@ -49,7 +49,25 @@ class Range extends AbstractPredicate implements BoostInterface {
 	/**
 	 * @var string
 	 */
+	protected $_from_type = 'gte';
+
+
+	/**
+	 * @var string
+	 */
+	protected $_to_type = 'lte';
+
+
+	/**
+	 * @var string
+	 */
 	protected $_format;
+
+
+	/**
+	 * @var array
+	 */
+	protected $_other_options = ['types'];
 
 
 	/**
@@ -89,6 +107,36 @@ class Range extends AbstractPredicate implements BoostInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string|null $from
+	 * @param null|string $to
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function types($from, $to = null){
+		if($from !== null){
+			if(!in_array($from, [
+				'gte',
+				'gt',
+			])
+			){
+				throw new PredicateException('From type can be one of gt and gte');
+			}
+			$this->_from_type = $from;
+		}
+		if($to !== null){
+			if(!in_array($to, [
+				'lte',
+				'lt',
+			])
+			){
+				throw new PredicateException('From type can be one of gt and gte');
+			}
+			$this->_to_type = $to;
+		}
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
 	 */
 	public function toArray() : array{
@@ -100,11 +148,11 @@ class Range extends AbstractPredicate implements BoostInterface {
 		];
 
 		if($this->_from !== null){
-			$_ret['range'][$_term]['gte'] = $this->_from;
+			$_ret['range'][$_term][$this->_from_type] = $this->_from;
 		}
 
 		if($this->_to !== null){
-			$_ret['range'][$_term]['lte'] = $this->_to;
+			$_ret['range'][$_term][$this->_to_type] = $this->_to;
 		}
 
 		if(!empty($this->_boost)){
