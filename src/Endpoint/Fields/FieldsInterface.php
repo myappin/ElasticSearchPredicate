@@ -9,28 +9,21 @@ declare(strict_types = 1);
  * Time: 10:28
  */
 
-namespace ElasticSearchPredicate\Endpoint\Query;
+namespace ElasticSearchPredicate\Endpoint\Fields;
 
 
 /**
- * Interface QueryInterface
- * @package ElasticSearchPredicate\Endpoint\Query
+ * Interface FieldsInterface
+ * @package ElasticSearchPredicate\Endpoint\Fields
  */
-interface QueryInterface {
+interface FieldsInterface {
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
 	 */
-	public function getQuery() : array;
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-	public function getPredicate();
+	public function getFields() : array;
 
 
 }

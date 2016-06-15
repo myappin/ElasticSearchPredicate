@@ -13,6 +13,8 @@ namespace ElasticSearchPredicate\Endpoint;
 
 
 use Elasticsearch\Client;
+use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
+use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
@@ -32,10 +34,10 @@ use ElasticSearchPredicate\Predicate\PredicateSetInterface;
  * @property PredicateSet OR
  * @property PredicateSet or
  */
-class Search implements EndpointInterface, QueryInterface {
+class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
-	use QueryTrait;
+	use QueryTrait, FieldsTrait;
 
 
 	/**
@@ -187,10 +189,10 @@ class Search implements EndpointInterface, QueryInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $limit
-	 * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
+	 * @return \ElasticSearchPredicate\Endpoint\Search
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function limit($limit) : EndpointInterface{
+	public function limit($limit) : self{
 		if(!is_int($limit) && $limit !== null){
 			throw new EndpointException(sprintf('Limit has wrong type %s', gettype($limit)));
 		}
@@ -214,10 +216,10 @@ class Search implements EndpointInterface, QueryInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $term
 	 * @param string $asc
-	 * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
+	 * @return \ElasticSearchPredicate\Endpoint\Search
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function order(string $term, string $asc) : EndpointInterface{
+	public function order(string $term, string $asc) : self{
 		$asc = strtolower($asc);
 		if(!in_array($asc, [
 			'asc',
@@ -235,9 +237,9 @@ class Search implements EndpointInterface, QueryInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return $this
+	 * @return \ElasticSearchPredicate\Endpoint\Search
 	 */
-	public function resetOrder() : EndpointInterface{
+	public function resetOrder() : self{
 		$this->_order = [];
 
 		return $this;
@@ -256,10 +258,10 @@ class Search implements EndpointInterface, QueryInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $offset
-	 * @return $this
+	 * @return \ElasticSearchPredicate\Endpoint\Search
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 */
-	public function offset($offset) : EndpointInterface{
+	public function offset($offset) : self{
 		if(!is_int($offset) && $offset !== null){
 			throw new EndpointException(sprintf('Offset has wrong type %s', gettype($offset)));
 		}
@@ -271,6 +273,7 @@ class Search implements EndpointInterface, QueryInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
 	 */
 	public function clearParams() : EndpointInterface{
 		$this->_prepared_params = [];
@@ -311,6 +314,9 @@ class Search implements EndpointInterface, QueryInterface {
 
 		$_prepared_params['body'] = [];
 
+		if(!empty($_fields = $this->getFields())){
+			$_prepared_params['body']['fields'] = $_fields;
+		}
 		if(!empty($_query = $this->getQuery())){
 			$_prepared_params['body']['query'] = $_query;
 		}
