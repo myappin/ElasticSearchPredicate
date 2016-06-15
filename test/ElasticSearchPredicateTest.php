@@ -715,4 +715,36 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_fields(){
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+		$_search->limit(1)->fields(['name']);
+		$_search->predicate->Term('name', 'test10');
+
+		$this->assertSame([
+							  'index' => 'elasticsearchpredicate',
+							  'type'  => 'TestType',
+							  'size'  => 1,
+							  'body'  => [
+								  'fields' => ['name'],
+								  'query'  => [
+									  'term' => [
+										  'name' => 'test10',
+									  ],
+								  ],
+							  ],
+						  ], $_search->getPreparedParams());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(1, $_result['hits']['total']);
+		$this->assertSame(1, count($_result['hits']['hits'][0]['fields']));
+		$this->assertSame('test10', $_result['hits']['hits'][0]['fields']['name'][0]);
+	}
+
+
 }
