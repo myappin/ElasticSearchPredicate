@@ -743,7 +743,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertSame(1, $_result['hits']['total']);
 		$this->assertSame(1, count($_result['hits']['hits'][0]['fields']));
-		$this->assertSame('test10', $_result['hits']['hits'][0]['fields']['name'][0]);
+		$this->assertSame('test10', $_result['hits']['hits'][0]['fields']['name']);
 	}
 
 

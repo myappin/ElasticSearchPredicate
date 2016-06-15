@@ -171,6 +171,38 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 			throw $e;
 		}
 
+		if(!empty($this->getFields())){
+			$_build_array = function(&$old_array, $value) use (&$_build_array){
+				$_item = array_shift($old_array);
+				if(empty($old_array)){
+					return [$_item => $value];
+				}
+				else{
+					return [$_item => $_build_array($old_array, $value)];
+				}
+			};
+			foreach($_result['hits']['hits'] as $key => &$result){
+				if(isset($result['fields'])){
+					$_fields = [];
+					foreach($result['fields'] as $_field_name => $field){
+						$_field         = current($field);
+						$_field_explode = explode('.', $_field_name);
+						if(count($_field_explode) > 1){
+							$_fields = array_merge_recursive($_fields, $_build_array($_field_explode, $_field));
+						}
+						else{
+							$_fields[$_field_name] = $_field;
+						}
+					}
+					$result['fields'] = $_fields;
+				}
+				else{
+					$result['fields'] = [];
+				}
+				unset($result);
+			}
+		}
+
 		$this->clearParams();
 
 		return $_result;
