@@ -6,7 +6,7 @@ php:
 addons:
   apt:
     sources:
-      - elasticsearch-2.1
+      - elasticsearch-2.2
     packages:
       - elasticsearch
 
@@ -16,6 +16,7 @@ before_install:
 install:
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - composer install
+  - apt-get update elasticsearch
 
 before_script:
   - sleep 10
