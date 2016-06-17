@@ -13,8 +13,9 @@ namespace ElasticSearchPredicateTest;
 
 
 use ElasticSearchPredicate\Client;
+use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
+use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
 use ElasticSearchPredicate\Predicate\Predicates\Match;
-use ElasticSearchPredicate\Predicate\Predicates\NotMatch;
 
 
 /**
@@ -744,6 +745,52 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(1, $_result['hits']['total']);
 		$this->assertSame(1, count($_result['hits']['hits'][0]['fields']));
 		$this->assertSame('test10', $_result['hits']['hits'][0]['fields']['name']);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_function_score(){
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+
+		$_linear = (new Decay('linear'))->addField(new Field('range_param', 1, 2))
+										->addField(new Field('range_param', 2, 4));
+		$_linear->predicate->Range('range_param', 1, 5);
+
+		$_search->function_score->addFunction($_linear);
+
+		$_linear->setWeight(1);
+
+		$this->assertSame([
+							  'function_score' => [
+								  'functions' => [
+									  [
+										  'linear' => [
+											  'range_param' => [
+												  'origin' => 2,
+												  'scale'  => 4,
+											  ],
+										  ],
+										  'filter' => [
+											  'range' => [
+												  'range_param' => [
+													  'gte' => 1,
+													  'lte' => 5,
+												  ],
+											  ],
+										  ],
+										  'weight' => 1,
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(50, $_result['hits']['total']);
 	}
 
 

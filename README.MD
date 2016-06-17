@@ -44,3 +44,5 @@ $_search->limit(10)->order('_uid', 'asc')->predicate->andPredicate((new Term('na
 //or
 $_search->limit(10)->order('_uid', 'asc')->predicate->Term('name', 'SomeName', ['boost' => 2])->or->Term('name', 'SomeOtherName');
 ```
+
+Nested objects, Ranges, Score Functions and more and more
