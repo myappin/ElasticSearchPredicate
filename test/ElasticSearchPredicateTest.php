@@ -814,12 +814,10 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 								  'functions' => [
 									  [
 										  'script_score' => [
-											  'script' => [
-												  'inline' => "_score * doc['range_param'].value / pow(param1, param2)",
-												  'params' => [
-													  'param1' => 2,
-													  'param2' => 3,
-												  ],
+											  'script' => "_score * doc['range_param'].value / pow(param1, param2)",
+											  'params' => [
+												  'param1' => 2,
+												  'param2' => 3,
 											  ],
 										  ],
 									  ],

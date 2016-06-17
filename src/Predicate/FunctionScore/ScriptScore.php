@@ -93,22 +93,14 @@ class ScriptScore extends AbstractFunction {
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function toArray() : array{
+		$_ret = [
+			'script_score' => [
+				'script' => $this->_script,
+			],
+		];
+
 		if(!empty($_params = $this->_params)){
-			$_ret = [
-				'script_score' => [
-					'script' => [
-						'inline' => $this->_script,
-						'params' => $_params,
-					],
-				],
-			];
-		}
-		else{
-			$_ret = [
-				'script_score' => [
-					'script' => $this->_script,
-				],
-			];
+			$_ret['script_score']['params'] = $_params;
 		}
 
 		if(!empty($_query = $this->getQuery())){
