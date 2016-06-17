@@ -9,21 +9,23 @@ declare(strict_types = 1);
  * Time: 10:51
  */
 
-namespace ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction;
+namespace ElasticSearchPredicate\Predicate\ScoreFunction;
 
 
 use DusanKasan\Knapsack\Collection;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
-use ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field\FieldInterface;
 use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSetInterface;
+use ElasticSearchPredicate\Predicate\ScoreFunction\Field\FieldInterface;
+use ElasticSearchPredicate\Predicate\ScoreFunction\Weight\WeightInterface;
+use ElasticSearchPredicate\Predicate\ScoreFunction\Weight\WeightTrait;
 
 
 /**
  * Class Decay
- * @package   ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction
+ * @package   ElasticSearchPredicate\Predicate\ScoreFunction
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet predicate
  * @property PredicateSet AND
@@ -31,10 +33,10 @@ use ElasticSearchPredicate\Predicate\PredicateSetInterface;
  * @property PredicateSet OR
  * @property PredicateSet or
  */
-class Decay extends AbstractFunction implements QueryInterface {
+class Decay extends AbstractFunction implements QueryInterface, WeightInterface {
 
 
-	use QueryTrait;
+	use QueryTrait, WeightTrait;
 
 
 	/**
@@ -97,8 +99,8 @@ class Decay extends AbstractFunction implements QueryInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field\FieldInterface $field
-	 * @return \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Decay
+	 * @param \ElasticSearchPredicate\Predicate\ScoreFunction\Field\FieldInterface $field
+	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Decay
 	 */
 	public function addField(FieldInterface $field) : Decay{
 		$this->_fields = $this->getFields()->append($field);
@@ -119,7 +121,7 @@ class Decay extends AbstractFunction implements QueryInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $type
-	 * @return \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Decay
+	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Decay
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setType(string $type) : Decay{
@@ -157,6 +159,10 @@ class Decay extends AbstractFunction implements QueryInterface {
 
 		if(!empty($_query = $this->getQuery())){
 			$_ret['filter'] = $_query;
+		}
+
+		if(!empty($this->_weight)){
+			$_ret['weight'] = $this->_weight;
 		}
 
 		return $_ret;

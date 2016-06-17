@@ -13,7 +13,7 @@ namespace ElasticSearchPredicate\Predicate;
 
 
 use DusanKasan\Knapsack\Collection;
-use ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\FunctionInterface;
+use ElasticSearchPredicate\Predicate\ScoreFunction\FunctionInterface;
 
 
 /**
@@ -57,7 +57,7 @@ class ScoreFunction extends PredicateSet {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\FunctionInterface $function
+	 * @param \ElasticSearchPredicate\Predicate\ScoreFunction\FunctionInterface $function
 	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
 	 */
 	public function addFunction(FunctionInterface $function) : ScoreFunction{
@@ -212,14 +212,9 @@ class ScoreFunction extends PredicateSet {
 			$_ret['function_score']['min_score'] = $this->_min_score;
 		}
 
-		if($_functions->sizeIs(1)){
-			$_ret['function_score'] = array_merge($_ret['function_score'], $_functions->first()->toArray());
-		}
-		else{
-			$_ret['function_score']['functions'] = $_functions->map(function(FunctionInterface $item){
-				return $item->toArray();
-			})->toArray();
-		}
+		$_ret['function_score']['functions'] = $_functions->map(function(FunctionInterface $item){
+			return $item->toArray();
+		})->toArray();
 
 		return $_ret;
 	}
