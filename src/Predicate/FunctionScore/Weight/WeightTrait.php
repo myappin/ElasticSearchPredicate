@@ -37,7 +37,7 @@ trait WeightTrait {
 	 */
 	public function setWeight($weight){
 		if(!is_int($weight) && !is_float($weight)){
-			throw new PredicateException('Weight sould be int of float');
+			throw new PredicateException('Weight should be int of float');
 		}
 		$this->_weight = $weight;
 

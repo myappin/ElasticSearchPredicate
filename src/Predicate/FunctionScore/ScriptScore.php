@@ -37,10 +37,11 @@ class ScriptScore extends AbstractFunction {
 
 	/**
 	 * ScriptScore constructor.
-	 * @param string $type
+	 * @param string $script
+	 * @param array  $params
 	 */
-	public function __construct(string $type, array $params = []){
-		$this->setScript($type);
+	public function __construct(string $script, array $params = []){
+		$this->setScript($script);
 		$this->setParams($params);
 	}
 

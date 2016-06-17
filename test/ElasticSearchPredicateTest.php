@@ -15,6 +15,7 @@ namespace ElasticSearchPredicateTest;
 use ElasticSearchPredicate\Client;
 use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
 use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
+use ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor;
 use ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore;
 use ElasticSearchPredicate\Predicate\Predicates\Match;
 
@@ -819,6 +820,37 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 												  'param1' => 2,
 												  'param2' => 3,
 											  ],
+										  ],
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(50, $_result['hits']['total']);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_field_value_factor_function_score(){
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+
+		$_factor = new FieldValueFactor('range_param', 1.2, 'sqrt');
+		$_search->function_score->addFunction($_factor);
+
+		$this->assertSame([
+							  'function_score' => [
+								  'functions' => [
+									  [
+										  'field_value_factor' => [
+											  'field'    => 'range_param',
+											  'factor'   => 1.2,
+											  'modifier' => 'sqrt',
 										  ],
 									  ],
 								  ],
