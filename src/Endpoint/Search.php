@@ -17,27 +17,31 @@ use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Endpoint\ScoreFunction\ScoreFunctionInterface;
+use ElasticSearchPredicate\Endpoint\ScoreFunction\ScoreFunctionTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSetInterface;
+use ElasticSearchPredicate\Predicate\ScoreFunction;
 
 /**
  * Class Search
  * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
- * @property PredicateSet predicate
+ * @property PredicateSet  predicate
+ * @property ScoreFunction score_function
  * @method Search Term(string $term, $value, array $options = [])
  * @method Search Match(string $match, $query, array $options = [])
  * @method Search Range(string $term, $from, $to = null, array $options = [])
  * @method Search QueryString($query, array $fields = [], array $options = [])
- * @property PredicateSet AND
- * @property PredicateSet and
- * @property PredicateSet OR
- * @property PredicateSet or
+ * @property PredicateSet  AND
+ * @property PredicateSet  and
+ * @property PredicateSet  OR
+ * @property PredicateSet  or
  */
-class Search implements EndpointInterface, QueryInterface, FieldsInterface {
+class Search implements EndpointInterface, QueryInterface, ScoreFunctionInterface, FieldsInterface {
 
 
-	use QueryTrait, FieldsTrait;
+	use QueryTrait, ScoreFunctionTrait, FieldsTrait;
 
 
 	/**
@@ -95,6 +99,12 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
 	/**
+	 * @var PredicateSet
+	 */
+	protected $_predicate;
+
+
+	/**
 	 * SearchPredicate constructor.
 	 * @param \Elasticsearch\Client $client
 	 * @param string                $index
@@ -135,8 +145,12 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
 	 */
 	public function __get($name) : PredicateSetInterface{
-		if(strtolower($name) === 'predicate'){
+		$_name = strtolower($name);
+		if($_name === 'predicate'){
 			return $this->getPredicate();
+		}
+		elseif($_name === 'score_function'){
+			return $this->getScoreFunctionPredicate();
 		}
 
 		return $this->getPredicate()->{$name};

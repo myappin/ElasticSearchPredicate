@@ -9,36 +9,27 @@ declare(strict_types = 1);
  * Time: 13:19
  */
 
-namespace ElasticSearchPredicate\Endpoint\Query;
+namespace ElasticSearchPredicate\Endpoint\ScoreFunction;
 
 
-use ElasticSearchPredicate\Predicate\PredicateSet;
+use ElasticSearchPredicate\Predicate\ScoreFunction;
 
 
 /**
- * Class QueryTrait
- * @package   ElasticSearchPredicate\Endpoint\Query
+ * Class ScoreFunctionTrait
+ * @package   ElasticSearchPredicate\Endpoint\ScoreFunction
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-trait QueryTrait {
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getQuery() : array{
-		return $this->getPredicate()->toArray();
-	}
+trait ScoreFunctionTrait {
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function getPredicate() : PredicateSet{
-		if(!$this->_predicate instanceof PredicateSet){
-			$this->_predicate = new PredicateSet();
+	public function getScoreFunctionPredicate() : ScoreFunction{
+		if(!$this->_predicate instanceof ScoreFunction){
+			$this->_predicate = new ScoreFunction();
 		}
 
 		return $this->_predicate;

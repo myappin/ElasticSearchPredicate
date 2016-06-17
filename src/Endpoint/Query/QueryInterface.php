@@ -10,6 +10,7 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicate\Endpoint\Query;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 
 
 /**
@@ -30,7 +31,7 @@ interface QueryInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function getPredicate();
+	public function getPredicate() : PredicateSet;
 
 
 }
