@@ -68,6 +68,118 @@ class ScoreFunction extends PredicateSet {
 
 
 	/**
+	 * @return float|int
+	 */
+	public function getMaxBoost(){
+		return $this->_max_boost;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $max_boost
+	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function setMaxBoost($max_boost) : ScoreFunction{
+		if(is_float($max_boost) && is_int($max_boost)){
+			throw new PredicateException('Max boost should be int or float');
+		}
+		$this->_max_boost = $max_boost;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getBoostMode(){
+		return $this->_boost_mode;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $boost_mode
+	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function setBoostMode($boost_mode) : ScoreFunction{
+		if(!in_array($boost_mode, [
+			'multiply',
+			'replace',
+			'sum',
+			'avg',
+			'max',
+			'min',
+		])
+		){
+			throw new PredicateException('Invalid boost type');
+		}
+		$this->_boost_mode = $boost_mode;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return float|int
+	 */
+	public function getMinScore(){
+		return $this->_min_score;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $min_score
+	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function setMinScore($min_score) : ScoreFunction{
+		if(is_float($min_score) && is_int($min_score)){
+			throw new PredicateException('Min score should be int or float');
+		}
+		$this->_min_score = $min_score;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getScoreMode(){
+		return $this->_score_mode;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $score_mode
+	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function setScoreMode($score_mode) : ScoreFunction{
+		if(!in_array($score_mode, [
+			'multiply',
+			'sum',
+			'avg',
+			'first',
+			'max',
+			'min',
+		])
+		){
+			throw new PredicateException('Invalid score mode');
+		}
+		$this->_score_mode = $score_mode;
+
+		return $this;
+	}
+
+
+	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
@@ -85,6 +197,19 @@ class ScoreFunction extends PredicateSet {
 				],
 			],
 		];
+
+		if(isset($this->_boost_mode)){
+			$_ret['query']['score_function']['boost_mode'] = $this->_boost_mode;
+		}
+		if(isset($this->_max_boost)){
+			$_ret['query']['score_function']['max_boost'] = $this->_max_boost;
+		}
+		if(isset($this->_score_mode)){
+			$_ret['query']['score_function']['score_mode'] = $this->_score_mode;
+		}
+		if(isset($this->_min_score)){
+			$_ret['query']['score_function']['min_score'] = $this->_min_score;
+		}
 
 		if($_functions->sizeIs(1)){
 			$_ret['query']['score_function']['FUNCTION'] = $_functions->current()->toArray();
