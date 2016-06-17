@@ -851,7 +851,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 											  'field'    => 'range_param',
 											  'factor'   => 1.2,
 											  'modifier' => 'sqrt',
-											  'missing'  => 1,
 										  ],
 									  ],
 								  ],

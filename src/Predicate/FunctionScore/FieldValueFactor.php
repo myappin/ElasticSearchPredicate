@@ -42,12 +42,6 @@ class FieldValueFactor extends AbstractFunction {
 
 
 	/**
-	 * @var int
-	 */
-	protected $_missing = 1;
-
-
-	/**
 	 * FieldValueFactor constructor.
 	 * @param string      $field
 	 * @param null        $factor
@@ -76,35 +70,6 @@ class FieldValueFactor extends AbstractFunction {
 	 */
 	public function setField(string $field) : FieldValueFactor{
 		$this->_field = $field;
-
-		return $this;
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return int
-	 */
-	public function getMissing() : int{
-		return $this->_missing;
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param int $missing
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setMissing(int $missing) : FieldValueFactor{
-		if(!in_array($missing, [
-			1,
-			0,
-		])
-		){
-			throw new PredicateException('Missing should be int between 0 and 1');
-		}
-		$this->_missing = $missing;
 
 		return $this;
 	}
@@ -190,8 +155,6 @@ class FieldValueFactor extends AbstractFunction {
 		if(!empty($this->_modifier)){
 			$_ret['field_value_factor']['modifier'] = $this->_modifier;
 		}
-
-		$_ret['field_value_factor']['missing'] = $this->_missing;
 
 		if(!empty($_query = $this->getQuery())){
 			$_ret['filter'] = $_query;
