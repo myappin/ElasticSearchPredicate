@@ -1,17 +1,7 @@
 language: php
 
-services:
-  - elasticsearch
-
 php:
   - 7.0
-
-addons:
-  apt:
-    sources:
-      - elasticsearch-2.1
-    packages:
-      - elasticsearch
 
 services:
   - elasticsearch

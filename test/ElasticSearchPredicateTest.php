@@ -15,6 +15,7 @@ namespace ElasticSearchPredicateTest;
 use ElasticSearchPredicate\Client;
 use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
 use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
+use ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore;
 use ElasticSearchPredicate\Predicate\Predicates\Match;
 
 
@@ -753,7 +754,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 * @throws \Exception
 	 */
-	public function test_function_score(){
+	public function test_decay_function_score(){
 		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
 
 		$_linear = (new Decay('linear'))->addField(new Field('range_param', 1, 2))
@@ -783,6 +784,42 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 											  ],
 										  ],
 										  'weight' => 1,
+									  ],
+								  ],
+							  ],
+						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(50, $_result['hits']['total']);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_script_score_function_score(){
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+
+		$_linear = (new ScriptScore("_score * doc['range_param'].value / pow(param1, param2)", [
+			'param1' => 2,
+			'param2' => 3,
+		]));
+		$_search->function_score->addFunction($_linear);
+
+		$this->assertSame([
+							  'function_score' => [
+								  'functions' => [
+									  [
+										  'script_score' => [
+											  'script' => "_score * doc['range_param'].value / pow(param1, param2)",
+											  'params' => [
+												  'param1' => 2,
+												  'param2' => 3,
+											  ],
+										  ],
 									  ],
 								  ],
 							  ],
