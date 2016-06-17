@@ -6,13 +6,12 @@ services:
 php:
   - 7.0
 
-env:
-  ES_VERSION=2.2.0
-
-before_install:
-  "mkdir /tmp/elasticsearch"
-  "wget -O - https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/${ES_VERSION}/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1"
-  "/tmp/elasticsearch/bin/elasticsearch -d -D es.path.data=/tmp -D es.index.store.type=memory -D es.discovery.zen.ping.multicast.enabled=false"
+addons:
+  apt:
+    sources:
+      - elasticsearch-2.1
+    packages:
+      - elasticsearch
 
 before_install:
   - sleep 10
