@@ -61,7 +61,7 @@ class ScoreFunction extends PredicateSet {
 	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
 	 */
 	public function addFunction(FunctionInterface $function) : ScoreFunction{
-		$this->getFunctions()->append($function);
+		$this->_functions = $this->getFunctions()->append($function);
 
 		return $this;
 	}
@@ -191,31 +191,32 @@ class ScoreFunction extends PredicateSet {
 		}
 
 		$_ret = [
-			'query' => [
-				'score_function' => [
-					'query' => parent::toArray(),
-				],
+			'function_score' => [
 			],
 		];
 
+		if(!empty($_query = parent::toArray())){
+			$_ret['function_score']['query'] = $_query;
+		}
+
 		if(isset($this->_boost_mode)){
-			$_ret['query']['score_function']['boost_mode'] = $this->_boost_mode;
+			$_ret['function_score']['boost_mode'] = $this->_boost_mode;
 		}
 		if(isset($this->_max_boost)){
-			$_ret['query']['score_function']['max_boost'] = $this->_max_boost;
+			$_ret['function_score']['max_boost'] = $this->_max_boost;
 		}
 		if(isset($this->_score_mode)){
-			$_ret['query']['score_function']['score_mode'] = $this->_score_mode;
+			$_ret['function_score']['score_mode'] = $this->_score_mode;
 		}
 		if(isset($this->_min_score)){
-			$_ret['query']['score_function']['min_score'] = $this->_min_score;
+			$_ret['function_score']['min_score'] = $this->_min_score;
 		}
 
 		if($_functions->sizeIs(1)){
-			$_ret['query']['score_function']['FUNCTION'] = $_functions->current()->toArray();
+			$_ret['function_score'] = array_merge($_ret['function_score'], $_functions->first()->toArray());
 		}
 		else{
-			$_ret['query']['score_function']['functions'] = $_functions->map(function(FunctionInterface $item){
+			$_ret['function_score']['functions'] = $_functions->map(function(FunctionInterface $item){
 				return $item->toArray();
 			})->toArray();
 		}

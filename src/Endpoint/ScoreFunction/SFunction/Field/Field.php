@@ -10,6 +10,7 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field;
+use ElasticSearchPredicate\Predicate\PredicateException;
 
 
 /**
@@ -17,7 +18,7 @@ namespace ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field;
  * @package   ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Field {
+class Field implements FieldInterface {
 
 
 	/**
@@ -51,6 +52,28 @@ class Field {
 
 
 	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $name
+	 * @param        $origin
+	 * @param        $scale
+	 * @param null   $offset
+	 * @param null   $decay
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
+	 */
+	public function __construct(string $name, $origin, $scale, $offset = null, $decay = null){
+		$this->setName($name);
+		$this->setOrigin($origin);
+		$this->setScale($scale);
+		if($offset !== null){
+			$this->setOffset($offset);
+		}
+		if($decay !== null){
+			$this->setDecay($decay);
+		}
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function getName(){
@@ -62,7 +85,7 @@ class Field {
 	 * @param string $name
 	 * @return Field
 	 */
-	public function setName($name){
+	public function setName(string $name){
 		$this->_name = $name;
 
 		return $this;
@@ -78,10 +101,15 @@ class Field {
 
 
 	/**
-	 * @param float|int|string $origin
-	 * @return Field
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $origin
+	 * @return \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field\Field
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setOrigin($origin){
+	public function setOrigin($origin) : Field{
+		if(!is_scalar($origin)){
+			throw new PredicateException('Origin should be scalar');
+		}
 		$this->_origin = $origin;
 
 		return $this;
@@ -97,10 +125,15 @@ class Field {
 
 
 	/**
-	 * @param float|int|string $scale
-	 * @return Field
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $scale
+	 * @return \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field\Field
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setScale($scale){
+	public function setScale($scale) : Field{
+		if(!is_scalar($scale)){
+			throw new PredicateException('Scale should be scalar');
+		}
 		$this->_scale = $scale;
 
 		return $this;
@@ -116,10 +149,15 @@ class Field {
 
 
 	/**
-	 * @param int $offset
-	 * @return Field
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $offset
+	 * @return \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field\Field
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setOffset($offset){
+	public function setOffset($offset) : Field{
+		if(!is_int($offset)){
+			throw new PredicateException('Offset should be integer');
+		}
 		$this->_offset = $offset;
 
 		return $this;
@@ -135,10 +173,15 @@ class Field {
 
 
 	/**
-	 * @param float|int $decay
-	 * @return Field
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param $decay
+	 * @return \ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field\Field
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setDecay($decay){
+	public function setDecay($decay) : Field{
+		if(!is_int($decay) && !is_float($decay)){
+			throw new PredicateException('Decay should be numeric');
+		}
 		$this->_decay = $decay;
 
 		return $this;
@@ -150,8 +193,22 @@ class Field {
 	 * @return array
 	 */
 	public function toArray() : array{
-		return [
+		$_name = $this->_name;
+		$_ret  = [
+			$_name => [
+				'origin' => $this->_origin,
+				'scale'  => $this->_scale,
+			],
 		];
+
+		if(isset($this->_offset)){
+			$_ret[$_name]['offset'] = $this->_offset;
+		}
+		if(isset($this->_decay)){
+			$_ret[$_name]['decay'] = $this->_decay;
+		}
+
+		return $_ret;
 	}
 
 

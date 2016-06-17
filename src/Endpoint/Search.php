@@ -99,12 +99,6 @@ class Search implements EndpointInterface, QueryInterface, ScoreFunctionInterfac
 
 
 	/**
-	 * @var PredicateSet
-	 */
-	protected $_predicate;
-
-
-	/**
 	 * SearchPredicate constructor.
 	 * @param \Elasticsearch\Client $client
 	 * @param string                $index

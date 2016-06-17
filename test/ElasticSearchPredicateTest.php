@@ -13,7 +13,8 @@ namespace ElasticSearchPredicateTest;
 
 
 use ElasticSearchPredicate\Client;
-use ElasticSearchPredicate\Predicate\Predicates\Match;
+use ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Decay;
+use ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field\Field;
 use ElasticSearchPredicate\Predicate\Predicates\NotMatch;
 
 
@@ -753,20 +754,37 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 * @throws \Exception
 	 */
 	public function test_score_function(){
-		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');;
-		$_search->score_function->Term('name', 'test10');
+		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+
+		$_linear = (new Decay('linear'))->addField(new Field('range_param', 1, 2))
+										->addField(new Field('range_param', 2, 4));
+		$_linear->predicate->Range('range_param', 1, 5);
+
+		$_search->score_function->addFunction($_linear);
 
 		$this->assertSame([
-							  'query' => [
-								  'score_function' => [
-									  'query' => [
-										  'term' => [
-											  'name' => 'test10',
+							  'function_score' => [
+								  'linear' => [
+									  'range_param' => [
+										  'origin' => 2,
+										  'scale'  => 4,
+									  ],
+								  ],
+								  'filter' => [
+									  'range' => [
+										  'range_param' => [
+											  'gte' => 1,
+											  'lte' => 5,
 										  ],
 									  ],
 								  ],
 							  ],
 						  ], $_search->getQuery());
+
+		$_result = $_search->execute();
+
+		$this->assertSame(5, $_result['hits']['total']);
+		$this->assertSame('test2', $_result['hits']['hits'][0]['_source']['name']);
 	}
 
 

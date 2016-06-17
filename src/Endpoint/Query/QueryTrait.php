@@ -24,6 +24,12 @@ trait QueryTrait {
 
 
 	/**
+	 * @var PredicateSet
+	 */
+	protected $_predicate;
+
+
+	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
 	 */
