@@ -1,0 +1,23 @@
+<?php
+declare(strict_types = 1);
+/**
+ * MyAppIn (http://www.myappin.cz)
+ * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
+ * @link      http://www.myappin.cz
+ * @copyright Copyright (c) MyAppIn s.r.o. (http://www.myappin.cz)
+ * Date: 17. 6. 2016
+ * Time: 9:58
+ */
+
+namespace ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction;
+
+
+/**
+ * Interface FunctionInterface
+ * @package   ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction
+ * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
+ */
+interface FunctionInterface {
+
+
+}
