@@ -49,8 +49,12 @@ class FieldValueFactor extends AbstractFunction {
 	 */
 	public function __construct(string $field, $factor = null, string $modifier = null){
 		$this->setField($field);
-		$this->setFactor($factor);
-		$this->setModifier($modifier);
+		if($factor !== null){
+			$this->setFactor($factor);
+		}
+		if($modifier !== null){
+			$this->setModifier($modifier);
+		}
 	}
 
 
