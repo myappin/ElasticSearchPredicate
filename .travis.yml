@@ -16,7 +16,6 @@ before_install:
 install:
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - composer install
-  - apt-get update elasticsearch
 
 before_script:
   - sleep 10
