@@ -12,7 +12,7 @@ declare(strict_types = 1);
 namespace ElasticSearchPredicate\Predicate\FunctionScore\Weight;
 
 
-use ElasticSearchPredicate\Endpoint\EndpointException;
+use ElasticSearchPredicate\Predicate\PredicateException;
 
 
 /**
@@ -33,11 +33,11 @@ trait WeightTrait {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $weight
 	 * @return $this
-	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setWeight($weight){
 		if(!is_int($weight) && !is_float($weight)){
-			throw new EndpointException('Weight sould be int of float');
+			throw new PredicateException('Weight sould be int of float');
 		}
 		$this->_weight = $weight;
 

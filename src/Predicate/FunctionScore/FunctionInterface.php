@@ -12,12 +12,16 @@ declare(strict_types = 1);
 namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
 
+use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
+use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightInterface;
+
+
 /**
  * Interface FunctionInterface
  * @package   ElasticSearchPredicate\Predicate\FunctionScore
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-interface FunctionInterface {
+interface FunctionInterface extends QueryInterface, WeightInterface {
 
 
 	/**

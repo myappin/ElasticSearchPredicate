@@ -13,30 +13,16 @@ namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
 
 use DusanKasan\Knapsack\Collection;
-use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
-use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore\Field\FieldInterface;
-use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightInterface;
-use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightTrait;
 use ElasticSearchPredicate\Predicate\PredicateException;
-use ElasticSearchPredicate\Predicate\PredicateSet;
-use ElasticSearchPredicate\Predicate\PredicateSetInterface;
 
 
 /**
  * Class Decay
  * @package   ElasticSearchPredicate\Predicate\FunctionScore
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
- * @property PredicateSet predicate
- * @property PredicateSet AND
- * @property PredicateSet and
- * @property PredicateSet OR
- * @property PredicateSet or
  */
-class Decay extends AbstractFunction implements QueryInterface, WeightInterface {
-
-
-	use QueryTrait, WeightTrait;
+class Decay extends AbstractFunction {
 
 
 	/**
@@ -57,43 +43,6 @@ class Decay extends AbstractFunction implements QueryInterface, WeightInterface 
 	 */
 	public function __construct(string $type){
 		$this->setType($type);
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $name
-	 * @param $arguments
-	 * @return PredicateSetInterface
-	 */
-	public function __call($name, $arguments) : PredicateSetInterface{
-		if(empty($arguments)){
-			return call_user_func([
-									  $this->getPredicate(),
-									  $name,
-								  ]);
-		}
-		else{
-			return call_user_func_array([
-											$this->getPredicate(),
-											$name,
-										], $arguments);
-		}
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $name
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
-	 */
-	public function __get($name) : PredicateSetInterface{
-		$_name = strtolower($name);
-		if($_name === 'predicate'){
-			return $this->getPredicate();
-		}
-
-		return $this->getPredicate()->{$name};
 	}
 
 

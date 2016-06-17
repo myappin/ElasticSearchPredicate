@@ -22,8 +22,7 @@ interface WeightInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $weight
-	 * @return $this
-	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @return mixed
 	 */
 	public function setWeight($weight);
 
