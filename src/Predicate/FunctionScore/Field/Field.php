@@ -9,13 +9,13 @@ declare(strict_types = 1);
  * Time: 11:05
  */
 
-namespace ElasticSearchPredicate\Predicate\ScoreFunction\Field;
+namespace ElasticSearchPredicate\Predicate\FunctionScore\Field;
 use ElasticSearchPredicate\Predicate\PredicateException;
 
 
 /**
  * Class Field
- * @package   ElasticSearchPredicate\Predicate\ScoreFunction\Field
+ * @package   ElasticSearchPredicate\Predicate\FunctionScore\Field
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class Field implements FieldInterface {
@@ -103,7 +103,7 @@ class Field implements FieldInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $origin
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Field\Field
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setOrigin($origin) : Field{
@@ -127,7 +127,7 @@ class Field implements FieldInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $scale
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Field\Field
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setScale($scale) : Field{
@@ -151,7 +151,7 @@ class Field implements FieldInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $offset
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Field\Field
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setOffset($offset) : Field{
@@ -175,7 +175,7 @@ class Field implements FieldInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $decay
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Field\Field
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setDecay($decay) : Field{

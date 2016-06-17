@@ -9,23 +9,24 @@ declare(strict_types = 1);
  * Time: 10:28
  */
 
-namespace ElasticSearchPredicate\Predicate\ScoreFunction\Weight;
+namespace ElasticSearchPredicate\Endpoint\FunctionScore;
+
+
+use ElasticSearchPredicate\Predicate\FunctionScore;
 
 
 /**
- * Interface WeightInterface
- * @package ElasticSearchPredicate\Predicate\ScoreFunction\Weigh
+ * Interface FunctionScoreInterface
+ * @package ElasticSearchPredicate\Endpoint\FunctionScore
  */
-interface WeightInterface {
+interface FunctionScoreInterface {
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $weight
-	 * @return $this
-	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 */
-	public function setWeight($weight);
+	public function getFunctionScorePredicate() : FunctionScore;
 
 
 }

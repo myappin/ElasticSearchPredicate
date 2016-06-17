@@ -9,12 +9,12 @@ declare(strict_types = 1);
  * Time: 9:58
  */
 
-namespace ElasticSearchPredicate\Predicate\ScoreFunction;
+namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
 
 /**
  * Interface FunctionInterface
- * @package   ElasticSearchPredicate\Predicate\ScoreFunction
+ * @package   ElasticSearchPredicate\Predicate\FunctionScore
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 interface FunctionInterface {

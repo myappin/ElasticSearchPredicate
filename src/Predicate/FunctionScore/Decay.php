@@ -9,23 +9,23 @@ declare(strict_types = 1);
  * Time: 10:51
  */
 
-namespace ElasticSearchPredicate\Predicate\ScoreFunction;
+namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
 
 use DusanKasan\Knapsack\Collection;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Predicate\FunctionScore\Field\FieldInterface;
+use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightInterface;
+use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightTrait;
 use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSetInterface;
-use ElasticSearchPredicate\Predicate\ScoreFunction\Field\FieldInterface;
-use ElasticSearchPredicate\Predicate\ScoreFunction\Weight\WeightInterface;
-use ElasticSearchPredicate\Predicate\ScoreFunction\Weight\WeightTrait;
 
 
 /**
  * Class Decay
- * @package   ElasticSearchPredicate\Predicate\ScoreFunction
+ * @package   ElasticSearchPredicate\Predicate\FunctionScore
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet predicate
  * @property PredicateSet AND
@@ -99,8 +99,8 @@ class Decay extends AbstractFunction implements QueryInterface, WeightInterface 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\ScoreFunction\Field\FieldInterface $field
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Decay
+	 * @param \ElasticSearchPredicate\Predicate\FunctionScore\Field\FieldInterface $field
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Decay
 	 */
 	public function addField(FieldInterface $field) : Decay{
 		$this->_fields = $this->getFields()->append($field);
@@ -121,7 +121,7 @@ class Decay extends AbstractFunction implements QueryInterface, WeightInterface 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param string $type
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction\Decay
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Decay
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function setType(string $type) : Decay{

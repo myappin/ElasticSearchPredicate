@@ -13,9 +13,9 @@ namespace ElasticSearchPredicateTest;
 
 
 use ElasticSearchPredicate\Client;
+use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
+use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
 use ElasticSearchPredicate\Predicate\Predicates\Match;
-use ElasticSearchPredicate\Predicate\ScoreFunction\Decay;
-use ElasticSearchPredicate\Predicate\ScoreFunction\Field\Field;
 
 
 /**
@@ -753,14 +753,14 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
 	 * @throws \Exception
 	 */
-	public function test_score_function(){
+	public function test_function_score(){
 		$_search = $this->_client->search('elasticsearchpredicate', 'TestType');
 
 		$_linear = (new Decay('linear'))->addField(new Field('range_param', 1, 2))
 										->addField(new Field('range_param', 2, 4));
 		$_linear->predicate->Range('range_param', 1, 5);
 
-		$_search->score_function->addFunction($_linear);
+		$_search->function_score->addFunction($_linear);
 
 		$_linear->setWeight(1);
 
@@ -791,7 +791,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 		$_result = $_search->execute();
 
 		$this->assertSame(50, $_result['hits']['total']);
-		$this->assertSame('test13', $_result['hits']['hits'][0]['_source']['name']);
 	}
 
 

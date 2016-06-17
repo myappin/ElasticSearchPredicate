@@ -9,7 +9,7 @@ declare(strict_types = 1);
  * Time: 13:19
  */
 
-namespace ElasticSearchPredicate\Predicate\ScoreFunction\Weight;
+namespace ElasticSearchPredicate\Predicate\FunctionScore\Weight;
 
 
 use ElasticSearchPredicate\Endpoint\EndpointException;
@@ -17,7 +17,7 @@ use ElasticSearchPredicate\Endpoint\EndpointException;
 
 /**
  * Class WeightTrait
- * @package   ElasticSearchPredicate\Predicate\ScoreFunction\Weigh
+ * @package   ElasticSearchPredicate\Predicate\FunctionScore\Weigh
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 trait WeightTrait {

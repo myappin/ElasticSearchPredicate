@@ -13,16 +13,16 @@ namespace ElasticSearchPredicate\Predicate;
 
 
 use DusanKasan\Knapsack\Collection;
-use ElasticSearchPredicate\Predicate\ScoreFunction\FunctionInterface;
+use ElasticSearchPredicate\Predicate\FunctionScore\FunctionInterface;
 
 
 /**
- * Class ScoreFunction
+ * Class FunctionScore
  * nested mappings
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class ScoreFunction extends PredicateSet {
+class FunctionScore extends PredicateSet {
 
 
 	/**
@@ -57,10 +57,10 @@ class ScoreFunction extends PredicateSet {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\ScoreFunction\FunctionInterface $function
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @param \ElasticSearchPredicate\Predicate\FunctionScore\FunctionInterface $function
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 */
-	public function addFunction(FunctionInterface $function) : ScoreFunction{
+	public function addFunction(FunctionInterface $function) : FunctionScore{
 		$this->_functions = $this->getFunctions()->append($function);
 
 		return $this;
@@ -78,10 +78,10 @@ class ScoreFunction extends PredicateSet {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $max_boost
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setMaxBoost($max_boost) : ScoreFunction{
+	public function setMaxBoost($max_boost) : FunctionScore{
 		if(is_float($max_boost) && is_int($max_boost)){
 			throw new PredicateException('Max boost should be int or float');
 		}
@@ -102,10 +102,10 @@ class ScoreFunction extends PredicateSet {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $boost_mode
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setBoostMode($boost_mode) : ScoreFunction{
+	public function setBoostMode($boost_mode) : FunctionScore{
 		if(!in_array($boost_mode, [
 			'multiply',
 			'replace',
@@ -134,10 +134,10 @@ class ScoreFunction extends PredicateSet {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $min_score
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setMinScore($min_score) : ScoreFunction{
+	public function setMinScore($min_score) : FunctionScore{
 		if(is_float($min_score) && is_int($min_score)){
 			throw new PredicateException('Min score should be int or float');
 		}
@@ -158,10 +158,10 @@ class ScoreFunction extends PredicateSet {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $score_mode
-	 * @return \ElasticSearchPredicate\Predicate\ScoreFunction
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function setScoreMode($score_mode) : ScoreFunction{
+	public function setScoreMode($score_mode) : FunctionScore{
 		if(!in_array($score_mode, [
 			'multiply',
 			'sum',

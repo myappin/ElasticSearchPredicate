@@ -9,27 +9,27 @@ declare(strict_types = 1);
  * Time: 13:19
  */
 
-namespace ElasticSearchPredicate\Endpoint\ScoreFunction;
+namespace ElasticSearchPredicate\Endpoint\FunctionScore;
 
 
-use ElasticSearchPredicate\Predicate\ScoreFunction;
+use ElasticSearchPredicate\Predicate\FunctionScore;
 
 
 /**
- * Class ScoreFunctionTrait
- * @package   ElasticSearchPredicate\Endpoint\ScoreFunction
+ * Class FunctionScoreTrait
+ * @package   ElasticSearchPredicate\Endpoint\FunctionScore
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-trait ScoreFunctionTrait {
+trait FunctionScoreTrait {
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function getScoreFunctionPredicate() : ScoreFunction{
-		if(!$this->_predicate instanceof ScoreFunction){
-			$this->_predicate = new ScoreFunction();
+	public function getFunctionScorePredicate() : FunctionScore{
+		if(!$this->_predicate instanceof FunctionScore){
+			$this->_predicate = new FunctionScore();
 		}
 
 		return $this->_predicate;

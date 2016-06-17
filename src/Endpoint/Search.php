@@ -15,20 +15,20 @@ namespace ElasticSearchPredicate\Endpoint;
 use Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
+use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreInterface;
+use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
-use ElasticSearchPredicate\Endpoint\ScoreFunction\ScoreFunctionInterface;
-use ElasticSearchPredicate\Endpoint\ScoreFunction\ScoreFunctionTrait;
+use ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSetInterface;
-use ElasticSearchPredicate\Predicate\ScoreFunction;
 
 /**
  * Class Search
  * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet  predicate
- * @property ScoreFunction score_function
+ * @property FunctionScore function_score
  * @method Search Term(string $term, $value, array $options = [])
  * @method Search Match(string $match, $query, array $options = [])
  * @method Search Range(string $term, $from, $to = null, array $options = [])
@@ -38,10 +38,10 @@ use ElasticSearchPredicate\Predicate\ScoreFunction;
  * @property PredicateSet  OR
  * @property PredicateSet  or
  */
-class Search implements EndpointInterface, QueryInterface, ScoreFunctionInterface, FieldsInterface {
+class Search implements EndpointInterface, QueryInterface, FunctionScoreInterface, FieldsInterface {
 
 
-	use QueryTrait, ScoreFunctionTrait, FieldsTrait;
+	use QueryTrait, FunctionScoreTrait, FieldsTrait;
 
 
 	/**
@@ -143,8 +143,8 @@ class Search implements EndpointInterface, QueryInterface, ScoreFunctionInterfac
 		if($_name === 'predicate'){
 			return $this->getPredicate();
 		}
-		elseif($_name === 'score_function'){
-			return $this->getScoreFunctionPredicate();
+		elseif($_name === 'function_score'){
+			return $this->getFunctionScorePredicate();
 		}
 
 		return $this->getPredicate()->{$name};
