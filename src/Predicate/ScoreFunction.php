@@ -215,7 +215,9 @@ class ScoreFunction extends PredicateSet {
 			$_ret['query']['score_function']['FUNCTION'] = $_functions->current()->toArray();
 		}
 		else{
-			$_ret['query']['score_function']['functions'] = $_functions->toArray();
+			$_ret['query']['score_function']['functions'] = $_functions->map(function(FunctionInterface $item){
+				return $item->toArray();
+			})->toArray();
 		}
 
 		return $_ret;

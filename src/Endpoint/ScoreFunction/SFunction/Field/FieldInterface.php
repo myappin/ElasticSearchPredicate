@@ -6,18 +6,18 @@ declare(strict_types = 1);
  * @link      http://www.myappin.cz
  * @copyright Copyright (c) MyAppIn s.r.o. (http://www.myappin.cz)
  * Date: 17. 6. 2016
- * Time: 9:58
+ * Time: 11:05
  */
 
-namespace ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction;
+namespace ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field;
 
 
 /**
- * Interface FunctionInterface
- * @package   ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction
+ * Interface FieldInterface
+ * @package   ElasticSearchPredicate\Endpoint\ScoreFunction\SFunction\Field
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-interface FunctionInterface {
+interface FieldInterface {
 
 
 	/**
