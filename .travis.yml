@@ -6,7 +6,7 @@ php:
 addons:
   apt:
     sources:
-      - elasticsearch-2.2
+      - elasticsearch-2.1
     packages:
       - elasticsearch
 
