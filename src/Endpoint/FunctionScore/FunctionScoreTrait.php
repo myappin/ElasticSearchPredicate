@@ -13,6 +13,7 @@ namespace ElasticSearchPredicate\Endpoint\FunctionScore;
 
 
 use ElasticSearchPredicate\Predicate\FunctionScore;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 
 
 /**
@@ -25,11 +26,20 @@ trait FunctionScoreTrait {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
+	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 */
 	public function getFunctionScorePredicate() : FunctionScore{
 		if(!$this->_predicate instanceof FunctionScore){
-			$this->_predicate = new FunctionScore();
+			if($this->_predicate instanceof PredicateSet){
+				$_score_function = new FunctionScore();
+				$_score_function->setCombiner($this->_predicate->getCombiner());
+				$_score_function->setPredicates($this->_predicate->getPredicates());
+
+				return $this->_predicate = $_score_function;
+			}
+			else{
+				return $this->_predicate = new FunctionScore();
+			}
 		}
 
 		return $this->_predicate;
