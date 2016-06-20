@@ -257,6 +257,18 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param \DusanKasan\Knapsack\Collection $predicates
+	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
+	 */
+	public function setPredicates(Collection $predicates) : PredicateSet{
+		$this->_predicates = $predicates;
+
+		return $this;
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return string
 	 */
 	public function getCombiner() : string{
