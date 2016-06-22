@@ -863,4 +863,37 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+	 * @throws \Exception
+	 */
+	public function test_delete_by_query(){
+		$_search = $this->_client->delete('elasticsearchpredicate', 'TestType');
+
+		$_search->predicate->Range('range_param', 10, 20);
+
+		$this->assertSame([
+							  'index' => 'elasticsearchpredicate',
+							  'type'  => 'TestType',
+							  'body'  => [
+								  'query' => [
+									  'range' => [
+										  'range_param' => [
+											  'gte' => 10,
+											  'lte' => 20,
+										  ],
+									  ],
+								  ],
+							  ],
+						  ], $_search->getPreparedParams());
+
+		$_search->execute();
+
+		sleep(1);
+
+		$this->assertSame(39, $this->_client->search('elasticsearchpredicate', 'TestType')->execute()['hits']['total']);
+	}
+
+
 }
