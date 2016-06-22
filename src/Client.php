@@ -13,6 +13,7 @@ namespace ElasticSearchPredicate;
 
 
 use Elasticsearch\ClientBuilder;
+use ElasticSearchPredicate\Endpoint\Delete;
 use ElasticSearchPredicate\Endpoint\EndpointException;
 use ElasticSearchPredicate\Endpoint\Search;
 
@@ -66,6 +67,17 @@ class Client {
 	 */
 	public function search(string $index = '', string $type = '') : Search{
 		return new Search($this->getElasticSearchClient(), $index, $type);
+	}
+
+
+	/**
+	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+	 * @param string $index
+	 * @param string $type
+	 * @return \ElasticSearchPredicate\Endpoint\Delete
+	 */
+	public function delete(string $index = '', string $type = '') : Delete{
+		return new Delete($this->getElasticSearchClient(), $index, $type);
 	}
 
 
