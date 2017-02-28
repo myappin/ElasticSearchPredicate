@@ -15,9 +15,7 @@ namespace ElasticSearchPredicate\Endpoint;
 use Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
-use ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Predicate\PredicateSet;
-use ElasticSearchPredicate\Predicate\PredicateSetInterface;
 
 /**
  * Class Delete
@@ -92,9 +90,9 @@ class Delete implements EndpointInterface, QueryInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
 	 * @param $arguments
-	 * @return PredicateSetInterface
+     * @return PredicateSet
 	 */
-	public function __call($name, $arguments) : PredicateSetInterface{
+    public function __call($name, $arguments) : PredicateSet {
 		if(empty($arguments)){
 			return call_user_func([
 									  $this->getPredicate(),
@@ -113,28 +111,15 @@ class Delete implements EndpointInterface, QueryInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function __get($name) : PredicateSetInterface{
+    public function __get($name) : PredicateSet {
 		$_name = strtolower($name);
 		if($_name === 'predicate'){
 			return $this->getPredicate();
 		}
 
 		return $this->getPredicate()->{$name};
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getPreparedParams() : array{
-		if(!$this->_is_prepared){
-			$this->prepareParams();
-		}
-
-		return $this->_prepared_params;
 	}
 
 
@@ -161,21 +146,14 @@ class Delete implements EndpointInterface, QueryInterface {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
+     * @return array
 	 */
-	public function clearParams() : EndpointInterface{
-		$this->_prepared_params = [];
-		$this->_is_prepared     = false;
+    public function getPreparedParams() : array {
+        if (!$this->_is_prepared) {
+            $this->prepareParams();
+        }
 
-		return $this;
-	}
-
-
-	/**
-	 * @return \Exception|null
-	 */
-	public function getException(){
-		return $this->_exception;
+        return $this->_prepared_params;
 	}
 
 
@@ -200,6 +178,26 @@ class Delete implements EndpointInterface, QueryInterface {
 		$this->_prepared_params = $_prepared_params;
 		$this->_is_prepared     = true;
 	}
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
+     */
+    public function clearParams() : EndpointInterface {
+        $this->_prepared_params = [];
+        $this->_is_prepared = false;
+
+        return $this;
+    }
+
+
+    /**
+     * @return \Exception|null
+     */
+    public function getException() {
+        return $this->_exception;
+    }
 
 
 }

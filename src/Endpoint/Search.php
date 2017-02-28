@@ -21,7 +21,6 @@ use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Predicate\PredicateSet;
-use ElasticSearchPredicate\Predicate\PredicateSetInterface;
 
 /**
  * Class Search
@@ -115,9 +114,9 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
 	 * @param $arguments
-	 * @return PredicateSetInterface
+     * @return PredicateSet
 	 */
-	public function __call($name, $arguments) : PredicateSetInterface{
+    public function __call($name, $arguments) : PredicateSet {
 		if(empty($arguments)){
 			return call_user_func([
 									  $this->getPredicate(),
@@ -136,9 +135,9 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function __get($name) : PredicateSetInterface{
+    public function __get($name) : PredicateSet {
 		$_name = strtolower($name);
 		if($_name === 'predicate'){
 			return $this->getPredicate();
@@ -148,19 +147,6 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 		}
 
 		return $this->getPredicate()->{$name};
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getPreparedParams() : array{
-		if(!$this->_is_prepared){
-			$this->prepareParams();
-		}
-
-		return $this->_prepared_params;
 	}
 
 
@@ -217,6 +203,69 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 	}
 
 
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return array
+     */
+    public function getPreparedParams() : array {
+        if (!$this->_is_prepared) {
+            $this->prepareParams();
+        }
+
+        return $this->_prepared_params;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    private function prepareParams() {
+        $_prepared_params = [];
+        if (!empty($this->_index)) {
+            $_prepared_params['index'] = $this->_index;
+        }
+        if (!empty($this->_type)) {
+            $_prepared_params['type'] = $this->_type;
+        }
+        if (!empty($this->_limit)) {
+            $_prepared_params['size'] = $this->_limit;
+        }
+        if (!empty($this->_offset)) {
+            if (empty($this->_limit)) {
+                throw new EndpointException('Offset must be used with limit');
+            }
+            $_prepared_params['from'] = $this->_limit * $this->_offset;
+        }
+
+        $_prepared_params['body'] = [];
+
+        if (!empty($_fields = $this->getFields())) {
+            $_prepared_params['body']['fields'] = $_fields;
+        }
+        if (!empty($_query = $this->getQuery())) {
+            $_prepared_params['body']['query'] = $_query;
+        }
+        if (!empty($this->_order)) {
+            $_prepared_params['body']['sort'] = $this->_order;
+        }
+
+        $this->_prepared_params = $_prepared_params;
+        $this->_is_prepared = true;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
+     */
+    public function clearParams() : EndpointInterface {
+        $this->_prepared_params = [];
+        $this->_is_prepared = false;
+
+        return $this;
+    }
+
+
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return int|null
@@ -245,9 +294,9 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return int|null
+     * @return array
 	 */
-	public function getOrder(){
+    public function getOrder() : array {
 		return $this->_order;
 	}
 
@@ -312,60 +361,10 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 
 
 	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
-	 */
-	public function clearParams() : EndpointInterface{
-		$this->_prepared_params = [];
-		$this->_is_prepared     = false;
-
-		return $this;
-	}
-
-
-	/**
 	 * @return \Exception|null
 	 */
 	public function getException(){
 		return $this->_exception;
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 */
-	private function prepareParams(){
-		$_prepared_params = [];
-		if(!empty($this->_index)){
-			$_prepared_params['index'] = $this->_index;
-		}
-		if(!empty($this->_type)){
-			$_prepared_params['type'] = $this->_type;
-		}
-		if(!empty($this->_limit)){
-			$_prepared_params['size'] = $this->_limit;
-		}
-		if(!empty($this->_offset)){
-			if(empty($this->_limit)){
-				throw new EndpointException('Offset must be used with limit');
-			}
-			$_prepared_params['from'] = $this->_limit * $this->_offset;
-		}
-
-		$_prepared_params['body'] = [];
-
-		if(!empty($_fields = $this->getFields())){
-			$_prepared_params['body']['fields'] = $_fields;
-		}
-		if(!empty($_query = $this->getQuery())){
-			$_prepared_params['body']['query'] = $_query;
-		}
-		if(!empty($this->_order)){
-			$_prepared_params['body']['sort'] = $this->_order;
-		}
-
-		$this->_prepared_params = $_prepared_params;
-		$this->_is_prepared     = true;
 	}
 
 

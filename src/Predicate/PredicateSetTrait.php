@@ -25,9 +25,9 @@ trait PredicateSetTrait {
 	 * @param string $term
 	 * @param        $value
 	 * @param array  $options
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function equalTo(string $term, $value, array $options = []) : PredicateSetInterface{
+    public function equalTo(string $term, $value, array $options = []) : PredicateSet {
 		return $this->Term($term, $value, $options);
 	}
 
@@ -38,9 +38,9 @@ trait PredicateSetTrait {
 	 * @param        $from
 	 * @param        $to
 	 * @param array  $options
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function between(string $term, $from, $to, array $options = []) : PredicateSetInterface{
+    public function between(string $term, $from, $to, array $options = []) : PredicateSet {
 		return $this->Range($term, $from, $to, $options);
 	}
 
@@ -50,9 +50,9 @@ trait PredicateSetTrait {
 	 * @param string $term
 	 * @param        $from
 	 * @param array  $options
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function greaterThan(string $term, $from, array $options = []) : PredicateSetInterface{
+    public function greaterThan(string $term, $from, array $options = []) : PredicateSet {
 		return $this->Range($term, $from, null, $options);
 	}
 
@@ -62,9 +62,9 @@ trait PredicateSetTrait {
 	 * @param string $term
 	 * @param        $to
 	 * @param array  $options
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function lessThan(string $term, $to, array $options = []) : PredicateSetInterface{
+    public function lessThan(string $term, $to, array $options = []) : PredicateSet {
 		return $this->Range($term, null, $to, $options);
 	}
 
