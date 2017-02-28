@@ -890,7 +890,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
 
 		$_search->execute();
 
-		sleep(1);
+        sleep(2);
 
 		$this->assertSame(39, $this->_client->search('elasticsearchpredicate', 'TestType')->execute()['hits']['total']);
 	}

@@ -294,9 +294,9 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return int|null
+     * @return array
 	 */
-	public function getOrder(){
+    public function getOrder() : array {
 		return $this->_order;
 	}
 
