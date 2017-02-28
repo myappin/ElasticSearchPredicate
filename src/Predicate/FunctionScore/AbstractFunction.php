@@ -15,7 +15,6 @@ namespace ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
-use ElasticSearchPredicate\Predicate\PredicateSetInterface;
 
 
 /**
@@ -38,9 +37,9 @@ abstract class AbstractFunction implements FunctionInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
 	 * @param $arguments
-	 * @return PredicateSetInterface
+     * @return PredicateSet
 	 */
-	public function __call($name, $arguments) : PredicateSetInterface{
+    public function __call($name, $arguments) : PredicateSet {
 		if(empty($arguments)){
 			return call_user_func([
 									  $this->getPredicate(),
@@ -59,9 +58,9 @@ abstract class AbstractFunction implements FunctionInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function __get($name) : PredicateSetInterface{
+    public function __get($name) : PredicateSet {
 		$_name = strtolower($name);
 		if($_name === 'predicate'){
 			return $this->getPredicate();

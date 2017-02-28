@@ -62,9 +62,9 @@ class PredicateSet implements PredicateSetInterface {
 
 	/**
 	 * PredicateSet constructor.
-	 * @param \ElasticSearchPredicate\Predicate\PredicateSetInterface|null $unnest
+     * @param \ElasticSearchPredicate\Predicate\PredicateSet|null $unnest
 	 */
-	public function __construct(PredicateSetInterface $unnest = null){
+    public function __construct(PredicateSet $unnest = null) {
 		$this->_unnest     = $unnest;
 		$this->_predicates = new Collection([]);
 	}
@@ -74,10 +74,10 @@ class PredicateSet implements PredicateSetInterface {
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param $name
 	 * @param $arguments
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
-	public function __call($name, $arguments) : PredicateSetInterface{
+    public function __call($name, $arguments) : PredicateSet {
 		$name   = preg_replace('/[^a-z0-9\_]+/i', '', $name);
 		$_class = 'ElasticSearchPredicate\Predicate\Predicates\\' . $name;
 		if(!class_exists($_class)){
@@ -131,10 +131,10 @@ class PredicateSet implements PredicateSetInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function andPredicate(PredicateInterface $predicate) : PredicateSetInterface{
-		$this->setCombiner(self::C_AND);
+    public function orPredicate(PredicateInterface $predicate) : PredicateSet {
+        $this->setCombiner(self::C_OR);
 
 		return $this->addPredicate($predicate);
 	}
@@ -143,21 +143,27 @@ class PredicateSet implements PredicateSetInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function orPredicate(PredicateInterface $predicate) : PredicateSetInterface{
-		$this->setCombiner(self::C_OR);
+    protected function addPredicate(PredicateInterface $predicate) : PredicateSet {
+        if (isset($this->_last)) {
+            $this->_last->setCombiner($this->_combiner);
+        }
+        $this->_last = $predicate;
+        $this->_predicates = $this->_predicates->append($predicate);
 
-		return $this->addPredicate($predicate);
+        $this->_combiner = self::C_AND;
+
+        return $this;
 	}
 
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function and (PredicateInterface $predicate) : PredicateSetInterface{
+    public function and (PredicateInterface $predicate) : PredicateSet {
 		return $this->andPredicate($predicate);
 	}
 
@@ -165,9 +171,21 @@ class PredicateSet implements PredicateSetInterface {
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-	public function or (PredicateInterface $predicate) : PredicateSetInterface{
+    public function andPredicate(PredicateInterface $predicate) : PredicateSet {
+        $this->setCombiner(self::C_AND);
+
+        return $this->addPredicate($predicate);
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     */
+    public function or (PredicateInterface $predicate) : PredicateSet {
 		return $this->andPredicate($predicate);
 	}
 
@@ -388,24 +406,6 @@ class PredicateSet implements PredicateSetInterface {
 				];
 			}
 		}
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSetInterface
-	 */
-	protected function addPredicate(PredicateInterface $predicate) : PredicateSetInterface{
-		if(isset($this->_last)){
-			$this->_last->setCombiner($this->_combiner);
-		}
-		$this->_last       = $predicate;
-		$this->_predicates = $this->_predicates->append($predicate);
-
-		$this->_combiner = self::C_AND;
-
-		return $this;
 	}
 
 
