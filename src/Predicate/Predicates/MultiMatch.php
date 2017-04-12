@@ -56,7 +56,7 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function __construct($query, array $fields, array $options = []){
-		if(!is_scalar($query)){
+        if (!is_scalar($query) && $query !== null) {
 			throw new PredicateException('MultiMatch value must be scalar');
 		}
 

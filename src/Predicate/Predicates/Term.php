@@ -52,7 +52,7 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
 	public function __construct(string $term, $value, array $options = []){
 		$this->_term = $term;
 
-		if(!is_scalar($value)){
+        if (!is_scalar($value) && $value !== null) {
 			throw new PredicateException('Term value must be scalar');
 		}
 
