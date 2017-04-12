@@ -25,6 +25,8 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
  * @method PredicateSet Range(string $term, $from, $to = null, array $options = [])
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @method PredicateSet MultiMatch($query, array $fields, array $options = [])
+ * @method PredicateSet Exists(string $term, array $options = [])
+ * @method PredicateSet Missing(string $term, array $options = [])
  * @property PredicateSet AND
  * @property PredicateSet and
  * @property PredicateSet OR
