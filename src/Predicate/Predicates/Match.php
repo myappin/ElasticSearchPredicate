@@ -56,7 +56,7 @@ class Match extends AbstractPredicate implements BoostInterface, SimpleInterface
 	public function __construct(string $match, $query, array $options = []){
 		$this->_match = $match;
 
-		if(!is_scalar($query)){
+        if (!is_scalar($query) && $query !== null) {
 			throw new PredicateException('Match value must be scalar');
 		}
 
