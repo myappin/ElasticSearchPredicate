@@ -16,6 +16,7 @@ use Elasticsearch\ClientBuilder;
 use ElasticSearchPredicate\Endpoint\Delete;
 use ElasticSearchPredicate\Endpoint\EndpointException;
 use ElasticSearchPredicate\Endpoint\Search;
+use ElasticSearchPredicate\Endpoint\Update;
 
 /**
  * Class Client
@@ -72,17 +73,6 @@ class Client {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $index
-	 * @param string $type
-	 * @return \ElasticSearchPredicate\Endpoint\Delete
-	 */
-	public function delete(string $index = '', string $type = '') : Delete{
-		return new Delete($this->getElasticSearchClient(), $index, $type);
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return \Elasticsearch\Client
 	 */
 	public function getElasticSearchClient(){
@@ -95,6 +85,30 @@ class Client {
 
 		return $this->_elasticsearch;
 	}
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param string $index
+     * @param string $type
+     * @return \ElasticSearchPredicate\Endpoint\Delete
+     */
+    public function delete(string $index = '', string $type = '') : Delete {
+        return new Delete($this->getElasticSearchClient(), $index, $type);
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param string $index
+     * @param string $type
+     * @param string $script
+     * @param array  $params
+     * @return \ElasticSearchPredicate\Endpoint\Update
+     */
+    public function update(string $index = '', string $type = '', string $script, array $params = []) : Update {
+        return new Update($this->getElasticSearchClient(), $index, $type, $script, $params);
+    }
 
 
 }
