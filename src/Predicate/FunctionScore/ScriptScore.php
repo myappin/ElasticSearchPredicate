@@ -48,27 +48,6 @@ class ScriptScore extends AbstractFunction {
 
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return string
-	 */
-	public function getScript() : string{
-		return $this->_script;
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $script
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
-	 */
-	public function setScript(string $script) : ScriptScore{
-		$this->_script = $script;
-
-		return $this;
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @param array $params
 	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
@@ -88,6 +67,27 @@ class ScriptScore extends AbstractFunction {
 	}
 
 
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return string
+     */
+    public function getScript() : string {
+        return $this->_script;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param string $script
+     * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
+     */
+    public function setScript(string $script) : ScriptScore {
+        $this->_script = $script;
+
+        return $this;
+    }
+
+
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
@@ -96,12 +96,15 @@ class ScriptScore extends AbstractFunction {
 	public function toArray() : array{
 		$_ret = [
 			'script_score' => [
-				'script' => $this->_script,
+                'script' => [
+                    'lang'   => 'groovy',
+                    'inline' => $this->_script,
+                ],
 			],
 		];
 
 		if(!empty($_params = $this->_params)){
-			$_ret['script_score']['params'] = $_params;
+            $_ret['script_score']['script']['params'] = $_params;
 		}
 
 		if(!empty($_query = $this->getQuery())){
