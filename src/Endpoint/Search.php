@@ -240,7 +240,7 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
         $_prepared_params['body'] = [];
 
         if (!empty($_fields = $this->getFields())) {
-            $_prepared_params['body']['fields'] = $_fields;
+            $_prepared_params['body']['stored_fields'] = $_fields;
         }
         if (!empty($_query = $this->getQuery())) {
             $_prepared_params['body']['query'] = $_query;
