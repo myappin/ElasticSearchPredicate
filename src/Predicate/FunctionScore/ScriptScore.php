@@ -24,7 +24,7 @@ class ScriptScore extends AbstractFunction {
 
 
 	/**
-	 * @var
+     * @var array
 	 */
 	protected $_script;
 
@@ -40,7 +40,7 @@ class ScriptScore extends AbstractFunction {
 	 * @param string $script
 	 * @param array  $params
 	 */
-	public function __construct(string $script, array $params = []){
+    public function __construct(array $script, array $params = []) {
 		$this->setScript($script);
 		$this->setParams($params);
 	}
@@ -69,19 +69,19 @@ class ScriptScore extends AbstractFunction {
 
     /**
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @return string
+     * @return array
      */
-    public function getScript() : string {
+    public function getScript() : array {
         return $this->_script;
     }
 
 
     /**
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param string $script
+     * @param array $script
      * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
      */
-    public function setScript(string $script) : ScriptScore {
+    public function setScript(array $script) : ScriptScore {
         $this->_script = $script;
 
         return $this;
@@ -96,10 +96,7 @@ class ScriptScore extends AbstractFunction {
 	public function toArray() : array{
 		$_ret = [
 			'script_score' => [
-                'script' => [
-                    'lang'   => 'groovy',
-                    'inline' => $this->_script,
-                ],
+                'script' => $this->_script,
 			],
 		];
 
