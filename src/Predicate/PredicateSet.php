@@ -229,12 +229,11 @@ class PredicateSet implements PredicateSetInterface {
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $path
-	 * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param string $path
+     * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
+     */
 	public function nested(string $path) : NestedPredicateSet{
 		if(isset($this->_last)){
 			$this->_last->setCombiner($this->_combiner);
@@ -250,11 +249,51 @@ class PredicateSet implements PredicateSetInterface {
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param string $type
+     * @return \ElasticSearchPredicate\Predicate\HasChildPredicateSet
+     */
+    public function child(string $type) : HasChildPredicateSet {
+        if (isset($this->_last)) {
+            $this->_last->setCombiner($this->_combiner);
+        }
+        $_nest = new HasChildPredicateSet($this);
+        $_nest->setType($type);
+        $this->_last = $_nest;
+        $this->_predicates = $this->_predicates->append($_nest);
+
+        $this->_combiner = self::C_AND;
+
+        return $_nest;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param string $type
+     * @return \ElasticSearchPredicate\Predicate\HasParentPredicateSet
+     */
+    public function parent(string $type) : HasParentPredicateSet {
+        if (isset($this->_last)) {
+            $this->_last->setCombiner($this->_combiner);
+        }
+        $_nest = new HasParentPredicateSet($this);
+        $_nest->setType($type);
+        $this->_last = $_nest;
+        $this->_predicates = $this->_predicates->append($_nest);
+
+        $this->_combiner = self::C_AND;
+
+        return $_nest;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
 	public function unnest() : PredicateSet{
 		if(empty($this->_unnest)){
 			throw new PredicateException('Can not unnest not nested predicate');
