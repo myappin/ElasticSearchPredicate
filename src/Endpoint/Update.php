@@ -148,9 +148,12 @@ class Update implements EndpointInterface, QueryInterface {
         try {
             $_params = $this->getPreparedParams();
             if (isset($_params['body']['query'])) {
+                $_params['refresh'] = 'true';
                 $_result = $this->_client->updateByQuery($_params);
             }
             else {
+                $_params['refresh'] = 'true';
+                $_params['retry_on_conflict'] = 5;
                 $_result = $this->_client->update($_params);
             }
         } catch (\Exception $e) {
