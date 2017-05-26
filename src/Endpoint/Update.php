@@ -15,6 +15,10 @@ namespace ElasticSearchPredicate\Endpoint;
 use Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
+use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
+use ElasticSearchPredicate\Predicate\NestedPredicateSet;
+use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 
 /**
@@ -22,10 +26,17 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet predicate
- * @method Search Term(string $term, $value, array $options = [])
- * @method Search Match(string $match, $query, array $options = [])
- * @method Search Range(string $term, $from, $to = null, array $options = [])
- * @method Search QueryString($query, array $fields = [], array $options = [])
+ * @method PredicateSet Term(string $term, $value, array $options = [])
+ * @method PredicateSet Match(string $match, $query, array $options = [])
+ * @method PredicateSet Range(string $term, $from, $to = null, array $options = [])
+ * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
+ * @method PredicateSet Exists(string $term, array $options = [])
+ * @method PredicateSet Missing(string $term, array $options = [])
+ * @method PredicateSet nest()
+ * @method NotPredicateSet not()
+ * @method NestedPredicateSet nested(string $path)
+ * @method HasParentPredicateSet parent(string $type)
+ * @method HasChildPredicateSet child(string $type)
  * @property PredicateSet AND
  * @property PredicateSet and
  * @property PredicateSet OR
@@ -136,6 +147,15 @@ class Update implements EndpointInterface, QueryInterface {
         }
 
         return $this->getPredicate()->{$name};
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     */
+    public function predicate() : PredicateSet {
+        return $this->getPredicate();
     }
 
 
