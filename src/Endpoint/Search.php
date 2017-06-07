@@ -33,6 +33,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @property PredicateSet  predicate
  * @property FunctionScore function_score
  * @method PredicateSet Term(string $term, $value, array $options = [])
+ * @method PredicateSet Terms(string $term, array $values, array $options = [])
  * @method PredicateSet Match(string $match, $query, array $options = [])
  * @method PredicateSet Range(string $term, $from, $to = null, array $options = [])
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
@@ -100,6 +101,12 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 	 * @var array
 	 */
 	protected $_order = [];
+
+
+    /**
+     * @var array
+     */
+    protected $_group = [];
 
 
 	/**
@@ -268,6 +275,9 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
         if (!empty($this->_order)) {
             $_prepared_params['body']['sort'] = $this->_order;
         }
+        if (!empty($this->_group)) {
+            $_prepared_params['body']['aggs'] = $this->_group;
+        }
 
         $this->_prepared_params = $_prepared_params;
         $this->_is_prepared = true;
@@ -342,6 +352,27 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 
 		return $this;
 	}
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return array
+     */
+    public function getGroup() : array {
+        return $this->_group;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param array $group
+     * @return \ElasticSearchPredicate\Endpoint\Search
+     */
+    public function group(array $group) : self {
+        $this->_group = $group;
+
+        return $this;
+    }
 
 
 	/**
