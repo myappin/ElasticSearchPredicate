@@ -190,6 +190,8 @@ class Delete implements EndpointInterface, QueryInterface {
 			$_prepared_params['type'] = $this->_type;
 		}
 
+        $_prepared_params['conflicts'] = 'proceed';
+
 		$_prepared_params['body'] = [];
 
 		if(!empty($_query = $this->getQuery())){
