@@ -358,6 +358,13 @@ class PredicateSet implements PredicateSetInterface {
 	 */
 	public function toArray() : array{
 		$_predicates = $this->_predicates;
+        $_predicates = $_predicates->filter(function($predicate) {
+            if ($predicate instanceof Collection) {
+                return !$predicate->isEmpty();
+            }
+
+            return $predicate instanceof PredicateInterface && !empty($predicate->toArray());
+        });
 		$_size       = $_predicates->size();
 		if($_size < 1){
 			return [];
