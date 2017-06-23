@@ -353,109 +353,128 @@ class PredicateSet implements PredicateSetInterface {
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 */
-	public function toArray() : array{
-		$_predicates = $this->_predicates;
-        $_predicates = $_predicates->filter(function($predicate) {
-            if ($predicate instanceof Collection) {
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function toArray() : array {
+        $_predicates = $this->normalize();
+        $_size = $_predicates->size();
+        if ($_size < 1) {
+            return [];
+        }
+        if ($_size === 1) {
+            return $_predicates->first()->toArray();
+        }
+        elseif ($_size === 2) {
+            if ($_predicates->first()->getCombiner() === PredicateSet::C_AND) {
+                return [
+                    'bool' => [
+                        'must' => $_predicates->map(function(PredicateInterface $predicate) {
+                            return $predicate->toArray();
+                        })->values()->toArray(),
+                    ],
+                ];
+            }
+            else {
+                return [
+                    'bool' => [
+                        'should' => $_predicates->map(function(PredicateInterface $predicate) {
+                            return $predicate->toArray();
+                        })->values()->toArray(),
+                    ],
+                ];
+            }
+        }
+        else {
+            $_combiner = null;
+            $_index = 0;
+            $_partitions = $_predicates->partitionBy(function(PredicateInterface $predicate) use (&$_combiner, &$_index) {
+                if ($_combiner === PredicateSet::C_OR) {
+                    $_index++;
+                }
+                $_combiner = $predicate->getCombiner();
+
+                return $_index;
+            });
+            if ($_partitions->sizeIs(1)) {
+                return [
+                    'bool' => $_partitions->map(function(Collection $partition) {
+                        if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
+                            return [
+                                'must' => $partition->map(function(PredicateInterface $predicate) {
+                                    return $predicate->toArray();
+                                })->values()->toArray(),
+                            ];
+                        }
+                        else {
+                            return [
+                                'should' => $partition->map(function(PredicateInterface $predicate) {
+                                    return $predicate->toArray();
+                                })->values()->toArray(),
+                            ];
+                        }
+                    })->current(),
+                ];
+            }
+            else {
+                return [
+                    'bool' => [
+                        'should' => $_partitions->map(function(Collection $partition) {
+                            if ($partition->sizeIs(1)) {
+                                return $partition->first()->toArray();
+                            }
+                            else {
+                                if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
+                                    return [
+                                        'bool' => [
+                                            'must' => $partition->map(function(PredicateInterface $predicate) {
+                                                return $predicate->toArray();
+                                            })->values()->toArray(),
+                                        ],
+                                    ];
+                                }
+                                else {
+                                    return [
+                                        'bool' => [
+                                            'should' => $partition->map(function(PredicateInterface $predicate) {
+                                                return $predicate->toArray();
+                                            })->values()->toArray(),
+                                        ],
+                                    ];
+                                }
+                            }
+                        })->values()->toArray(),
+                    ],
+                ];
+            }
+        }
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @return \DusanKasan\Knapsack\Collection
+     */
+    public function normalize() : Collection {
+        $_predicates = $this->_predicates->filter(function($predicate) {
+            if ($predicate instanceof PredicateSet) {
                 return !$predicate->isEmpty();
             }
 
-            return $predicate instanceof PredicateInterface && !empty($predicate->toArray());
+            return true;
         });
-		$_size       = $_predicates->size();
-		if($_size < 1){
-			return [];
-		}
-		if($_size === 1){
-			return $_predicates->first()->toArray();
-		}
-		elseif($_size === 2){
-			if($_predicates->first()->getCombiner() === PredicateSet::C_AND){
-				return [
-					'bool' => [
-						'must' => $_predicates->map(function(PredicateInterface $predicate){
-							return $predicate->toArray();
-						})->values()->toArray(),
-					],
-				];
-			}
-			else{
-				return [
-					'bool' => [
-						'should' => $_predicates->map(function(PredicateInterface $predicate){
-							return $predicate->toArray();
-						})->values()->toArray(),
-					],
-				];
-			}
-		}
-		else{
-			$_combiner   = null;
-			$_index      = 0;
-			$_partitions = $_predicates->partitionBy(function(PredicateInterface $predicate) use (&$_combiner, &$_index){
-				if($_combiner === PredicateSet::C_OR){
-					$_index++;
-				}
-				$_combiner = $predicate->getCombiner();
 
-				return $_index;
-			});
-			if($_partitions->sizeIs(1)){
-				return [
-					'bool' => $_partitions->map(function(Collection $partition){
-						if($partition->first()->getCombiner() === PredicateSet::C_AND){
-							return [
-								'must' => $partition->map(function(PredicateInterface $predicate){
-									return $predicate->toArray();
-								})->values()->toArray(),
-							];
-						}
-						else{
-							return [
-								'should' => $partition->map(function(PredicateInterface $predicate){
-									return $predicate->toArray();
-								})->values()->toArray(),
-							];
-						}
-					})->current(),
-				];
-			}
-			else{
-				return [
-					'bool' => [
-						'should' => $_partitions->map(function(Collection $partition){
-							if($partition->sizeIs(1)){
-								return $partition->first()->toArray();
-							}
-							else{
-								if($partition->first()->getCombiner() === PredicateSet::C_AND){
-									return [
-										'bool' => [
-											'must' => $partition->map(function(PredicateInterface $predicate){
-												return $predicate->toArray();
-											})->values()->toArray(),
-										],
-									];
-								}
-								else{
-									return [
-										'bool' => [
-											'should' => $partition->map(function(PredicateInterface $predicate){
-												return $predicate->toArray();
-											})->values()->toArray(),
-										],
-									];
-								}
-							}
-						})->values()->toArray(),
-					],
-				];
-			}
-		}
-	}
+        return $_predicates;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @return bool
+     */
+    public function isEmpty() : bool {
+        return $this->_predicates->isEmpty();
+    }
 
 
 }
