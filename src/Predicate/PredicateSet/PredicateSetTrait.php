@@ -9,12 +9,14 @@ declare(strict_types = 1);
  * Time: 15:08
  */
 
-namespace ElasticSearchPredicate\Predicate;
+namespace ElasticSearchPredicate\Predicate\PredicateSet;
+
+use ElasticSearchPredicate\Predicate\PredicateSet;
 
 
 /**
  * Class PredicateSetTrait
- * @package   ElasticSearchPredicate\Predicate
+ * @package   ElasticSearchPredicate\Predicate\PredicateSet
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 trait PredicateSetTrait {
