@@ -14,6 +14,8 @@ namespace ElasticSearchPredicate\Predicate;
 
 use DusanKasan\Knapsack\Collection;
 use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
+use ElasticSearchPredicate\Predicate\PredicateSet\InnerHitsInterface;
+use ElasticSearchPredicate\Predicate\PredicateSet\PredicateSetTrait;
 
 
 /**
@@ -48,7 +50,7 @@ class PredicateSet implements PredicateSetInterface {
 	/**
 	 * @var bool
 	 */
-	protected $_unnest = false;
+    protected $_unnest = null;
 
 
 	/**
@@ -63,12 +65,31 @@ class PredicateSet implements PredicateSetInterface {
 	protected $_predicates;
 
 
+    /**
+     * @var PredicateInterface
+     */
+    protected $_last = null;
+
+
+    /**
+     * @var Collection
+     */
+    protected $_wrap = null;
+
+
+    /**
+     * @var PredicateInterface
+     */
+    protected $_wrapped = false;
+
+
 	/**
 	 * PredicateSet constructor.
      * @param \ElasticSearchPredicate\Predicate\PredicateSet|null $unnest
 	 */
-    public function __construct(PredicateSet $unnest = null) {
+    public function __construct(PredicateSet $unnest = null, bool $wrapped = false) {
 		$this->_unnest     = $unnest;
+        $this->_wrapped = $wrapped;
 		$this->_predicates = new Collection([]);
 	}
 
@@ -87,7 +108,7 @@ class PredicateSet implements PredicateSetInterface {
 			throw new PredicateException(sprintf('Predicate %s does not exist', $name));
 		}
 		if(empty($arguments)){
-			if(isset($this->_last)){
+            if ($this->_last) {
 				$this->_last->setCombiner($this->_combiner);
 			}
 			/** @var PredicateInterface $_predicate */
@@ -96,7 +117,7 @@ class PredicateSet implements PredicateSetInterface {
 			$this->_predicates = $this->_predicates->append($_predicate);
 		}
 		else{
-			if(isset($this->_last)){
+            if ($this->_last) {
 				$this->_last->setCombiner($this->_combiner);
 			}
 			/** @var PredicateInterface $_predicate */
@@ -149,7 +170,7 @@ class PredicateSet implements PredicateSetInterface {
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
     protected function addPredicate(PredicateInterface $predicate) : PredicateSet {
-        if (isset($this->_last)) {
+        if ($this->_last) {
             $this->_last->setCombiner($this->_combiner);
         }
         $this->_last = $predicate;
@@ -199,7 +220,7 @@ class PredicateSet implements PredicateSetInterface {
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function not() : PredicateSet{
-		if(isset($this->_last)){
+        if ($this->_last) {
 			$this->_last->setCombiner($this->_combiner);
 		}
 		$_not              = new NotPredicateSet($this);
@@ -212,17 +233,25 @@ class PredicateSet implements PredicateSetInterface {
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-	public function nest() : PredicateSet{
-		if(isset($this->_last)){
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param bool $wrap
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     */
+    public function nest(bool $wrap = false) : PredicateSet {
+        if ($this->_last) {
 			$this->_last->setCombiner($this->_combiner);
 		}
-		$_nest             = new PredicateSet($this);
+        $_nest = new PredicateSet($this, $wrap);
 		$this->_last       = $_nest;
-		$this->_predicates = $this->_predicates->append($_nest);
+
+        if ($wrap) {
+            $this->_wrap = $this->_predicates->append($_nest);
+            $this->_predicates = $_nest->getPredicates();
+        }
+        else {
+            $this->_predicates = $this->_predicates->append($_nest);
+        }
 
 		$this->_combiner = self::C_AND;
 
@@ -231,18 +260,47 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return Collection
+     */
+    public function getPredicates() : Collection {
+        return $this->_predicates;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param \DusanKasan\Knapsack\Collection $predicates
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     */
+    public function setPredicates(Collection $predicates) : PredicateSet {
+        $this->_predicates = $predicates;
+
+        return $this;
+    }
+
+
+    /**
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @param string $path
+     * @param bool   $wrap
      * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
      */
-	public function nested(string $path) : NestedPredicateSet{
-		if(isset($this->_last)){
+    public function nested(string $path, bool $wrap = false) : NestedPredicateSet {
+        if ($this->_last) {
 			$this->_last->setCombiner($this->_combiner);
 		}
-		$_nest = new NestedPredicateSet($this);
+        $_nest = new NestedPredicateSet($this, $wrap);
 		$_nest->setPath($path);
 		$this->_last       = $_nest;
-		$this->_predicates = $this->_predicates->append($_nest);
+
+        if ($wrap) {
+            $this->_wrap = $this->_predicates->append($_nest);
+            $this->_predicates = $_nest->getPredicates();
+        }
+        else {
+            $this->_predicates = $this->_predicates->append($_nest);
+        }
 
 		$this->_combiner = self::C_AND;
 
@@ -253,16 +311,24 @@ class PredicateSet implements PredicateSetInterface {
     /**
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @param string $type
+     * @param bool   $wrap
      * @return \ElasticSearchPredicate\Predicate\HasChildPredicateSet
      */
-    public function child(string $type) : HasChildPredicateSet {
-        if (isset($this->_last)) {
+    public function child(string $type, bool $wrap = false) : HasChildPredicateSet {
+        if ($this->_last) {
             $this->_last->setCombiner($this->_combiner);
         }
-        $_nest = new HasChildPredicateSet($this);
+        $_nest = new HasChildPredicateSet($this, $wrap);
         $_nest->setType($type);
         $this->_last = $_nest;
-        $this->_predicates = $this->_predicates->append($_nest);
+
+        if ($wrap) {
+            $this->_wrap = $this->_predicates->append($_nest);
+            $this->_predicates = $_nest->getPredicates();
+        }
+        else {
+            $this->_predicates = $this->_predicates->append($_nest);
+        }
 
         $this->_combiner = self::C_AND;
 
@@ -273,16 +339,50 @@ class PredicateSet implements PredicateSetInterface {
     /**
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @param string $type
+     * @param bool   $wrap
      * @return \ElasticSearchPredicate\Predicate\HasParentPredicateSet
      */
-    public function parent(string $type) : HasParentPredicateSet {
-        if (isset($this->_last)) {
+    public function parent(string $type, bool $wrap = false) : HasParentPredicateSet {
+        if ($this->_last) {
             $this->_last->setCombiner($this->_combiner);
         }
-        $_nest = new HasParentPredicateSet($this);
+        $_nest = new HasParentPredicateSet($this, $wrap);
         $_nest->setType($type);
         $this->_last = $_nest;
-        $this->_predicates = $this->_predicates->append($_nest);
+
+        if ($wrap) {
+            $this->_wrap = $this->_predicates->append($_nest);
+            $this->_predicates = $_nest->getPredicates();
+        }
+        else {
+            $this->_predicates = $this->_predicates->append($_nest);
+        }
+
+        $this->_combiner = self::C_AND;
+
+        return $_nest;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param bool $wrap
+     * @return \ElasticSearchPredicate\Predicate\FilterPredicateSet
+     */
+    public function filter(bool $wrap = false) : FilterPredicateSet {
+        if ($this->_last) {
+            $this->_last->setCombiner($this->_combiner);
+        }
+        $_nest = new FilterPredicateSet($this, $wrap);
+        $this->_last = $_nest;
+
+        if ($wrap) {
+            $this->_wrap = $this->_predicates->append($_nest);
+            $this->_predicates = $_nest->getPredicates();
+        }
+        else {
+            $this->_predicates = $this->_predicates->append($_nest);
+        }
 
         $this->_combiner = self::C_AND;
 
@@ -296,35 +396,41 @@ class PredicateSet implements PredicateSetInterface {
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
 	public function unnest() : PredicateSet{
-		if(empty($this->_unnest)){
+        if (empty($this->_unnest)) {
 			throw new PredicateException('Can not unnest not nested predicate');
 		}
 		$_unnest       = $this->_unnest;
 		$this->_unnest = false;
 
+        if ($this->_wrapped) {
+            $this->_predicates = $_unnest->getPredicates();
+            $_unnest->unwrap();
+        }
+        $this->_wrapped = false;
+
 		return $_unnest;
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return Collection
-	 */
-	public function getPredicates() : Collection{
-		return $this->_predicates;
-	}
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     */
+    public function unwrap() {
+        if (empty($this->_wrap)) {
+            throw new PredicateException('Can not unwrap not wrapped predicate');
+        }
+        $this->_predicates = $this->_wrap;
+        $this->_wrap = null;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \DusanKasan\Knapsack\Collection $predicates
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-	public function setPredicates(Collection $predicates) : PredicateSet{
-		$this->_predicates = $predicates;
-
-		return $this;
-	}
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @return \DusanKasan\Knapsack\Collection
+     */
+    public function getWrap() : Collection {
+        return $this->_wrap;
+    }
 
 
 	/**
@@ -458,6 +564,9 @@ class PredicateSet implements PredicateSetInterface {
     public function normalize() : Collection {
         $_predicates = $this->_predicates->filter(function($predicate) {
             if ($predicate instanceof PredicateSet) {
+                if ($predicate instanceof InnerHitsInterface && $predicate->hasInnerHits()) {
+                    return true;
+                }
                 return !$predicate->isEmpty();
             }
 

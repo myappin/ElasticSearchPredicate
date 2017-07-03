@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate;
 
+use ElasticSearchPredicate\Predicate\PredicateSet\InnerHitsInterface;
+use ElasticSearchPredicate\Predicate\PredicateSet\InnerHitsTrait;
+
 
 /**
  * Class HasParentPredicateSet
@@ -18,7 +21,10 @@ namespace ElasticSearchPredicate\Predicate;
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class HasParentPredicateSet extends PredicateSet {
+class HasParentPredicateSet extends PredicateSet implements InnerHitsInterface {
+
+
+    use InnerHitsTrait;
 
 
     /**
@@ -44,12 +50,21 @@ class HasParentPredicateSet extends PredicateSet {
      * @return array
      */
     public function toArray() : array {
-        return [
+        $_ret = [
             'has_parent' => [
                 'parent_type' => $this->_type,
-                'query'       => parent::toArray(),
             ],
         ];
+
+        if (!empty($_query = parent::toArray())) {
+            $_ret['has_parent']['query'] = $_query;
+        }
+
+        if ($this->_inner_hits) {
+            $_ret['has_parent']['inner_hits'] = $this->_inner_hits->toArray();
+        }
+
+        return $_ret;
     }
 
 

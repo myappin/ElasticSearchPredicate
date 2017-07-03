@@ -106,7 +106,7 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
     /**
      * @var array
      */
-    protected $_group = [];
+    protected $_aggs = [];
 
 
 	/**
@@ -192,38 +192,6 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 			throw $e;
 		}
 
-		if(!empty($this->getFields())){
-			$_build_array = function(&$old_array, $value) use (&$_build_array){
-				$_item = array_shift($old_array);
-				if(empty($old_array)){
-					return [$_item => $value];
-				}
-				else{
-					return [$_item => $_build_array($old_array, $value)];
-				}
-			};
-			foreach($_result['hits']['hits'] as $key => &$result){
-				if(isset($result['fields'])){
-					$_fields = [];
-					foreach($result['fields'] as $_field_name => $field){
-						$_field         = current($field);
-						$_field_explode = explode('.', $_field_name);
-						if(count($_field_explode) > 1){
-							$_fields = array_merge_recursive($_fields, $_build_array($_field_explode, $_field));
-						}
-						else{
-							$_fields[$_field_name] = $_field;
-						}
-					}
-					$result['fields'] = $_fields;
-				}
-				else{
-					$result['fields'] = [];
-				}
-				unset($result);
-			}
-		}
-
 		$this->clearParams();
 
 		return $_result;
@@ -275,8 +243,8 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
         if (!empty($this->_order)) {
             $_prepared_params['body']['sort'] = $this->_order;
         }
-        if (!empty($this->_group)) {
-            $_prepared_params['body']['aggs'] = $this->_group;
+        if (!empty($this->_aggs)) {
+            $_prepared_params['body']['aggs'] = $this->_aggs;
         }
 
         $this->_prepared_params = $_prepared_params;
@@ -358,18 +326,18 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
      */
-    public function getGroup() : array {
-        return $this->_group;
+    public function getAggs() : array {
+        return $this->_aggs;
     }
 
 
     /**
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     * @param array $group
+     * @param array $aggs
      * @return \ElasticSearchPredicate\Endpoint\Search
      */
-    public function group(array $group) : self {
-        $this->_group = $group;
+    public function aggs(array $aggs) : self {
+        $this->_aggs = $aggs;
 
         return $this;
     }
