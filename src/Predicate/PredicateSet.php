@@ -25,6 +25,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet\PredicateSetTrait;
  * @method PredicateSet Term(string $term, $value, array $options = [])
  * @method PredicateSet Terms(string $term, array $values, array $options = [])
  * @method PredicateSet Match(string $match, $query, array $options = [])
+ * @method PredicateSet MatchAll()
  * @method PredicateSet Range(string $term, $from, $to = null, array $options = [])
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @method PredicateSet MultiMatch($query, array $fields, array $options = [])
