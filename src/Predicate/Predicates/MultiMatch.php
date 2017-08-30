@@ -48,6 +48,12 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 	protected $_tie_breaker;
 
 
+    /**
+     * @var string
+     */
+    protected $_minimum_should_match;
+
+
 	/**
 	 * MultiMatch constructor.
 	 * @param            $query
@@ -82,7 +88,10 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 
 		$this->_query = $query;
 
-		$this->_other_options = ['tie_breaker'];
+        $this->_other_options = [
+            'tie_breaker',
+            'minimum_should_match',
+        ];
 		$this->_types         = [
 			'phrase',
 			'phrase_prefix',
@@ -114,6 +123,22 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 	}
 
 
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param string $minimum_should_match
+     * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function minimum_should_match(string $minimum_should_match) : PredicateInterface {
+        if (!preg_match('/^[0-9]+\%$/', $minimum_should_match)) {
+            throw new PredicateException('Minimum should match must be string with percents');
+        }
+        $this->_minimum_should_match = $minimum_should_match;
+
+        return $this;
+    }
+
+
 	/**
 	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
 	 * @return array
@@ -141,6 +166,9 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 			$_ret['multi_match']['tie_breaker'] = $this->_tie_breaker;
 		}
 
+        if (!empty($this->_minimum_should_match)) {
+            $_ret['multi_match']['minimum_should_match'] = $this->_minimum_should_match;
+        }
 
 		return $_ret;
 	}
