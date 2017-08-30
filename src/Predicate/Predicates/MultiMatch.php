@@ -102,7 +102,7 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function tie_breaker($tie_breaker) : PredicateInterface{
-		if(!is_int($tie_breaker) && is_float($tie_breaker)){
+        if (!is_int($tie_breaker) && !is_float($tie_breaker)) {
 			throw new PredicateException('Tie breaker must be int or float');
 		}
 		if($tie_breaker < 0 || $tie_breaker > 1){
