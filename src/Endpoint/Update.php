@@ -33,6 +33,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
+ * @method PredicateSet Script(array $script)
  * @method PredicateSet nest()
  * @method NotPredicateSet not()
  * @method NestedPredicateSet nested(string $path)
@@ -161,19 +162,21 @@ class Update implements EndpointInterface, QueryInterface {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param bool $refresh
      * @return array
      * @throws \Exception
      */
-    public function execute() : array {
+    public function execute(bool $refresh = true) : array {
         try {
             $_params = $this->getPreparedParams();
             if (isset($_params['body']['query'])) {
-                $_params['refresh'] = 'true';
+                $_params['refresh'] = $refresh ? 'true' : 'false';
+                $_params['conflicts'] = 'proceed';
                 $_result = $this->_client->updateByQuery($_params);
             }
             else {
-                $_params['refresh'] = 'true';
+                $_params['refresh'] = $refresh ? 'true' : 'false';
                 $_params['retry_on_conflict'] = 5;
                 $_result = $this->_client->update($_params);
             }

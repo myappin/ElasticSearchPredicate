@@ -15,6 +15,7 @@ namespace ElasticSearchPredicate\Endpoint;
 use Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
+use ElasticSearchPredicate\Endpoint\Filtered\FilteredTrait;
 use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreInterface;
 use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
@@ -39,6 +40,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
+ * @method PredicateSet Script(array $script)
  * @method PredicateSet nest()
  * @method NotPredicateSet not()
  * @method NestedPredicateSet nested(string $path)
@@ -52,7 +54,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
 class Search implements EndpointInterface, QueryInterface, FunctionScoreInterface, FieldsInterface {
 
 
-	use QueryTrait, FunctionScoreTrait, FieldsTrait;
+    use QueryTrait, FunctionScoreTrait, FilteredTrait, FieldsTrait;
 
 
 	/**
@@ -163,6 +165,9 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 		elseif($_name === 'function_score'){
 			return $this->getFunctionScorePredicate();
 		}
+        elseif ($_name === 'filtered') {
+            return $this->getFilteredPredicate();
+        }
 
 		return $this->getPredicate()->{$name};
 	}

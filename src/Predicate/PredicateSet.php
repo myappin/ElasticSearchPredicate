@@ -31,6 +31,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet\PredicateSetTrait;
  * @method PredicateSet MultiMatch($query, array $fields, array $options = [])
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
+ * @method PredicateSet Script(array $script)
  * @property PredicateSet AND
  * @property PredicateSet and
  * @property PredicateSet OR
