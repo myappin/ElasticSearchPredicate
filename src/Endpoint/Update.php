@@ -33,6 +33,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
+ * @method PredicateSet Script(array $script)
  * @method PredicateSet nest()
  * @method NotPredicateSet not()
  * @method NestedPredicateSet nested(string $path)
