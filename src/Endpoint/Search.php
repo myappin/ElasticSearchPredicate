@@ -227,10 +227,10 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
         if (!empty($this->_type)) {
             $_prepared_params['type'] = $this->_type;
         }
-        if (!empty($this->_limit)) {
+        if (is_int($this->_limit)) {
             $_prepared_params['size'] = $this->_limit;
         }
-        if (!empty($this->_offset)) {
+        if (is_int($this->_offset)) {
             if (empty($this->_limit)) {
                 throw new EndpointException('Offset must be used with limit');
             }

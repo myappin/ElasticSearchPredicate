@@ -165,7 +165,7 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
      */
     public function execute() : array {
         try {
-            $_result = $this->_client->search($this->getPreparedParams());
+            $_result = $this->_client->count($this->getPreparedParams());
         } catch (\Exception $e) {
             $this->clearParams();
 
@@ -211,9 +211,6 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
         if (!empty($_query = $this->getQuery())) {
             $_prepared_params['body']['query'] = $_query;
         }
-        if (!empty($this->_aggs)) {
-            $_prepared_params['body']['aggs'] = $this->_aggs;
-        }
 
         $this->_prepared_params = $_prepared_params;
         $this->_is_prepared = true;
@@ -227,27 +224,6 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
     public function clearParams() : EndpointInterface {
         $this->_prepared_params = [];
         $this->_is_prepared = false;
-
-        return $this;
-    }
-
-
-    /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @return array
-     */
-    public function getAggs() : array {
-        return $this->_aggs;
-    }
-
-
-    /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     * @param array $aggs
-     * @return \ElasticSearchPredicate\Endpoint\Search
-     */
-    public function aggs(array $aggs) : self {
-        $this->_aggs = $aggs;
 
         return $this;
     }
