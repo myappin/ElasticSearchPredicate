@@ -55,7 +55,12 @@ trait PredicateSetTrait {
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
     public function greaterThan(string $term, $from, array $options = []) : PredicateSet {
-		return $this->Range($term, $from, null, $options);
+        return $this->Range($term, $from, null, array_merge($options, [
+            'types' => [
+                'gt',
+                'lt',
+            ],
+        ]));
 	}
 
 
@@ -67,8 +72,47 @@ trait PredicateSetTrait {
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
     public function lessThan(string $term, $to, array $options = []) : PredicateSet {
-		return $this->Range($term, null, $to, $options);
-	}
+        return $this->Range($term, null, $to, array_merge($options, [
+            'types' => [
+                'gt',
+                'lt',
+            ],
+        ]));
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param string $term
+     * @param        $from
+     * @param array  $options
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     */
+    public function greaterThanOrEqualTo(string $term, $from, array $options = []) : PredicateSet {
+        return $this->Range($term, $from, null, array_merge($options, [
+            'types' => [
+                'gte',
+                'lte',
+            ],
+        ]));
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param string $term
+     * @param        $to
+     * @param array  $options
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     */
+    public function lessThanOrEqualTo(string $term, $to, array $options = []) : PredicateSet {
+        return $this->Range($term, null, $to, array_merge($options, [
+            'types' => [
+                'gte',
+                'lte',
+            ],
+        ]));
+    }
 
 
 }
