@@ -144,14 +144,17 @@ class Delete implements EndpointInterface, QueryInterface {
     }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 * @throws \Exception
-	 */
-	public function execute() : array{
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @param bool $refresh
+     * @return array
+     * @throws \Exception
+     */
+    public function execute(bool $refresh = true) : array {
 		try{
-			$_result = $this->_client->deleteByQuery($this->getPreparedParams());
+            $_params = $this->getPreparedParams();
+            $_params['refresh'] = $refresh ? 'true' : 'false';
+            $_result = $this->_client->deleteByQuery($_params);
 		}
 		catch(\Exception $e){
 			$this->clearParams();
