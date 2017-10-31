@@ -32,6 +32,6 @@ class MatchAll extends AbstractPredicate {
      * @return array
      */
     public function toArray() : array {
-        return ['match_all' => []];
+        return ['match_all' => new \stdClass()];
     }
 }
