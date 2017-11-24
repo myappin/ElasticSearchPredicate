@@ -106,9 +106,9 @@ class InnerHits {
 
     /**
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     * @return array
+     * @return array|\stdClass
      */
-    public function toArray() : array {
+    public function toArray() {
         $_ret = [];
 
         if ($this->_name) {
@@ -121,7 +121,7 @@ class InnerHits {
             $_ret['offset'] = $this->_offset;
         }
 
-        return $_ret;
+        return empty($_ret) ? new \stdClass() : $_ret;
     }
 
 
