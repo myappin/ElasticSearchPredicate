@@ -155,11 +155,12 @@ class PredicateSet implements PredicateSetInterface {
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
     public function orPredicate(PredicateInterface $predicate) : PredicateSet {
         $this->setCombiner(self::C_OR);
 
@@ -185,21 +186,23 @@ class PredicateSet implements PredicateSetInterface {
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
     public function and (PredicateInterface $predicate) : PredicateSet {
 		return $this->andPredicate($predicate);
 	}
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
+    /**
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
     public function andPredicate(PredicateInterface $predicate) : PredicateSet {
         $this->setCombiner(self::C_AND);
 
@@ -208,9 +211,10 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
     public function or (PredicateInterface $predicate) : PredicateSet {
 		return $this->andPredicate($predicate);
@@ -416,7 +420,8 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
     public function unwrap() {
         if (empty($this->_wrap)) {
@@ -522,7 +527,7 @@ class PredicateSet implements PredicateSetInterface {
                                 })->values()->toArray(),
                             ];
                         }
-                    })->current(),
+                    })->first(),
                 ];
             }
             else {
