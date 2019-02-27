@@ -3,18 +3,12 @@ language: php
 php:
   - 7.0
 
-services:
-  - elasticsearch
-
-before_install:
-  - sleep 10
-
 install:
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - composer install
 
 before_script:
-  - sleep 10
+  - sleep 2
 
 script:
   - ./vendor/bin/phpunit
