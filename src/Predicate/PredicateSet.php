@@ -173,7 +173,7 @@ class PredicateSet implements PredicateSetInterface {
 	 * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
-    protected function addPredicate(PredicateInterface $predicate) : PredicateSet {
+    public function addPredicate(PredicateInterface $predicate) : PredicateSet {
         if ($this->_last) {
             $this->_last->setCombiner($this->_combiner);
         }
