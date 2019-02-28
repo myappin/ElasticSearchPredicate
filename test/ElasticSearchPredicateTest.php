@@ -443,6 +443,88 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      * @throws \ElasticSearchPredicate\Endpoint\EndpointException
      * @throws \Exception
      */
+    public function test_switch_combiner() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+        $_search->limit(1);
+
+        $_predicate_set = $_search->predicate;
+
+        $_predicate_set = $_predicate_set->nest()->Match('name', 'test1')->Match('name', 'test2');
+        $_predicate_set->OR;
+        $_predicate_set = $_predicate_set->Match('name', 'test2')->unnest();
+        $_predicate_set->AND;
+        $_predicate_set->nest()->Match('name', 'test3')->Match('name', 'test4')->unnest();
+
+        $this->assertSame([
+            'bool' =>
+                [
+                    'must' =>
+                        [
+                            [
+                                'bool' =>
+                                    [
+                                        'should' =>
+                                            [
+                                                [
+                                                    'bool' =>
+                                                        [
+                                                            'must' =>
+                                                                [
+                                                                    [
+                                                                        'match' =>
+                                                                            [
+                                                                                'name' => 'test1',
+                                                                            ],
+                                                                    ],
+                                                                    [
+                                                                        'match' =>
+                                                                            [
+                                                                                'name' => 'test2',
+                                                                            ],
+                                                                    ],
+                                                                ],
+                                                        ],
+                                                ],
+                                                [
+                                                    'match' =>
+                                                        [
+                                                            'name' => 'test2',
+                                                        ],
+                                                ],
+                                            ],
+                                    ],
+                            ],
+                            [
+                                'bool' =>
+                                    [
+                                        'must' =>
+                                            [
+                                                [
+                                                    'match' =>
+                                                        [
+                                                            'name' => 'test3',
+                                                        ],
+                                                ],
+                                                [
+                                                    'match' =>
+                                                        [
+                                                            'name' => 'test4',
+                                                        ],
+                                                ],
+                                            ],
+                                    ],
+                            ],
+                        ],
+                ],
+        ], $_search->getQuery());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
     public function test_not_term() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
         $_search->limit(1);
