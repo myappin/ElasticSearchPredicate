@@ -150,7 +150,7 @@ class PredicateSet implements PredicateSetInterface {
     public function orPredicate(PredicateInterface $predicate): PredicateSet {
         $this->setCombiner(self::C_OR);
 
-        return $this->addPredicate($predicate);
+        return $this->append($predicate);
     }
 
 
@@ -164,6 +164,7 @@ class PredicateSet implements PredicateSetInterface {
         }
 
         $this->_predicates = $this->_predicates->append($predicate);
+        $this->_last = $predicate;
 
         $this->_combiner = self::C_AND;
 
@@ -191,7 +192,7 @@ class PredicateSet implements PredicateSetInterface {
     public function andPredicate(PredicateInterface $predicate): PredicateSet {
         $this->setCombiner(self::C_AND);
 
-        return $this->addPredicate($predicate);
+        return $this->append($predicate);
     }
 
 
@@ -514,19 +515,6 @@ class PredicateSet implements PredicateSetInterface {
      */
     public function isEmpty(): bool {
         return $this->_predicates->isEmpty();
-    }
-
-
-    /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     */
-    protected function addPredicate(PredicateInterface $predicate): PredicateSet {
-        $this->append($predicate);
-        $this->_last = $predicate;
-
-        return $this;
     }
 
 
