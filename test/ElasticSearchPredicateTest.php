@@ -65,7 +65,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_term_predicate() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->Term('name', 'test10');
 
         $this->assertSame([
@@ -81,7 +80,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_combined_terms_predicate() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->Term('name', 'test10')->Term('test_param1', 0);
 
         $this->assertSame([
@@ -102,7 +100,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
         ], $_search->getQuery());
 
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(2)->order('_uid', 'asc');
         $_search->predicate->Term('name', 'test10')->or->Term('name', 'test11');
 
         $this->assertSame([
@@ -123,7 +120,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
         ], $_search->getQuery());
 
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(2)->order('_uid', 'asc');
         $_search->predicate->Term('name', 'test10')->or->Term('name', 'test11')->Term('test_param1', 1);
 
         $this->assertSame([
@@ -155,7 +151,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
         ], $_search->getQuery());
 
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(3)->order('_uid', 'asc');
         $_search->predicate->Term('name', 'test10')->or->Term('name', 'test11')
             ->Term('test_param1', 1)->or->Term('name', 'test8');
 
@@ -201,7 +196,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_nesting_terms() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->nest()->Term('name', 'test10')->unnest();
 
         $this->assertSame([
@@ -211,7 +205,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
         ], $_search->getQuery());
 
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(2)->order('_uid', 'asc');
         $_search->predicate->nest()->Term('name', 'test2')->or->Term('name', 'test3')->unnest()->Term('test_param3', 0);
 
         $this->assertSame([
@@ -251,7 +244,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_range() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(20)->order('range_param', 'asc');
         $_search->predicate->Range('range_param', 10, 20);
 
         $this->assertSame([
@@ -264,7 +256,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
         ], $_search->getQuery());
 
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(20)->order('range_param', 'asc');
         $_search->predicate->Range('range_param', 10);
 
         $this->assertSame([
@@ -284,7 +275,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_term_and_range() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(20)->order('range_param', 'asc');
         $_search->predicate->Range('range_param', 10, 20)->Term('test_param3', 1);
 
         $this->assertSame([
@@ -316,7 +306,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_match() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(2)->order('_uid', 'asc');
         $_search->predicate->Match('name', 'test1');
 
         $this->assertSame([
@@ -334,7 +323,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_match_phrase() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->and((new Match('name', 'test1'))->type('phrase'));
 
         $this->assertSame([
@@ -355,7 +343,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_not_match_phrase() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->not()->Match('name', 'test1')->unnest();
 
         $this->assertSame([
@@ -379,8 +366,33 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_not_append_match_phrase() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->not()->append((new PredicateSet())->Match('name', 'test1'))->unnest();
+
+        $this->assertSame([
+            'bool' => [
+                'must_not' => [
+                    [
+                        'match' => [
+                            'name' => 'test1',
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
+    public function test_skip_append_empty() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+        $_predicate_set = new PredicateSet();
+        $_predicate_set = $_predicate_set->Match('name', 'test1')->nest()->append(new PredicateSet())->OR->append(new PredicateSet())->unnest();
+
+        $_search->predicate->not()->append($_predicate_set)->unnest();
 
         $this->assertSame([
             'bool' => [
@@ -403,7 +415,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_appends_with_combiner() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->not()->append((new PredicateSet())->Match('name', 'test1'))->unnest()->OR->nest()
             ->append((new PredicateSet())->Match('name', 'test2'));
 
@@ -443,9 +454,89 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      * @throws \ElasticSearchPredicate\Endpoint\EndpointException
      * @throws \Exception
      */
+    public function test_switch_combiner() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+
+        $_predicate_set = $_search->predicate;
+
+        $_predicate_set = $_predicate_set->nest()->Match('name', 'test1')->Match('name', 'test2');
+        $_predicate_set->OR;
+        $_predicate_set = $_predicate_set->Match('name', 'test2')->unnest();
+        $_predicate_set->AND;
+        $_predicate_set->nest()->Match('name', 'test3')->Match('name', 'test4')->unnest();
+
+        $this->assertSame([
+            'bool' =>
+                [
+                    'must' =>
+                        [
+                            [
+                                'bool' =>
+                                    [
+                                        'should' =>
+                                            [
+                                                [
+                                                    'bool' =>
+                                                        [
+                                                            'must' =>
+                                                                [
+                                                                    [
+                                                                        'match' =>
+                                                                            [
+                                                                                'name' => 'test1',
+                                                                            ],
+                                                                    ],
+                                                                    [
+                                                                        'match' =>
+                                                                            [
+                                                                                'name' => 'test2',
+                                                                            ],
+                                                                    ],
+                                                                ],
+                                                        ],
+                                                ],
+                                                [
+                                                    'match' =>
+                                                        [
+                                                            'name' => 'test2',
+                                                        ],
+                                                ],
+                                            ],
+                                    ],
+                            ],
+                            [
+                                'bool' =>
+                                    [
+                                        'must' =>
+                                            [
+                                                [
+                                                    'match' =>
+                                                        [
+                                                            'name' => 'test3',
+                                                        ],
+                                                ],
+                                                [
+                                                    'match' =>
+                                                        [
+                                                            'name' => 'test4',
+                                                        ],
+                                                ],
+                                            ],
+                                    ],
+                            ],
+                        ],
+                ],
+        ], $_search->getQuery());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
     public function test_not_term() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->not()->Term('name', 'test1')->unnest();
 
         $this->assertSame([
@@ -469,7 +560,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_not_term_combination() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1);
         $_search->predicate->not()->Term('name', 'test1')->Term('name', 'test2')->unnest();
 
         $this->assertSame([
@@ -498,7 +588,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_query_string() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(20)->order('_uid', 'asc');
         $_search->predicate->QueryString('test1*', ['name']);
 
         $this->assertSame([
@@ -585,7 +674,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_multimatch_string() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(10);
         $_search->predicate->MultiMatch(1, [
             'test_param1',
             'test_param3',
@@ -611,7 +699,6 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_range_types() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(10);
         $_search->predicate->Range('range_param', 1, 2, [
             'types' => [
                 'from' => 'gt',
@@ -637,13 +724,13 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_fields() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->limit(1)->fields(['name']);
+        $_search->limit(10)->fields(['name']);
         $_search->predicate->Term('name', 'test10');
 
         $this->assertSame([
             'index' => 'elasticsearchpredicate',
             'type'  => 'TestType',
-            'size'  => 1,
+            'size'  => 10,
             'body'  => [
                 'stored_fields' => ['name'],
                 'query'         => [
@@ -651,6 +738,85 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
                         'name' => 'test10',
                     ],
                 ],
+            ],
+        ], $_search->getPreparedParams());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
+    public function test_limit_offset() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+        $_search->limit(10)->offset(10);
+        $_search->predicate->Term('name', 'test10');
+
+        $this->assertSame([
+            'index' => 'elasticsearchpredicate',
+            'type'  => 'TestType',
+            'size'  => 10,
+            'from'  => 100,
+            'body'  => [
+                'query' => [
+                    'term' => [
+                        'name' => 'test10',
+                    ],
+                ],
+            ],
+        ], $_search->getPreparedParams());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
+    public function test_order() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+        $_search->order('name', 'ASC');
+        $_search->predicate->Term('name', 'test10');
+
+        $this->assertSame([
+            'index' => 'elasticsearchpredicate',
+            'type'  => 'TestType',
+            'body'  => [
+                'query' => [
+                    'term' => [
+                        'name' => 'test10',
+                    ],
+                ],
+                'sort' => [
+                    [
+                        'name' => 'asc'
+                    ]
+                ]
+            ],
+        ], $_search->getPreparedParams());
+
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+        $_search->order('name', 'ASC')->order('surname', 'desc');
+        $_search->predicate->Term('name', 'test10');
+
+        $this->assertSame([
+            'index' => 'elasticsearchpredicate',
+            'type'  => 'TestType',
+            'body'  => [
+                'query' => [
+                    'term' => [
+                        'name' => 'test10',
+                    ],
+                ],
+                'sort' => [
+                    [
+                        'name' => 'asc'
+                    ],
+                    [
+                        'surname' => 'desc'
+                    ]
+                ]
             ],
         ], $_search->getPreparedParams());
     }

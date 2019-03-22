@@ -163,8 +163,15 @@ class PredicateSet implements PredicateSetInterface {
             $this->_last->setCombiner($this->_combiner);
         }
 
-        $this->_predicates = $this->_predicates->append($predicate);
-        $this->_last = $predicate;
+        if($predicate instanceof PredicateSet){
+            if(!$predicate->isEmpty()){
+                $this->_predicates = $this->_predicates->append($predicate);
+                $this->_last = $predicate;
+            }
+        } else {
+            $this->_predicates = $this->_predicates->append($predicate);
+            $this->_last = $predicate;
+        }
 
         $this->_combiner = self::C_AND;
 
@@ -499,7 +506,7 @@ class PredicateSet implements PredicateSetInterface {
                     return true;
                 }
 
-                return !$predicate->isEmpty();
+                return $predicate->isEmpty() === false;
             }
 
             return true;
