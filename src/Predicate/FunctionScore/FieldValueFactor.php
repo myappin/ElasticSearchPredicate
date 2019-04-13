@@ -47,18 +47,22 @@ class FieldValueFactor extends AbstractFunction {
 
     /**
      * FieldValueFactor constructor.
-     * @param string      $field
-     * @param null        $factor
-     * @param string|null $modifier
+     * @param string         $field
+     * @param null|int|float $factor
+     * @param string|null    $modifier
+     * @param null|int|float $missing
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
-    public function __construct(string $field, $factor = null, string $modifier = null) {
+    public function __construct(string $field, $factor = null, string $modifier = null, $missing = null) {
         $this->setField($field);
         if ($factor !== null) {
             $this->setFactor($factor);
         }
         if ($modifier !== null) {
             $this->setModifier($modifier);
+        }
+        if ($missing !== null) {
+            $this->setMissing($missing);
         }
     }
 
