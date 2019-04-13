@@ -69,7 +69,7 @@ abstract class AbstractPredicate implements PredicateInterface {
 		$_implements = class_implements($this);
 		if(!empty($options)){
 			foreach($options as $key => $opt){
-				if(in_array($key, $this->_other_options)){
+				if(in_array($key, $this->_other_options, true)){
 					if(empty($opt)){
 						call_user_func([
 										   $this,
@@ -89,7 +89,11 @@ abstract class AbstractPredicate implements PredicateInterface {
 				}
 				$_method = strtolower($key);
 				$_key    = ucfirst($_method);
-				if(!in_array('ElasticSearchPredicate\Predicate\\Predicates\\' . $_key . '\\' . $_key . 'Interface', $_implements)){
+				if(!in_array(
+				    'ElasticSearchPredicate\Predicate\\Predicates\\' . $_key . '\\' . $_key . 'Interface',
+                    $_implements,
+                    true
+                )){
 					continue;
 				}
 				if(empty($opt)){

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,10 +11,8 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate;
 
-
 use DusanKasan\Knapsack\Collection;
 use ElasticSearchPredicate\Predicate\FunctionScore\FunctionInterface;
-
 
 /**
  * Class FunctionScore
@@ -25,212 +23,212 @@ use ElasticSearchPredicate\Predicate\FunctionScore\FunctionInterface;
 class FunctionScore extends PredicateSet {
 
 
-	/**
-	 * @var float|int
-	 */
-	protected $_max_boost = null;
+    /**
+     * @var float|int
+     */
+    protected $_max_boost = null;
 
 
-	/**
-	 * @var string
-	 */
-	protected $_score_mode = null;
+    /**
+     * @var string
+     */
+    protected $_score_mode = null;
 
 
-	/**
-	 * @var string
-	 */
-	protected $_boost_mode = null;
+    /**
+     * @var string
+     */
+    protected $_boost_mode = null;
 
 
-	/**
-	 * @var float|int
-	 */
-	protected $_min_score = null;
+    /**
+     * @var float|int
+     */
+    protected $_min_score = null;
 
 
-	/**
-	 * @var Collection
-	 */
-	protected $_functions;
+    /**
+     * @var Collection
+     */
+    protected $_functions;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param \ElasticSearchPredicate\Predicate\FunctionScore\FunctionInterface $function
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
-	 */
-	public function addFunction(FunctionInterface $function) : FunctionScore{
-		$this->_functions = $this->getFunctions()->append($function);
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param \ElasticSearchPredicate\Predicate\FunctionScore\FunctionInterface $function
+     * @return \ElasticSearchPredicate\Predicate\FunctionScore
+     */
+    public function addFunction(FunctionInterface $function): FunctionScore {
+        $this->_functions = $this->getFunctions()->append($function);
 
-		return $this;
-	}
-
-
-	/**
-	 * @return float|int
-	 */
-	public function getMaxBoost(){
-		return $this->_max_boost;
-	}
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $max_boost
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setMaxBoost($max_boost) : FunctionScore{
-		if(is_float($max_boost) && is_int($max_boost)){
-			throw new PredicateException('Max boost should be int or float');
-		}
-		$this->_max_boost = $max_boost;
-
-		return $this;
-	}
+    /**
+     * @return float|int
+     */
+    public function getMaxBoost() {
+        return $this->_max_boost;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getBoostMode(){
-		return $this->_boost_mode;
-	}
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param $max_boost
+     * @return \ElasticSearchPredicate\Predicate\FunctionScore
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function setMaxBoost($max_boost): FunctionScore {
+        if (is_float($max_boost) && is_int($max_boost)) {
+            throw new PredicateException('Max boost should be int or float');
+        }
+        $this->_max_boost = $max_boost;
+
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $boost_mode
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setBoostMode($boost_mode) : FunctionScore{
-		if(!in_array($boost_mode, [
-			'multiply',
-			'replace',
-			'sum',
-			'avg',
-			'max',
-			'min',
-		])
-		){
-			throw new PredicateException('Invalid boost type');
-		}
-		$this->_boost_mode = $boost_mode;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getBoostMode() {
+        return $this->_boost_mode;
+    }
 
 
-	/**
-	 * @return float|int
-	 */
-	public function getMinScore(){
-		return $this->_min_score;
-	}
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param string $boost_mode
+     * @return \ElasticSearchPredicate\Predicate\FunctionScore
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function setBoostMode(string $boost_mode): FunctionScore {
+        if (!in_array($boost_mode, [
+            'multiply',
+            'replace',
+            'sum',
+            'avg',
+            'max',
+            'min',
+        ], true)
+        ) {
+            throw new PredicateException('Invalid boost type');
+        }
+        $this->_boost_mode = $boost_mode;
+
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $min_score
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setMinScore($min_score) : FunctionScore{
-		if(is_float($min_score) && is_int($min_score)){
-			throw new PredicateException('Min score should be int or float');
-		}
-		$this->_min_score = $min_score;
-
-		return $this;
-	}
+    /**
+     * @return float|int
+     */
+    public function getMinScore() {
+        return $this->_min_score;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getScoreMode(){
-		return $this->_score_mode;
-	}
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param $min_score
+     * @return \ElasticSearchPredicate\Predicate\FunctionScore
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function setMinScore($min_score): FunctionScore {
+        if (is_float($min_score) && is_int($min_score)) {
+            throw new PredicateException('Min score should be int or float');
+        }
+        $this->_min_score = $min_score;
+
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $score_mode
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setScoreMode($score_mode) : FunctionScore{
-		if(!in_array($score_mode, [
-			'multiply',
-			'sum',
-			'avg',
-			'first',
-			'max',
-			'min',
-		])
-		){
-			throw new PredicateException('Invalid score mode');
-		}
-		$this->_score_mode = $score_mode;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getScoreMode() {
+        return $this->_score_mode;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function toArray() : array{
-		$_functions = $this->getFunctions();
-		if($_functions->isEmpty()){
-			throw new PredicateException('FunctionScore should contain at least one function');
-		}
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param string $score_mode
+     * @return \ElasticSearchPredicate\Predicate\FunctionScore
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function setScoreMode(string $score_mode): FunctionScore {
+        if (!in_array($score_mode, [
+            'multiply',
+            'sum',
+            'avg',
+            'first',
+            'max',
+            'min',
+        ], true)
+        ) {
+            throw new PredicateException('Invalid score mode');
+        }
+        $this->_score_mode = $score_mode;
 
-		$_ret = [
-			'function_score' => [
-			],
-		];
-
-		if(!empty($_query = parent::toArray())){
-			$_ret['function_score']['query'] = $_query;
-		}
-
-		if(isset($this->_boost_mode)){
-			$_ret['function_score']['boost_mode'] = $this->_boost_mode;
-		}
-		if(isset($this->_max_boost)){
-			$_ret['function_score']['max_boost'] = $this->_max_boost;
-		}
-		if(isset($this->_score_mode)){
-			$_ret['function_score']['score_mode'] = $this->_score_mode;
-		}
-		if(isset($this->_min_score)){
-			$_ret['function_score']['min_score'] = $this->_min_score;
-		}
-
-		$_ret['function_score']['functions'] = $_functions->map(function(FunctionInterface $item){
-			return $item->toArray();
-		})->toArray();
-
-		return $_ret;
-	}
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \DusanKasan\Knapsack\Collection
-	 */
-	public function getFunctions() : Collection{
-		if(!isset($this->_functions)){
-			return $this->_functions = new Collection([]);
-		}
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return array
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function toArray(): array {
+        $_functions = $this->getFunctions();
+        if ($_functions->isEmpty()) {
+            throw new PredicateException('FunctionScore should contain at least one function');
+        }
 
-		return $this->_functions;
-	}
+        $_ret = [
+            'function_score' => [
+            ],
+        ];
+
+        if (!empty($_query = parent::toArray())) {
+            $_ret['function_score']['query'] = $_query;
+        }
+
+        if (isset($this->_boost_mode)) {
+            $_ret['function_score']['boost_mode'] = $this->_boost_mode;
+        }
+        if (isset($this->_max_boost)) {
+            $_ret['function_score']['max_boost'] = $this->_max_boost;
+        }
+        if (isset($this->_score_mode)) {
+            $_ret['function_score']['score_mode'] = $this->_score_mode;
+        }
+        if (isset($this->_min_score)) {
+            $_ret['function_score']['min_score'] = $this->_min_score;
+        }
+
+        $_ret['function_score']['functions'] = $_functions->map(function(FunctionInterface $item) {
+            return $item->toArray();
+        })->toArray();
+
+        return $_ret;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return \DusanKasan\Knapsack\Collection
+     */
+    public function getFunctions(): Collection {
+        if (!isset($this->_functions)) {
+            return $this->_functions = new Collection([]);
+        }
+
+        return $this->_functions;
+    }
 
 
 }

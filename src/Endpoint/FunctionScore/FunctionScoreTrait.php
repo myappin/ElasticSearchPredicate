@@ -29,20 +29,20 @@ trait FunctionScoreTrait {
 	 * @return \ElasticSearchPredicate\Predicate\FunctionScore
 	 */
 	public function getFunctionScorePredicate() : FunctionScore{
-		if(!$this->_predicate instanceof FunctionScore){
-			if($this->_predicate instanceof PredicateSet){
+		if(!$this->_predicates instanceof FunctionScore){
+			if($this->_predicates instanceof PredicateSet){
 				$_score_function = new FunctionScore();
-				$_score_function->setCombiner($this->_predicate->getCombiner());
-				$_score_function->setPredicates($this->_predicate->getPredicates());
+				$_score_function->setCombiner($this->_predicates->getCombiner());
+				$_score_function->setPredicates($this->_predicates->getPredicates());
 
-				return $this->_predicate = $_score_function;
+				return $this->_predicates = $_score_function;
 			}
 			else{
-				return $this->_predicate = new FunctionScore();
+				return $this->_predicates = new FunctionScore();
 			}
 		}
 
-		return $this->_predicate;
+		return $this->_predicates;
 	}
 
 

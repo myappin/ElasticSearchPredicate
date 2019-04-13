@@ -29,20 +29,20 @@ trait FilteredTrait {
      * @return \ElasticSearchPredicate\Predicate\FunctionScore
      */
     public function getFilteredPredicate() : Filtered {
-        if (!$this->_predicate instanceof Filtered) {
-            if ($this->_predicate instanceof PredicateSet) {
+        if (!$this->_predicates instanceof Filtered) {
+            if ($this->_predicates instanceof PredicateSet) {
                 $_filtered = new Filtered();
-                $_filtered->setCombiner($this->_predicate->getCombiner());
-                $_filtered->setPredicates($this->_predicate->getPredicates());
+                $_filtered->setCombiner($this->_predicates->getCombiner());
+                $_filtered->setPredicates($this->v->getPredicates());
 
-                return $this->_predicate = $_filtered;
+                return $this->_predicates = $_filtered;
             }
             else {
-                return $this->_predicate = new Filtered();
+                return $this->_predicates = new Filtered();
             }
         }
 
-        return $this->_predicate;
+        return $this->_predicates;
     }
 
 

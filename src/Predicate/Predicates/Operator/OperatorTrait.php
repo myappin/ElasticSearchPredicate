@@ -46,7 +46,7 @@ trait OperatorTrait {
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function operator(string $operator) : PredicateInterface{
-		if(!in_array($operator, $this->_operators)){
+		if(!in_array($operator, $this->_operators, true)){
 			throw new PredicateException('Operator is not valid');
 		}
 

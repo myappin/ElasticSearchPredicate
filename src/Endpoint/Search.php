@@ -21,6 +21,7 @@ use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore;
+use ElasticSearchPredicate\Predicate\Filtered;
 use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
 use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
 use ElasticSearchPredicate\Predicate\NestedPredicateSet;
@@ -33,6 +34,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet  predicate
  * @property FunctionScore function_score
+ * @property Filtered filtered
  * @method PredicateSet Fuzzy(string $term, $value, array $options = [])
  * @method PredicateSet Term(string $term, $value, array $options = [])
  * @method PredicateSet Terms(string $term, array $values, array $options = [])
@@ -160,7 +162,7 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 	 */
     public function __get($name) : PredicateSet {
 		$_name = strtolower($name);
-		if($_name === 'predicate'){
+        if($_name === 'predicate' || $_name === 'predicates'){
 			return $this->getPredicate();
 		}
 		elseif($_name === 'function_score'){
@@ -205,8 +207,9 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      * @return array
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
      */
     public function getPreparedParams() : array {
         if (!$this->_is_prepared) {
@@ -218,7 +221,8 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
      */
     private function prepareParams() {
         $_prepared_params = [];
@@ -317,7 +321,7 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
 		if(!in_array($asc, [
 			'asc',
 			'desc',
-		])
+		], true)
 		){
 			throw new EndpointException('Order type must be asc or desc');
 		}

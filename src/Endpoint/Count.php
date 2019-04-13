@@ -141,7 +141,7 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
      */
     public function __get($name) : PredicateSet {
         $_name = strtolower($name);
-        if ($_name === 'predicate') {
+        if($_name === 'predicate' || $_name === 'predicates'){
             return $this->getPredicate();
         }
 

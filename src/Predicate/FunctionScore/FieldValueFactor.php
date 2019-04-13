@@ -41,12 +41,13 @@ class FieldValueFactor extends AbstractFunction {
 	protected $_modifier = '';
 
 
-	/**
-	 * FieldValueFactor constructor.
-	 * @param string      $field
-	 * @param null        $factor
-	 * @param string|null $modifier
-	 */
+    /**
+     * FieldValueFactor constructor.
+     * @param string      $field
+     * @param null        $factor
+     * @param string|null $modifier
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
 	public function __construct(string $field, $factor = null, string $modifier = null){
 		$this->setField($field);
 		if($factor !== null){
@@ -131,7 +132,7 @@ class FieldValueFactor extends AbstractFunction {
 			'square',
 			'sqrt',
 			'reciprocal',
-		])
+		], true)
 		){
 			throw new PredicateException('Modifier is not supported');
 		}
