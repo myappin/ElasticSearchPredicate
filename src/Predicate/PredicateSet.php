@@ -83,11 +83,12 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      * @param $name
      * @param $arguments
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws \ReflectionException
      */
     public function __call($name, $arguments): PredicateSet {
         $name = preg_replace('/[^a-z0-9\_]+/i', '', $name);
@@ -130,7 +131,7 @@ class PredicateSet implements PredicateSetInterface {
         if (in_array($_combiner = strtoupper($name), [
             self::C_AND,
             self::C_OR,
-        ])
+        ], true)
         ) {
             $this->setCombiner($_combiner);
 

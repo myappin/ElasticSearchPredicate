@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,9 +11,7 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
-
 use ElasticSearchPredicate\Predicate\PredicateException;
-
 
 /**
  * Class ScriptScore
@@ -23,55 +21,56 @@ use ElasticSearchPredicate\Predicate\PredicateException;
 class ScriptScore extends AbstractFunction {
 
 
-	/**
+    /**
      * @var array
-	 */
-	protected $_script;
+     */
+    protected $_script;
 
 
-	/**
-	 * @var array
-	 */
-	protected $_params = [];
+    /**
+     * @var array
+     */
+    protected $_params = [];
 
 
-	/**
-	 * ScriptScore constructor.
-	 * @param string $script
-	 * @param array  $params
-	 */
+    /**
+     * ScriptScore constructor.
+     * @param array $script
+     * @param array $params
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
     public function __construct(array $script, array $params = []) {
-		$this->setScript($script);
-		$this->setParams($params);
-	}
+        $this->setScript($script);
+        $this->setParams($params);
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param array $params
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setParams(array $params) : ScriptScore{
-		foreach($params as $key => $item){
-			if(!is_string($key)){
-				throw new PredicateException('Wrong parameter key type');
-			}
-			if(!is_scalar($item)){
-				throw new PredicateException('Wrong parameter value type');
-			}
-		}
-		$this->_params = $params;
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @param array $params
+     * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function setParams(array $params): ScriptScore {
+        foreach ($params as $key => $item) {
+            if (!is_string($key)) {
+                throw new PredicateException('Wrong parameter key type');
+            }
+            if (!is_scalar($item)) {
+                throw new PredicateException('Wrong parameter value type');
+            }
+        }
+        $this->_params = $params;
 
-		return $this;
-	}
+        return $this;
+    }
 
 
     /**
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
      */
-    public function getScript() : array {
+    public function getScript(): array {
         return $this->_script;
     }
 
@@ -81,39 +80,42 @@ class ScriptScore extends AbstractFunction {
      * @param array $script
      * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
      */
-    public function setScript(array $script) : ScriptScore {
+    public function setScript(array $script): ScriptScore {
+        if (isset($script['inline'])) {
+            $script['inline'] = trim($script['inline']);
+        }
         $this->_script = $script;
 
         return $this;
     }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function toArray() : array{
-		$_ret = [
-			'script_score' => [
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return array
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function toArray(): array {
+        $_ret = [
+            'script_score' => [
                 'script' => $this->_script,
-			],
-		];
+            ],
+        ];
 
-		if(!empty($_params = $this->_params)){
+        if (!empty($_params = $this->_params)) {
             $_ret['script_score']['script']['params'] = $_params;
-		}
+        }
 
-		if(!empty($_query = $this->getQuery())){
-			$_ret['filter'] = $_query;
-		}
+        if (!empty($_query = $this->getQuery())) {
+            $_ret['filter'] = $_query;
+        }
 
-		if(!empty($this->_weight)){
-			$_ret['weight'] = $this->_weight;
-		}
+        if (!empty($this->_weight)) {
+            $_ret['weight'] = $this->_weight;
+        }
 
-		return $_ret;
-	}
+        return $_ret;
+    }
 
 
 }

@@ -43,7 +43,7 @@ trait TypeTrait {
 	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
 	 */
 	public function type(string $type) : PredicateInterface{
-		if(!in_array($type, $this->_types)){
+		if(!in_array($type, $this->_types, true)){
 			throw new PredicateException(sprintf('Type %s is not valid', $type));
 		}
 

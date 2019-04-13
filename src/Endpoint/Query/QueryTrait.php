@@ -26,7 +26,7 @@ trait QueryTrait {
 	/**
 	 * @var PredicateSet
 	 */
-	protected $_predicate;
+	protected $_predicates;
 
 
 	/**
@@ -43,11 +43,11 @@ trait QueryTrait {
 	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
 	 */
 	public function getPredicate() : PredicateSet{
-		if(!$this->_predicate instanceof PredicateSet){
-			$this->_predicate = new PredicateSet();
+		if(!$this->_predicates instanceof PredicateSet){
+			$this->_predicates = new PredicateSet();
 		}
 
-		return $this->_predicate;
+		return $this->_predicates;
 	}
 
 

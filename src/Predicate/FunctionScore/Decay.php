@@ -37,10 +37,11 @@ class Decay extends AbstractFunction {
 	protected $_fields;
 
 
-	/**
-	 * Decay constructor.
-	 * @param string $type
-	 */
+    /**
+     * Decay constructor.
+     * @param string $type
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
 	public function __construct(string $type){
 		$this->setType($type);
 	}
@@ -78,7 +79,7 @@ class Decay extends AbstractFunction {
 			'linear',
 			'exp',
 			'gauss',
-		])
+		], true)
 		){
 			throw new PredicateException('Invalid decay function');
 		}

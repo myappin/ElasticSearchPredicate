@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace ElasticSearchPredicateTest;
 
 use ElasticSearchPredicate\Client;
+use ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
 use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
 use ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor;
@@ -390,7 +391,9 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
     public function test_skip_append_empty() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
         $_predicate_set = new PredicateSet();
-        $_predicate_set = $_predicate_set->Match('name', 'test1')->nest()->append(new PredicateSet())->OR->append(new PredicateSet())->unnest();
+        $_predicate_set = $_predicate_set->Match('name', 'test1')
+            ->nest()
+            ->append(new PredicateSet())->OR->append(new PredicateSet())->unnest();
 
         $_search->predicate->not()->append($_predicate_set)->unnest();
 
@@ -697,6 +700,160 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      * @throws \ElasticSearchPredicate\Endpoint\EndpointException
      * @throws \Exception
      */
+    public function test_has_parent() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+        $_search->predicate
+            ->parent('ParentType')
+            ->Term('test_param1', 1)
+            ->unnest();
+
+        $this->assertSame([
+            'has_parent' => [
+                'parent_type' => 'ParentType',
+                'query'       => [
+                    'term' => [
+                        'test_param1' => 1,
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
+    public function test_has_child() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+        $_search->predicate
+            ->child('ChildType')
+            ->Term('test_param1', 1)
+            ->unnest();
+
+        $this->assertSame([
+            'has_child' => [
+                'type'  => 'ChildType',
+                'query' => [
+                    'term' => [
+                        'test_param1' => 1,
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
+    public function test_has_parent_function_score() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+
+        $_function_score = new FunctionScore();
+        $_function_score->addFunction(new ScriptScore([
+            'lang'   => 'groovy',
+            'inline' => 'TEST SCRIPT',
+        ], [
+            'test_param1' => 1,
+        ]));
+        $_function_score->Term('test_param2', 1);
+
+        $_search->predicate
+            ->parent('ParentType')
+            ->append($_function_score)
+            ->unnest();
+
+        $this->assertSame([
+            'has_parent' => [
+                'parent_type'  => 'ParentType',
+                'query' => [
+                    'function_score' => [
+                        'query'     => [
+                            'term' => [
+                                'test_param2' => 1,
+                            ],
+                        ],
+                        'functions' => [
+                            [
+                                'script_score' => [
+                                    'script' => [
+                                        'lang'   => 'groovy',
+                                        'inline' => 'TEST SCRIPT',
+                                        'params' => [
+                                            'test_param1' => 1,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
+    public function test_has_child_function_score() {
+        $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
+
+        $_function_score = new FunctionScore();
+        $_function_score->addFunction(new ScriptScore([
+            'lang'   => 'groovy',
+            'inline' => 'TEST SCRIPT',
+        ], [
+            'test_param1' => 1,
+        ]));
+        $_function_score->Term('test_param2', 1);
+
+        $_search->predicate
+            ->child('ChildType')
+            ->append($_function_score)
+            ->unnest();
+
+        $this->assertSame([
+            'has_child' => [
+                'type'  => 'ChildType',
+                'query' => [
+                    'function_score' => [
+                        'query'     => [
+                            'term' => [
+                                'test_param2' => 1,
+                            ],
+                        ],
+                        'functions' => [
+                            [
+                                'script_score' => [
+                                    'script' => [
+                                        'lang'   => 'groovy',
+                                        'inline' => 'TEST SCRIPT',
+                                        'params' => [
+                                            'test_param1' => 1,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws \Exception
+     */
     public function test_range_types() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
         $_search->predicate->Range('range_param', 1, 2, [
@@ -788,11 +945,11 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
                         'name' => 'test10',
                     ],
                 ],
-                'sort' => [
+                'sort'  => [
                     [
-                        'name' => 'asc'
-                    ]
-                ]
+                        'name' => 'asc',
+                    ],
+                ],
             ],
         ], $_search->getPreparedParams());
 
@@ -809,14 +966,14 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
                         'name' => 'test10',
                     ],
                 ],
-                'sort' => [
+                'sort'  => [
                     [
-                        'name' => 'asc'
+                        'name' => 'asc',
                     ],
                     [
-                        'surname' => 'desc'
-                    ]
-                ]
+                        'surname' => 'desc',
+                    ],
+                ],
             ],
         ], $_search->getPreparedParams());
     }

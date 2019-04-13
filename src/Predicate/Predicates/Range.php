@@ -116,7 +116,7 @@ class Range extends AbstractPredicate implements BoostInterface {
 			if(!in_array($from, [
 				'gte',
 				'gt',
-			])
+			], true)
 			){
 				throw new PredicateException('From type can be one of gt and gte');
 			}
@@ -126,7 +126,7 @@ class Range extends AbstractPredicate implements BoostInterface {
 			if(!in_array($to, [
 				'lte',
 				'lt',
-			])
+			], true)
 			){
 				throw new PredicateException('From type can be one of gt and gte');
 			}
