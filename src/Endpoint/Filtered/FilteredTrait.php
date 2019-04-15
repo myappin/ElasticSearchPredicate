@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace ElasticSearchPredicate\Endpoint\Filtered;
 
 
-use ElasticSearchPredicate\Predicate\Filtered;
+use ElasticSearchPredicate\Predicate\FilterPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 
 
@@ -28,17 +28,17 @@ trait FilteredTrait {
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return \ElasticSearchPredicate\Predicate\FunctionScore
      */
-    public function getFilteredPredicate() : Filtered {
-        if (!$this->_predicates instanceof Filtered) {
+    public function getFilteredPredicate() : FilterPredicateSet {
+        if (!$this->_predicates instanceof FilterPredicateSet) {
             if ($this->_predicates instanceof PredicateSet) {
-                $_filtered = new Filtered();
+                $_filtered = new FilterPredicateSet();
                 $_filtered->setCombiner($this->_predicates->getCombiner());
                 $_filtered->setPredicates($this->v->getPredicates());
 
                 return $this->_predicates = $_filtered;
             }
             else {
-                return $this->_predicates = new Filtered();
+                return $this->_predicates = new FilterPredicateSet();
             }
         }
 

@@ -21,12 +21,12 @@ use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore;
-use ElasticSearchPredicate\Predicate\Filtered;
 use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
 use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
 use ElasticSearchPredicate\Predicate\NestedPredicateSet;
 use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
+use ElasticSearchPredicate\Predicate\FilterPredicateSet;
 
 /**
  * Class Search
@@ -34,7 +34,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet  predicate
  * @property FunctionScore function_score
- * @property Filtered filtered
+ * @property FilterPredicateSet filtered
  * @method PredicateSet Fuzzy(string $term, $value, array $options = [])
  * @method PredicateSet Term(string $term, $value, array $options = [])
  * @method PredicateSet Terms(string $term, array $values, array $options = [])
