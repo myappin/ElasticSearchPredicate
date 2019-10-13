@@ -15,9 +15,6 @@ namespace ElasticSearchPredicate\Endpoint;
 use Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
-use ElasticSearchPredicate\Endpoint\Filtered\FilteredTrait;
-use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreInterface;
-use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore;
@@ -26,15 +23,12 @@ use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
 use ElasticSearchPredicate\Predicate\NestedPredicateSet;
 use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
-use ElasticSearchPredicate\Predicate\FilterPredicateSet;
 
 /**
  * Class Search
  * @package   ElasticSearchPredicate\Endpoint
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet  predicate
- * @property FunctionScore function_score
- * @property FilterPredicateSet filtered
  * @method PredicateSet Fuzzy(string $term, $value, array $options = [])
  * @method PredicateSet Term(string $term, $value, array $options = [])
  * @method PredicateSet Terms(string $term, array $values, array $options = [])
@@ -54,10 +48,10 @@ use ElasticSearchPredicate\Predicate\FilterPredicateSet;
  * @property PredicateSet  OR
  * @property PredicateSet  or
  */
-class Search implements EndpointInterface, QueryInterface, FunctionScoreInterface, FieldsInterface {
+class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
-    use QueryTrait, FunctionScoreTrait, FilteredTrait, FieldsTrait;
+    use QueryTrait, FieldsTrait;
 
 
 	/**
@@ -165,12 +159,6 @@ class Search implements EndpointInterface, QueryInterface, FunctionScoreInterfac
         if($_name === 'predicate' || $_name === 'predicates'){
 			return $this->getPredicate();
 		}
-		elseif($_name === 'function_score'){
-			return $this->getFunctionScorePredicate();
-		}
-        elseif ($_name === 'filtered') {
-            return $this->getFilteredPredicate();
-        }
 
 		return $this->getPredicate()->{$name};
 	}
