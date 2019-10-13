@@ -990,13 +990,19 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
         $_linear = (new Decay('linear'))->addField(new Field('range_param', 1, 2))
             ->addField(new Field('range_param', 2, 4));
         $_linear->predicate->Range('range_param', 1, 5);
-
-        $_search->function_score->addFunction($_linear);
-
         $_linear->setWeight(1);
 
-        $this->assertSame([
+        $_function_score = new FunctionScore();
+        $_function_score->addFunction($_linear);
+        $_function_score->MatchAll();
+
+        $_search->predicate->append($_function_score);
+
+        $this->assertSame(serialize([
             'function_score' => [
+                'query' => [
+                    'match_all' => new \stdClass()
+                ],
                 'functions' => [
                     [
                         'linear' => [
@@ -1017,7 +1023,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
                     ],
                 ],
             ],
-        ], $_search->getQuery());
+        ]), serialize($_search->getQuery()));
     }
 
 
@@ -1036,10 +1042,18 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
             'param1' => 2,
             'param2' => 3,
         ]));
-        $_search->function_score->addFunction($_linear);
 
-        $this->assertSame([
+        $_function_score = new FunctionScore();
+        $_function_score->addFunction($_linear);
+        $_function_score->MatchAll();
+
+        $_search->predicate->append($_function_score);
+
+        $this->assertSame(serialize([
             'function_score' => [
+                'query' => [
+                    'match_all' => new \stdClass()
+                ],
                 'functions' => [
                     [
                         'script_score' => [
@@ -1055,7 +1069,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
                     ],
                 ],
             ],
-        ], $_search->getQuery());
+        ]), serialize($_search->getQuery()));
     }
 
 
@@ -1068,10 +1082,18 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
 
         $_factor = new FieldValueFactor('range_param', 1.2, 'sqrt');
-        $_search->function_score->addFunction($_factor);
 
-        $this->assertSame([
+        $_function_score = new FunctionScore();
+        $_function_score->addFunction($_factor);
+        $_function_score->MatchAll();
+
+        $_search->predicate->append($_function_score);
+
+        $this->assertSame(serialize([
             'function_score' => [
+                'query' => [
+                    'match_all' => new \stdClass()
+                ],
                 'functions' => [
                     [
                         'field_value_factor' => [
@@ -1082,7 +1104,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
                     ],
                 ],
             ],
-        ], $_search->getQuery());
+        ]), serialize($_search->getQuery()));
     }
 
 
