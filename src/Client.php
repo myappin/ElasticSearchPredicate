@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -10,7 +10,6 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicate;
-
 
 use Elasticsearch\ClientBuilder;
 use ElasticSearchPredicate\Endpoint\Count;
@@ -27,98 +26,98 @@ use ElasticSearchPredicate\Endpoint\Update;
 class Client {
 
 
-	/**
-	 * @var ClientBuilder
-	 */
-	protected $_elasticsearch_builder;
-
-
-	/**
-	 * @var \Elasticsearch\Client
-	 */
-	protected $_elasticsearch;
-
-
-	/**
-	 * Client constructor.
-	 */
-	public function __construct(){
-		$this->_elasticsearch_builder = ClientBuilder::create();
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \Elasticsearch\ClientBuilder
-	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
-	 */
-	public function getClientBuilder() : ClientBuilder{
-		if($this->_elasticsearch_builder === null){
-			throw new EndpointException('ElasticSearch client is already built.');
-		}
-
-		return $this->_elasticsearch_builder;
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $index
-	 * @param string $type
-	 * @return \ElasticSearchPredicate\Endpoint\Search
-	 */
-	public function search(string $index = '', string $type = '') : Search{
-		return new Search($this->getElasticSearchClient(), $index, $type);
-	}
+    /**
+     * @var ClientBuilder
+     */
+    protected $_elasticsearch_builder;
 
 
     /**
+     * @var \Elasticsearch\Client
+     */
+    protected $_elasticsearch;
+
+
+    /**
+     * Client constructor.
+     */
+    public function __construct() {
+        $this->_elasticsearch_builder = ClientBuilder::create();
+    }
+
+
+    /**
+     * @return \Elasticsearch\ClientBuilder
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getClientBuilder(): ClientBuilder {
+        if ($this->_elasticsearch_builder === null) {
+            throw new EndpointException('ElasticSearch client is already built.');
+        }
+
+        return $this->_elasticsearch_builder;
+    }
+
+
+    /**
+     * @return \Elasticsearch\Client
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getElasticSearchClient(): \Elasticsearch\Client {
+        if ($this->_elasticsearch instanceof \Elasticsearch\Client) {
+            return $this->_elasticsearch;
+        }
+
+        $this->_elasticsearch = $this->_elasticsearch_builder->build();
+        $this->_elasticsearch_builder = null;
+
+        return $this->_elasticsearch;
+    }
+
+
+    /**
+     * @param string $index
+     * @param string $type
+     * @return \ElasticSearchPredicate\Endpoint\Search
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function search(string $index, string $type): Search {
+        return new Search($this->getElasticSearchClient(), $index, $type);
+    }
+
+
+    /**
      * @param string $index
      * @param string $type
      * @return \ElasticSearchPredicate\Endpoint\Count
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function count(string $index = '', string $type = '') : Count {
+    public function count(string $index, string $type): Count {
         return new Count($this->getElasticSearchClient(), $index, $type);
     }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \Elasticsearch\Client
-	 */
-	public function getElasticSearchClient(){
-		if($this->_elasticsearch instanceof \Elasticsearch\Client){
-			return $this->_elasticsearch;
-		}
-
-		$this->_elasticsearch         = $this->_elasticsearch_builder->build();
-		$this->_elasticsearch_builder = null;
-
-		return $this->_elasticsearch;
-	}
-
-
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param string $index
      * @param string $type
      * @return \ElasticSearchPredicate\Endpoint\Delete
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function delete(string $index = '', string $type = '') : Delete {
+    public function delete(string $index, string $type): Delete {
         return new Delete($this->getElasticSearchClient(), $index, $type);
     }
 
 
     /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @param string $index
      * @param string $type
      * @param string $script
      * @param array  $params
      * @return \ElasticSearchPredicate\Endpoint\Update
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function update(string $index = '', string $type = '', string $script, array $params = []) : Update {
+    public function update(string $index, string $type, string $script, array $params = []): Update {
         return new Update($this->getElasticSearchClient(), $index, $type, $script, $params);
     }
 
