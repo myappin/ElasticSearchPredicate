@@ -105,7 +105,7 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
      * @param string                $index
      * @param string                $type
      */
-    public function __construct(Client $client, string $index = '', string $type = '') {
+    public function __construct(Client $client, string $index, string $type) {
         $this->_client = $client;
         $this->_index = $index;
         $this->_type = $type;
