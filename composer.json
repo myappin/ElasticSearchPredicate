@@ -32,6 +32,8 @@
   "require": {
     "php": ">=7",
     "myappin/elasticsearch-php": "dev-master#c16a538e5bc6aabffae51dec1169985f8e6a0dce",
+    "psr/log": "~1.0",
+    "guzzlehttp/ringphp" : "~1.0",
     "dusank/knapsack": "10.0.0"
   },
   "require-dev": {
