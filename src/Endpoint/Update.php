@@ -107,7 +107,7 @@ class Update implements EndpointInterface, QueryInterface {
      * @param string                $script
      * @param array                 $params
      */
-    public function __construct(Client $client, string $index = '', string $type = '', string $script, array $params = []) {
+    public function __construct(Client $client, string $index, string $type, string $script, array $params = []) {
         $this->_client = $client;
         $this->_index = $index;
         $this->_type = $type;
