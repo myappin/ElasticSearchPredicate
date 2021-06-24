@@ -10,9 +10,23 @@
   "config": {
     "discard-changes": true
   },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "myappin/elasticsearch-php",
+        "version": "dev-master",
+        "source": {
+          "url": "https://github.com/myappin/elasticsearch-php.git",
+          "type": "git",
+          "reference": "5.x"
+        }
+      }
+    }
+  ],
   "require": {
     "php": ">=7",
-    "elasticsearch/elasticsearch": "v7.13.1",
+    "myappin/elasticsearch-php": "dev-master#c16a538e5bc6aabffae51dec1169985f8e6a0dce",
     "dusank/knapsack": "10.0.0"
   },
   "require-dev": {
