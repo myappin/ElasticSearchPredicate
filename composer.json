@@ -20,6 +20,11 @@
           "url": "https://github.com/myappin/elasticsearch-php.git",
           "type": "git",
           "reference": "5.x"
+        },
+        "autoload": {
+          "psr-4": {
+            "Elasticsearch\\": "src/Elasticsearch/"
+          }
         }
       }
     }
