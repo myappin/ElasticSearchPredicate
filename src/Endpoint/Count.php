@@ -11,13 +11,9 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Endpoint;
 
-
 use Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
-use ElasticSearchPredicate\Endpoint\Filtered\FilteredTrait;
-use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreInterface;
-use ElasticSearchPredicate\Endpoint\FunctionScore\FunctionScoreTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore;
@@ -26,6 +22,7 @@ use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
 use ElasticSearchPredicate\Predicate\NestedPredicateSet;
 use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
+use Exception;
 
 /**
  * Class Count
@@ -33,11 +30,11 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  * @property PredicateSet  predicate
  * @property FunctionScore function_score
- * @method PredicateSet Term(string $term, $value, array $options = [])
+ * @method PredicateSet Term(string $term, bool|float|int|string $value, array $options = [])
  * @method PredicateSet Terms(string $term, array $values, array $options = [])
- * @method PredicateSet Match(string $match, $query, array $options = [])
- * @method PredicateSet Range(string $term, $from, $to = null, array $options = [])
- * @method PredicateSet QueryString($query, array $fields = [], array $options = [])
+ * @method PredicateSet Match(string $match, bool|float|int|string $query, array $options = [])
+ * @method PredicateSet Range(string $term, int|float|null $from, int|float|null $to, array $options = [])
+ * @method PredicateSet QueryString(bool|float|int|string $query, array $fields = [], array $options = [])
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
  * @method PredicateSet Script(array $script)
@@ -51,52 +48,39 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @property PredicateSet  OR
  * @property PredicateSet  or
  */
-class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface, FieldsInterface {
+class Count implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
-    use QueryTrait, FunctionScoreTrait, FilteredTrait, FieldsTrait;
+    use QueryTrait, FieldsTrait;
+
+    /**
+     * @var string
+     */
+    protected string $_index;
 
 
     /**
      * @var string
      */
-    protected $_index;
-
-
-    /**
-     * @var string
-     */
-    protected $_type;
+    protected string $_type;
 
 
     /**
      * @var \Elasticsearch\Client
      */
-    protected $_client;
+    protected Client $_client;
 
 
     /**
      * @var array
      */
-    protected $_prepared_params;
+    protected array $_prepared_params;
 
 
     /**
      * @var bool
      */
-    protected $_is_prepared = false;
-
-
-    /**
-     * @var array
-     */
-    protected $_aggs = [];
-
-
-    /**
-     * @var \Exception
-     */
-    protected $_exception;
+    protected bool $_is_prepared = false;
 
 
     /**
@@ -113,35 +97,28 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param $name
      * @param $arguments
      * @return PredicateSet
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function __call($name, $arguments) : PredicateSet {
+    public function __call($name, $arguments): PredicateSet {
         if (empty($arguments)) {
-            return call_user_func([
-                $this->getPredicate(),
-                $name,
-            ]);
+            return $this->getPredicate()->$name();
         }
-        else {
-            return call_user_func_array([
-                $this->getPredicate(),
-                $name,
-            ], $arguments);
-        }
+
+        return $this->getPredicate()->$name(...$arguments);
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param $name
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function __get($name) : PredicateSet {
+    public function __get($name): PredicateSet {
         $_name = strtolower($name);
-        if($_name === 'predicate' || $_name === 'predicates'){
+        if ($_name === 'predicate' || $_name === 'predicates') {
             return $this->getPredicate();
         }
 
@@ -150,23 +127,37 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
 
 
     /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function predicate() : PredicateSet {
+    public function getPreparedParams(): array {
+        if (!$this->_is_prepared) {
+            $this->prepareParams();
+        }
+
+        return $this->_prepared_params;
+    }
+
+
+    /**
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     */
+    public function predicate(): PredicateSet {
         return $this->getPredicate();
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
      * @throws \Exception
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function execute() : array {
+    public function execute(): array {
         try {
             $_result = $this->_client->count($this->getPreparedParams());
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $this->clearParams();
 
             throw $e;
@@ -179,22 +170,21 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @return array
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getPreparedParams() : array {
-        if (!$this->_is_prepared) {
-            $this->prepareParams();
-        }
+    public function clearParams(): self {
+        $this->_prepared_params = [];
+        $this->_is_prepared = false;
 
-        return $this->_prepared_params;
+        return $this;
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    private function prepareParams() {
+    private function prepareParams(): void {
         $_prepared_params = [];
         if (!empty($this->_index)) {
             $_prepared_params['index'] = $this->_index;
@@ -214,26 +204,6 @@ class Count implements EndpointInterface, QueryInterface, FunctionScoreInterface
 
         $this->_prepared_params = $_prepared_params;
         $this->_is_prepared = true;
-    }
-
-
-    /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @return \ElasticSearchPredicate\Endpoint\EndpointInterface
-     */
-    public function clearParams() : EndpointInterface {
-        $this->_prepared_params = [];
-        $this->_is_prepared = false;
-
-        return $this;
-    }
-
-
-    /**
-     * @return \Exception|null
-     */
-    public function getException() {
-        return $this->_exception;
     }
 
 

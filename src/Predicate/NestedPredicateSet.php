@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -13,7 +13,7 @@ namespace ElasticSearchPredicate\Predicate;
 
 use ElasticSearchPredicate\Predicate\PredicateSet\InnerHitsInterface;
 use ElasticSearchPredicate\Predicate\PredicateSet\InnerHitsTrait;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class NestedPredicateSet
@@ -26,19 +26,18 @@ class NestedPredicateSet extends PredicateSet implements InnerHitsInterface {
 
     use InnerHitsTrait;
 
-
     /**
-     * @var
+     * @var string
      */
-    protected $_path;
+    protected string $_path;
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param string $path
-     * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setPath(string $path) : NestedPredicateSet {
+    public function setPath(string $path): self {
         $this->_path = $path;
 
         return $this;
@@ -46,10 +45,11 @@ class NestedPredicateSet extends PredicateSet implements InnerHitsInterface {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function toArray() : array {
+    #[ArrayShape(['nested' => "array"])]
+    public function toArray(): array {
         $_ret = [
             'nested' => [
                 'path' => $this->_path,

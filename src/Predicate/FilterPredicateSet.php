@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate;
 
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class FilterPredicateSet
@@ -22,17 +23,16 @@ class FilterPredicateSet extends PredicateSet {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function toArray() : array {
-        $_ret = [
+    #[ArrayShape(['bool' => "array"])]
+    public function toArray(): array {
+        return [
             'bool' => [
                 'filter' => parent::toArray(),
             ],
         ];
-
-        return $_ret;
     }
 
 

@@ -17,7 +17,7 @@ use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
 use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
 use ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor;
 use ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore;
-use ElasticSearchPredicate\Predicate\Predicates\Match;
+use ElasticSearchPredicate\Predicate\Predicates\MatchSome;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 
 /**
@@ -324,7 +324,7 @@ class ElasticSearchPredicateTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_match_phrase() {
         $_search = $this->_client->search('elasticsearchpredicate', 'TestType');
-        $_search->predicate->and((new Match('name', 'test1'))->type('phrase'));
+        $_search->predicate->and((new MatchSome('name', 'test1'))->type('phrase'));
 
         $this->assertSame([
             'match' => [

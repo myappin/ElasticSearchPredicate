@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,7 +11,6 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Endpoint;
 
-
 /**
  * Interface EndpointInterface
  * @package ElasticSearchPredicate\Endpoint
@@ -19,25 +18,25 @@ namespace ElasticSearchPredicate\Endpoint;
 interface EndpointInterface {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function execute() : array;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getPreparedParams(): array;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getPreparedParams() : array;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function execute(): array;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return EndpointInterface
-	 */
-	public function clearParams() : EndpointInterface;
+    /**
+     * @return EndpointInterface
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function clearParams(): EndpointInterface;
 
 
 }

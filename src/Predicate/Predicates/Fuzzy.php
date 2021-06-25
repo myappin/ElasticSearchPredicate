@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
-
 use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class Fuzzy
@@ -29,41 +28,40 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
 
     use BoostTrait, SimpleTrait;
 
-
     /**
      * @var string
      */
-    protected $_term;
+    protected string $_term;
 
 
     /**
      * @var bool|float|int|string
      */
-    protected $_value;
+    protected bool|float|int|string $_value;
+
+
+    /**
+     * @var int|float
+     */
+    protected int|float $_fuzziness;
 
 
     /**
      * @var int
      */
-    protected $_fuzziness;
+    protected int $_prefix_length;
 
 
     /**
      * @var int
      */
-    protected $_prefix_length;
-
-
-    /**
-     * @var int
-     */
-    protected $_max_expansions;
+    protected int $_max_expansions;
 
 
     /**
      * @var array
      */
-    protected $_other_options = [
+    protected array $_other_options = [
         'fuzziness',
         'prefix_length',
         'max_expansions',
@@ -71,19 +69,13 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
-     * Term constructor.
+     * Fuzzy constructor.
      * @param string                $term
      * @param bool|float|int|string $value
      * @param array                 $options
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
-    public function __construct(string $term, $value, array $options = []) {
+    public function __construct(string $term, bool|float|int|string $value, array $options = []) {
         $this->_term = $term;
-
-        if (!is_scalar($value) && $value !== null) {
-            throw new PredicateException('Term value must be scalar');
-        }
-
         $this->_value = $value;
 
         $this->configure($options);
@@ -91,53 +83,55 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param string|null $from
-     * @param null|string $to
+     * @param int|float $fuzziness
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function fuzziness(int $fuzziness) {
+    public function fuzziness(int|float $fuzziness): void {
         if ($fuzziness < 0 || $fuzziness > 2) {
             throw new PredicateException('Invalid fuzziness');
         }
+
         $this->_fuzziness = $fuzziness;
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param string|null $from
-     * @param null|string $to
+     * @param int $prefix_length
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function prefix_length(int $prefix_length) {
+    public function prefix_length(int $prefix_length): void {
         if ($prefix_length < 0 || $prefix_length > 20) {
             throw new PredicateException('Invalid prefix_length');
         }
+
         $this->_prefix_length = $prefix_length;
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param string|null $from
-     * @param null|string $to
+     * @param int $max_expansions
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function max_expansions(int $max_expansions) {
+    public function max_expansions(int $max_expansions): void {
         if ($max_expansions < 0 || $max_expansions > 100) {
             throw new PredicateException('Invalid max_expansions');
         }
+
         $this->_max_expansions = $max_expansions;
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function toArray() : array {
+    #[ArrayShape(['fuzzy' => "array"])]
+    public function toArray(): array {
         $_term = $this->_term;
+
         if ($this->_simple) {
             return [
                 'fuzzy' => [

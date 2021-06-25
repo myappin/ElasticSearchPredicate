@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,7 +11,6 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\FunctionScore\Field;
 
-
 /**
  * Interface FieldInterface
  * @package   ElasticSearchPredicate\Predicate\FunctionScore\Field
@@ -20,11 +19,11 @@ namespace ElasticSearchPredicate\Predicate\FunctionScore\Field;
 interface FieldInterface {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function toArray() : array;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function toArray(): array;
 
 
 }

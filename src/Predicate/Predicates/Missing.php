@@ -11,10 +11,9 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
-
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class Missing
@@ -26,18 +25,16 @@ class Missing extends AbstractPredicate implements BoostInterface {
 
     use BoostTrait;
 
-
     /**
      * @var string
      */
-    protected $_term;
+    protected string $_term;
 
 
     /**
-     * Term constructor.
+     * Missing constructor.
      * @param string $term
      * @param array  $options
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
     public function __construct(string $term, array $options = []) {
         $this->_term = $term;
@@ -47,10 +44,11 @@ class Missing extends AbstractPredicate implements BoostInterface {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function toArray() : array {
+    #[ArrayShape(['bool' => "array"])]
+    public function toArray(): array {
         $_term = $this->_term;
 
         $_ret = [

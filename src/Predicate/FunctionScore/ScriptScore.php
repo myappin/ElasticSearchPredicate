@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
 use ElasticSearchPredicate\Predicate\PredicateException;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class ScriptScore
@@ -24,13 +25,13 @@ class ScriptScore extends AbstractFunction {
     /**
      * @var array
      */
-    protected $_script;
+    protected array $_script;
 
 
     /**
      * @var array
      */
-    protected $_params = [];
+    protected array $_params = [];
 
 
     /**
@@ -46,12 +47,12 @@ class ScriptScore extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param array $params
-     * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
+     * @return $this
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setParams(array $params): ScriptScore {
+    public function setParams(array $params): self {
         foreach ($params as $key => $item) {
             if (!is_string($key)) {
                 throw new PredicateException('Wrong parameter key type');
@@ -60,6 +61,7 @@ class ScriptScore extends AbstractFunction {
                 throw new PredicateException('Wrong parameter value type');
             }
         }
+
         $this->_params = $params;
 
         return $this;
@@ -67,8 +69,8 @@ class ScriptScore extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getScript(): array {
         return $this->_script;
@@ -76,14 +78,15 @@ class ScriptScore extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param array $script
-     * @return \ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setScript(array $script): ScriptScore {
+    public function setScript(array $script): self {
         if (isset($script['inline'])) {
             $script['inline'] = trim($script['inline']);
         }
+
         $this->_script = $script;
 
         return $this;
@@ -91,10 +94,14 @@ class ScriptScore extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
+    #[ArrayShape([
+        'script_score' => "array",
+        'weight'       => "int|float",
+        'filter'       => "array",
+    ])]
     public function toArray(): array {
         $_ret = [
             'script_score' => [

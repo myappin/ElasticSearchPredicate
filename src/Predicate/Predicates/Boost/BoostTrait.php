@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,7 +11,6 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates\Boost;
 
-
 use ElasticSearchPredicate\Predicate\PredicateException;
 
 /**
@@ -22,30 +21,28 @@ use ElasticSearchPredicate\Predicate\PredicateException;
 trait BoostTrait {
 
 
-	/**
-	 * @var int
-	 */
-	protected $_boost;
+    /**
+     * @var int|float
+     */
+    protected int|float $_boost;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $boost
-	 * @return $this
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function boost($boost){
-		if(!is_int($boost) && !is_float($boost)){
-			throw new PredicateException('Boost must be int or float');
-		}
-		if($boost < 0){
-			throw new PredicateException('Boost must be greater than 0');
-		}
-		$this->_boost  = $boost;
-		$this->_simple = false;
+    /**
+     * @param int|float $boost
+     * @return $this
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function boost(int|float $boost): self {
+        if ($boost < 0) {
+            throw new PredicateException('Boost must be greater than 0');
+        }
 
-		return $this;
-	}
+        $this->_boost = $boost;
+        $this->_simple = false;
+
+        return $this;
+    }
 
 
 }

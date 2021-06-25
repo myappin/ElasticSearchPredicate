@@ -13,7 +13,6 @@ namespace ElasticSearchPredicate\Predicate\PredicateSet;
 
 use ElasticSearchPredicate\Predicate\PredicateSet;
 
-
 /**
  * Class InnerHitsTrait
  * @package   ElasticSearchPredicate\Predicate\PredicateSet
@@ -26,16 +25,16 @@ trait InnerHitsTrait {
     /**
      * @var null|InnerHits
      */
-    protected $_inner_hits = null;
+    protected ?InnerHits $_inner_hits = null;
 
 
     /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @param string|null $name
      * @param null        $inner_hits
      * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function innerHits(string $name = null, &$inner_hits = null) {
+    public function innerHits(?string $name, &$inner_hits = null): self {
         if (!$this->_inner_hits) {
             $this->_inner_hits = $inner_hits = new InnerHits($name);
         }
@@ -45,10 +44,10 @@ trait InnerHitsTrait {
 
 
     /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @return bool
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function hasInnerHits() : bool {
+    public function hasInnerHits(): bool {
         return $this->_inner_hits !== null;
     }
 

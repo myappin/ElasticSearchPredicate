@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,10 +11,6 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates\Analyzer;
 
-
-use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
-
-
 /**
  * Class AnalyzerTrait
  * @package   ElasticSearchPredicate\Predicate\Predicates\Analyzer
@@ -23,24 +19,23 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 trait AnalyzerTrait {
 
 
-	/**
-	 * @var string
-	 */
-	protected $_analyzer;
+    /**
+     * @var string
+     */
+    protected string $_analyzer;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $analyzer
-	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function analyzer(string $analyzer) : PredicateInterface{
-		$this->_analyzer = $analyzer;
-		$this->_simple   = false;
+    /**
+     * @param string $analyzer
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function analyzer(string $analyzer): self {
+        $this->_analyzer = $analyzer;
+        $this->_simple = false;
 
-		return $this;
-	}
+        return $this;
+    }
 
 
 }

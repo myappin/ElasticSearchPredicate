@@ -13,7 +13,7 @@ namespace ElasticSearchPredicate\Predicate;
 
 use ElasticSearchPredicate\Predicate\PredicateSet\InnerHitsInterface;
 use ElasticSearchPredicate\Predicate\PredicateSet\InnerHitsTrait;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class HasChildPredicateSet
@@ -26,19 +26,18 @@ class HasChildPredicateSet extends PredicateSet implements InnerHitsInterface {
 
     use InnerHitsTrait;
 
-
     /**
-     * @var
+     * @var string
      */
-    protected $_type;
+    protected string $_type;
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param string $type
-     * @return \ElasticSearchPredicate\Predicate\HasChildPredicateSet
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setType(string $type) : HasChildPredicateSet {
+    public function setType(string $type): self {
         $this->_type = $type;
 
         return $this;
@@ -46,10 +45,11 @@ class HasChildPredicateSet extends PredicateSet implements InnerHitsInterface {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function toArray() : array {
+    #[ArrayShape(['has_child' => "string[]"])]
+    public function toArray(): array {
         $_ret = [
             'has_child' => [
                 'type' => $this->_type,

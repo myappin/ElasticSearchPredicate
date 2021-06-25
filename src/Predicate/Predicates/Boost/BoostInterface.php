@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,6 +11,7 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates\Boost;
 
+use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 
 /**
  * Interface BoostInterface
@@ -19,13 +20,12 @@ namespace ElasticSearchPredicate\Predicate\Predicates\Boost;
 interface BoostInterface {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $boost
-	 * @return $this
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function boost($boost);
+    /**
+     * @param int|float $boost
+     * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function boost(int|float $boost): PredicateInterface;
 
 
 }

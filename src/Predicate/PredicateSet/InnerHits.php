@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\PredicateSet;
 
+use JetBrains\PhpStorm\Pure;
+use stdClass;
 
 /**
  * Class InnerHits
@@ -21,26 +23,26 @@ class InnerHits {
     /**
      * @var string|null
      */
-    protected $_name = null;
+    protected ?string $_name = null;
 
 
     /**
      * @var int|null
      */
-    protected $_size = null;
+    protected ?int $_size = null;
 
 
     /**
      * @var int|null
      */
-    protected $_offset = null;
+    protected ?int $_offset = null;
 
 
     /**
      * InnerHits constructor.
      * @param string|null $name
      */
-    public function __construct(string $name = null) {
+    public function __construct(?string $name) {
         if ($name) {
             $this->setName($name);
         }
@@ -50,16 +52,17 @@ class InnerHits {
     /**
      * @return null|string
      */
-    public function getName() {
+    public function getName(): ?string {
         return $this->_name;
     }
 
 
     /**
-     * @param null|string $name
-     * @return InnerHits
+     * @param string $name
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setName(string $name) {
+    public function setName(string $name): self {
         $this->_name = $name;
 
         return $this;
@@ -69,16 +72,17 @@ class InnerHits {
     /**
      * @return int|null
      */
-    public function getSize() {
+    public function getSize(): ?int {
         return $this->_size;
     }
 
 
     /**
-     * @param int|null $size
-     * @return InnerHits
+     * @param int $size
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setSize(int $size) {
+    public function setSize(int $size): self {
         $this->_size = $size;
 
         return $this;
@@ -88,16 +92,17 @@ class InnerHits {
     /**
      * @return int|null
      */
-    public function getOffset() {
+    public function getOffset(): ?int {
         return $this->_offset;
     }
 
 
     /**
-     * @param int|null $offset
-     * @return InnerHits
+     * @param int $offset
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setOffset(int $offset) {
+    public function setOffset(int $offset): self {
         $this->_offset = $offset;
 
         return $this;
@@ -105,10 +110,11 @@ class InnerHits {
 
 
     /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @return array|\stdClass
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function toArray() {
+    #[Pure]
+    public function toArray(): array|stdClass {
         $_ret = [];
 
         if ($this->_name) {
@@ -121,7 +127,7 @@ class InnerHits {
             $_ret['offset'] = $this->_offset;
         }
 
-        return empty($_ret) ? new \stdClass() : $_ret;
+        return empty($_ret) ? new stdClass() : $_ret;
     }
 
 

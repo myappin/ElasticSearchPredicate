@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,7 +11,6 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Endpoint\Fields;
 
-
 use ElasticSearchPredicate\Endpoint\EndpointException;
 
 /**
@@ -22,37 +21,37 @@ use ElasticSearchPredicate\Endpoint\EndpointException;
 trait FieldsTrait {
 
 
-	/**
-	 * @var array
-	 */
-	protected $_fields = [];
+    /**
+     * @var array
+     */
+    protected array $_fields = [];
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param array $fields
-	 * @return \ElasticSearchPredicate\Endpoint\Fields\FieldsInterface
-	 * @throws \ElasticSearchPredicate\Endpoint\EndpointException
-	 */
-	public function fields(array $fields) : FieldsInterface{
-		foreach($fields as $field){
-			if(!is_string($field)){
-				throw new EndpointException('Fields should by array of string');
-			}
-		}
-		$this->_fields = $fields;
-
-		return $this;
-	}
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getFields(): array {
+        return $this->_fields;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getFields() : array{
-		return $this->_fields;
-	}
+    /**
+     * @param array $fields
+     * @return $this
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function fields(array $fields): self {
+        foreach ($fields as $field) {
+            if (!is_string($field)) {
+                throw new EndpointException('Fields should by array of string');
+            }
+        }
+        $this->_fields = $fields;
+
+        return $this;
+    }
 
 
 }
