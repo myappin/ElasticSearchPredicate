@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
-
 use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class Terms
@@ -29,17 +28,16 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
 
     use BoostTrait, SimpleTrait;
 
-
     /**
      * @var string
      */
-    protected $_term;
+    protected string $_term;
 
 
     /**
      * @var array
      */
-    protected $_values;
+    protected array $_values;
 
 
     /**
@@ -65,11 +63,13 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function toArray() : array {
+    #[ArrayShape(['terms' => "array"])]
+    public function toArray(): array {
         $_term = $this->_term;
+
         if ($this->_simple) {
             return [
                 'terms' => [

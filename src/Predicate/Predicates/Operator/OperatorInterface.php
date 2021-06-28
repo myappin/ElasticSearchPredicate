@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,9 +11,7 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates\Operator;
 
-
 use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
-
 
 /**
  * Interface OperatorInterface
@@ -22,12 +20,12 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 interface OperatorInterface {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $operator
-	 * @return mixed
-	 */
-	public function operator(string $operator) : PredicateInterface;
+    /**
+     * @param string $operator
+     * @return mixed
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function operator(string $operator): PredicateInterface;
 
 
 }

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,13 +11,14 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate;
 
+use Exception;
 
 /**
  * Class PredicateException
  * @package   ElasticSearchPredicate\Predicate
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class PredicateException extends \Exception {
+class PredicateException extends Exception {
 
 
 }

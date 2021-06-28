@@ -30,14 +30,14 @@
     }
   ],
   "require": {
-    "php": ">=7",
+    "php": "^8.0",
     "myappin/elasticsearch-php": "dev-master#ee2a68f3e4257d2a6ba00f324029b472308d3a8e",
     "psr/log": "~1.0",
     "guzzlehttp/ringphp" : "~1.0",
     "dusank/knapsack": "10.0.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^5.3"
+    "phpunit/phpunit": "9.5.6"
   },
   "autoload": {
     "psr-4": {

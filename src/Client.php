@@ -27,15 +27,15 @@ class Client {
 
 
     /**
-     * @var ClientBuilder
+     * @var \Elasticsearch\ClientBuilder|null
      */
-    protected $_elasticsearch_builder;
+    protected ?ClientBuilder $_elasticsearch_builder;
 
 
     /**
      * @var \Elasticsearch\Client
      */
-    protected $_elasticsearch;
+    protected \Elasticsearch\Client $_elasticsearch;
 
 
     /**
@@ -52,7 +52,10 @@ class Client {
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getClientBuilder(): ClientBuilder {
-        if ($this->_elasticsearch_builder === null) {
+        if (
+            empty($this->_elasticsearch_builde)
+            || isset($this->_elasticsearch)
+        ) {
             throw new EndpointException('ElasticSearch client is already built.');
         }
 
@@ -62,14 +65,15 @@ class Client {
 
     /**
      * @return \Elasticsearch\Client
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function getElasticSearchClient(): \Elasticsearch\Client {
-        if ($this->_elasticsearch instanceof \Elasticsearch\Client) {
+        if (isset($this->_elasticsearch)) {
             return $this->_elasticsearch;
         }
 
         $this->_elasticsearch = $this->_elasticsearch_builder->build();
+
         $this->_elasticsearch_builder = null;
 
         return $this->_elasticsearch;

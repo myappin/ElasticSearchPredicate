@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,9 +11,7 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Endpoint\Query;
 
-
 use ElasticSearchPredicate\Predicate\PredicateSet;
-
 
 /**
  * Class QueryTrait
@@ -23,32 +21,28 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
 trait QueryTrait {
 
 
-	/**
-	 * @var PredicateSet
-	 */
-	protected $_predicates;
+    /**
+     * @var PredicateSet
+     */
+    protected PredicateSet $_predicates;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getQuery() : array{
-		return $this->getPredicate()->toArray();
-	}
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getQuery(): array {
+        return $this->getPredicate()->toArray();
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-	public function getPredicate() : PredicateSet{
-		if(!$this->_predicates instanceof PredicateSet){
-			$this->_predicates = new PredicateSet();
-		}
-
-		return $this->_predicates;
-	}
+    /**
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getPredicate(): PredicateSet {
+        return $this->_predicates ?? ($this->_predicates = new PredicateSet());
+    }
 
 
 }

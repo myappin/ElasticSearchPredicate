@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,9 +11,8 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate;
 
-
 use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class NotPredicateSet
@@ -23,34 +22,35 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 class NotPredicateSet extends PredicateSet {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $combiner
-	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setCombiner(string $combiner) : PredicateInterface{
-		if(strtoupper($combiner) === 'or'){
-			throw new PredicateException('Not allowed combiner inside not predicate');
-		}
+    /**
+     * @param string $combiner
+     * @return $this
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setCombiner(string $combiner): self {
+        if (strtoupper($combiner) === 'or') {
+            throw new PredicateException('Not allowed combiner inside not predicate');
+        }
 
-		return parent::setCombiner($combiner);
-	}
+        return parent::setCombiner($combiner);
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function toArray() : array{
-		return [
-			'bool' => [
-				'must_not' => $this->_predicates->map(function(PredicateInterface $predicate){
-					return $predicate->toArray();
-				})->values()->toArray(),
-			],
-		];
-	}
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    #[ArrayShape(['bool' => "array"])]
+    public function toArray(): array {
+        return [
+            'bool' => [
+                'must_not' => $this->_predicates->map(function(PredicateInterface $predicate) {
+                    return $predicate->toArray();
+                })->values()->toArray(),
+            ],
+        ];
+    }
 
 
 }

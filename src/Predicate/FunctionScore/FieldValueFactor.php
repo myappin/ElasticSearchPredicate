@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
 use ElasticSearchPredicate\Predicate\PredicateException;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class FieldValueFactor
@@ -22,39 +23,40 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @var
-     */
-    protected $_field;
-
-
-    /**
-     * @var int|float
-     */
-    protected $_factor;
-
-
-    /**
      * @var string
      */
-    protected $_modifier = '';
+    protected string $_field;
 
 
     /**
-     * @var int|float
+     * @var float|int|null
      */
-    protected $_missing;
+    protected float|int|null $_factor;
+
+
+    /**
+     * @var string|null
+     */
+    protected ?string $_modifier = null;
+
+
+    /**
+     * @var float|int|null
+     */
+    protected float|int|null $_missing;
 
 
     /**
      * FieldValueFactor constructor.
      * @param string         $field
-     * @param null|int|float $factor
+     * @param float|int|null $factor
      * @param string|null    $modifier
-     * @param null|int|float $missing
+     * @param float|int|null $missing
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
-    public function __construct(string $field, $factor = null, string $modifier = null, $missing = null) {
+    public function __construct(string $field, float|int|null $factor = null, string $modifier = null, float|int|null $missing = null) {
         $this->setField($field);
+
         if ($factor !== null) {
             $this->setFactor($factor);
         }
@@ -68,8 +70,8 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return string
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getField(): string {
         return $this->_field;
@@ -77,11 +79,11 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @param string $field
-     * @return \ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setField(string $field): FieldValueFactor {
+    public function setField(string $field): self {
         $this->_field = $field;
 
         return $this;
@@ -89,24 +91,20 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @return float|int
+     * @return int|float|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getFactor() {
+    public function getFactor(): int|float|null {
         return $this->_factor;
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param $factor
-     * @return \ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @param int|float|null $factor
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setFactor($factor): FieldValueFactor {
-        if (!is_int($factor) && !is_float($factor)) {
-            throw new PredicateException('Factor should be int of float');
-        }
+    public function setFactor(int|float|null $factor): self {
         $this->_factor = $factor;
 
         return $this;
@@ -114,24 +112,20 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @return float|int
+     * @return int|float|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getMissing() {
+    public function getMissing(): int|float|null {
         return $this->_missing;
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param $missing
-     * @return \ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @param int|float|null $missing
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setMissing($missing): FieldValueFactor {
-        if (!is_int($missing) && !is_float($missing)) {
-            throw new PredicateException('Factor should be int of float');
-        }
+    public function setMissing(int|float|null $missing): self {
         $this->_missing = $missing;
 
         return $this;
@@ -139,8 +133,8 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return string
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getModifier(): string {
         return $this->_modifier;
@@ -148,12 +142,12 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param $modifier
-     * @return \ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor
+     * @param string|null $modifier
+     * @return $this
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setModifier(string $modifier): FieldValueFactor {
+    public function setModifier(?string $modifier): self {
         if (!in_array($modifier, [
             'none',
             'log',
@@ -165,10 +159,12 @@ class FieldValueFactor extends AbstractFunction {
             'square',
             'sqrt',
             'reciprocal',
+            null,
         ], true)
         ) {
             throw new PredicateException('Modifier is not supported');
         }
+
         $this->_modifier = $modifier;
 
         return $this;
@@ -176,11 +172,14 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function toArray(): array {
+    #[ArrayShape([
+        'field_value_factor' => "array",
+        'weight'             => "int|float",
+        'filter'             => "array",
+    ])] public function toArray(): array {
         $_ret = [
             'field_value_factor' => [
                 'field' => $this->_field,

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,11 +11,9 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
-
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
-
 
 /**
  * Class AbstractFunction
@@ -30,51 +28,43 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
 abstract class AbstractFunction implements FunctionInterface {
 
 
-	use QueryTrait, WeightTrait;
+    use QueryTrait, WeightTrait;
 
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $name
-	 * @param $arguments
+    /**
+     * @param $name
+     * @param $arguments
      * @return PredicateSet
-	 */
-    public function __call($name, $arguments) : PredicateSet {
-		if(empty($arguments)){
-			return call_user_func([
-									  $this->getPredicate(),
-									  $name,
-								  ]);
-		}
-		else{
-			return call_user_func_array([
-											$this->getPredicate(),
-											$name,
-										], $arguments);
-		}
-	}
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function __call($name, $arguments): PredicateSet {
+        if (empty($arguments)) {
+            return $this->getPredicate()->$name();
+        }
+
+        return $this->getPredicate()->$name(...$arguments);
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $name
+    /**
+     * @param $name
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-    public function __get($name) : PredicateSet {
-		$_name = strtolower($name);
-		if($_name === 'predicate' || $_name === 'predicates'){
-			return $this->getPredicate();
-		}
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function __get($name): PredicateSet {
+        $_name = strtolower($name);
+        if ($_name === 'predicate' || $_name === 'predicates') {
+            return $this->getPredicate();
+        }
 
-		return $this->getPredicate()->{$name};
-	}
+        return $this->getPredicate()->{$name};
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	abstract public function toArray() : array;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    abstract public function toArray(): array;
 
 
 }

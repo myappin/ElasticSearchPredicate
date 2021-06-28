@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,13 +11,12 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
-
 use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeTrait;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class MultiMatch
@@ -27,149 +26,143 @@ use ElasticSearchPredicate\Predicate\Predicates\Type\TypeTrait;
 class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInterface {
 
 
-	use TypeTrait, OperatorTrait;
+    use TypeTrait, OperatorTrait;
+
+    /**
+     * @var array|string[]
+     */
+    protected array $_fields;
 
 
-	/**
-	 * @var string
-	 */
-	protected $_fields;
+    /**
+     * @var bool|float|int|string
+     */
+    protected bool|float|int|string $_query;
 
 
-	/**
-	 * @var bool|float|int|string
-	 */
-	protected $_query;
-
-
-	/**
-	 * @var float|int
-	 */
-	protected $_tie_breaker;
+    /**
+     * @var float|int
+     */
+    protected float|int $_tie_breaker;
 
 
     /**
      * @var string
      */
-    protected $_minimum_should_match;
+    protected string $_minimum_should_match;
 
 
-	/**
-	 * MultiMatch constructor.
-	 * @param            $query
-	 * @param array      $fields
-	 * @param array      $options
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function __construct($query, array $fields, array $options = []){
-        if (!is_scalar($query) && $query !== null) {
-			throw new PredicateException('MultiMatch value must be scalar');
-		}
+    /**
+     * MultiMatch constructor.
+     * @param bool|float|int|string $query
+     * @param array|string          $fields
+     * @param array                 $options
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     */
+    public function __construct(bool|float|int|string $query, array|string $fields, array $options = []) {
+        if (empty($fields)) {
+            throw new PredicateException('Fields can not be empty set');
+        }
 
-		if(!empty($fields)){
-			if(is_array($fields)){
-				foreach($fields as $field){
-					if(!is_scalar($field)){
-						throw new PredicateException('Filed must be scalar');
-					}
-				}
-				$this->_fields = $fields;
-			}
-			elseif(is_string($fields)){
-				$this->_fields = [$fields];
-			}
-			else{
-				throw new PredicateException('Unexpected field type');
-			}
-		}
-		else{
-			throw new PredicateException('Fields can not be empty set');
-		}
+        if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if (!is_scalar($field)) {
+                    throw new PredicateException('Filed must be scalar');
+                }
+            }
+            $this->_fields = $fields;
+        }
+        else if (is_string($fields)) {
+            $this->_fields = [$fields];
+        }
+        else {
+            throw new PredicateException('Unexpected field type');
+        }
 
-		$this->_query = $query;
+        $this->_query = $query;
 
         $this->_other_options = [
             'tie_breaker',
             'minimum_should_match',
         ];
-		$this->_types         = [
-			'phrase',
-			'phrase_prefix',
-			'cross_fields',
-			'most_fields',
-			'best_fields',
-		];
+        $this->_types = [
+            'phrase',
+            'phrase_prefix',
+            'cross_fields',
+            'most_fields',
+            'best_fields',
+        ];
 
-		$this->configure($options);
-	}
-
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $tie_breaker
-	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function tie_breaker($tie_breaker) : PredicateInterface{
-        if (!is_int($tie_breaker) && !is_float($tie_breaker)) {
-			throw new PredicateException('Tie breaker must be int or float');
-		}
-		if($tie_breaker < 0 || $tie_breaker > 1){
-			throw new PredicateException('Tie breaker must be between 0 and 1');
-		}
-		$this->_tie_breaker = $tie_breaker;
-
-		return $this;
-	}
+        $this->configure($options);
+    }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param string $minimum_should_match
-     * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
+     * @param int|float $tie_breaker
+     * @return $this
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function minimum_should_match(string $minimum_should_match) : PredicateInterface {
-        if (!preg_match('/^[0-9]+\%$/', $minimum_should_match)) {
+    public function tie_breaker(int|float $tie_breaker): self {
+        if ($tie_breaker < 0 || $tie_breaker > 1) {
+            throw new PredicateException('Tie breaker must be between 0 and 1');
+        }
+
+        $this->_tie_breaker = $tie_breaker;
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $minimum_should_match
+     * @return $this
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function minimum_should_match(string $minimum_should_match): self {
+        if (!preg_match('/^\d+%$/', $minimum_should_match)) {
             throw new PredicateException('Minimum should match must be string with percents');
         }
+
         $this->_minimum_should_match = $minimum_should_match;
 
         return $this;
     }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function toArray() : array{
-		$_ret = [
-			'multi_match' => [
-				'query' => $this->_query,
-			],
-		];
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    #[ArrayShape(['multi_match' => "array"])]
+    public function toArray(): array {
+        $_ret = [
+            'multi_match' => [
+                'query' => $this->_query,
+            ],
+        ];
 
-		if(!empty($this->_fields)){
-			$_ret['multi_match']['fields'] = $this->_fields;
-		}
+        if (!empty($this->_fields)) {
+            $_ret['multi_match']['fields'] = $this->_fields;
+        }
 
-		if(!empty($this->_type)){
-			$_ret['multi_match']['type'] = $this->_type;
-		}
+        if (!empty($this->_type)) {
+            $_ret['multi_match']['type'] = $this->_type;
+        }
 
-		if(!empty($this->_operator)){
-			$_ret['multi_match']['operator'] = $this->_operator;
-		}
+        if (!empty($this->_operator)) {
+            $_ret['multi_match']['operator'] = $this->_operator;
+        }
 
-		if(!empty($this->_tie_breaker)){
-			$_ret['multi_match']['tie_breaker'] = $this->_tie_breaker;
-		}
+        if (!empty($this->_tie_breaker)) {
+            $_ret['multi_match']['tie_breaker'] = $this->_tie_breaker;
+        }
 
         if (!empty($this->_minimum_should_match)) {
             $_ret['multi_match']['minimum_should_match'] = $this->_minimum_should_match;
         }
 
-		return $_ret;
-	}
+        return $_ret;
+    }
 }

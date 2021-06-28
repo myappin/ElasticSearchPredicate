@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\PredicateSet;
 
-
 /**
  * Class InnerHitsInterface
  * @package   ElasticSearchPredicate\Predicate\PredicateSet
@@ -19,10 +18,10 @@ interface InnerHitsInterface {
 
 
     /**
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      * @return bool
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function hasInnerHits() : bool;
+    public function hasInnerHits(): bool;
 
 
 }

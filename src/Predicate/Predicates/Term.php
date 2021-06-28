@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,13 +11,11 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
-
-use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
-
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class Term
@@ -27,67 +25,62 @@ use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
 class Term extends AbstractPredicate implements BoostInterface, SimpleInterface {
 
 
-	use BoostTrait, SimpleTrait;
+    use BoostTrait, SimpleTrait;
+
+    /**
+     * @var string
+     */
+    protected string $_term;
 
 
-	/**
-	 * @var string
-	 */
-	protected $_term;
+    /**
+     * @var bool|float|int|string
+     */
+    protected bool|float|int|string $_value;
 
 
-	/**
-	 * @var bool|float|int|string
-	 */
-	protected $_value;
+    /**
+     * Term constructor.
+     * @param string                $term
+     * @param bool|float|int|string $value
+     * @param array                 $options
+     */
+    public function __construct(string $term, bool|float|int|string $value, array $options = []) {
+        $this->_term = $term;
+        $this->_value = $value;
+
+        $this->configure($options);
+    }
 
 
-	/**
-	 * Term constructor.
-	 * @param string                $term
-	 * @param bool|float|int|string $value
-	 * @param array                 $options
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function __construct(string $term, $value, array $options = []){
-		$this->_term = $term;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    #[ArrayShape(['term' => "array"])]
+    public function toArray(): array {
+        $_term = $this->_term;
 
-        if (!is_scalar($value) && $value !== null) {
-			throw new PredicateException('Term value must be scalar');
-		}
+        if ($this->_simple) {
+            return [
+                'term' => [
+                    $_term => $this->_value,
+                ],
+            ];
+        }
 
-		$this->_value = $value;
+        $_ret = [
+            'term' => [
+                $_term => [
+                    'value' => $this->_value,
+                ],
+            ],
+        ];
 
-		$this->configure($options);
-	}
+        if (!empty($this->_boost)) {
+            $_ret['term'][$_term]['boost'] = $this->_boost;
+        }
 
-
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function toArray() : array{
-		$_term = $this->_term;
-		if($this->_simple){
-			return [
-				'term' => [
-					$_term => $this->_value,
-				],
-			];
-		}
-
-		$_ret = [
-			'term' => [
-				$_term => [
-					'value' => $this->_value,
-				],
-			],
-		];
-
-		if(!empty($this->_boost)){
-			$_ret['term'][$_term]['boost'] = $this->_boost;
-		}
-
-		return $_ret;
-	}
+        return $_ret;
+    }
 }

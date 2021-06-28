@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -10,8 +10,6 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicate\Predicate\FunctionScore\Field;
-use ElasticSearchPredicate\Predicate\PredicateException;
-
 
 /**
  * Class Field
@@ -21,195 +19,177 @@ use ElasticSearchPredicate\Predicate\PredicateException;
 class Field implements FieldInterface {
 
 
-	/**
-	 * @var string
-	 */
-	protected $_name;
+    /**
+     * @var string
+     */
+    protected string $_name;
 
 
-	/**
-	 * @var int|float|string
-	 */
-	protected $_origin;
+    /**
+     * @var int|float|string
+     */
+    protected int|float|string $_origin;
 
 
-	/**
-	 * @var int|float|string
-	 */
-	protected $_scale;
+    /**
+     * @var int|float
+     */
+    protected int|float $_scale;
 
 
-	/**
-	 * @var int
-	 */
-	protected $_offset;
+    /**
+     * @var int|null
+     */
+    protected ?int $_offset = null;
 
 
-	/**
-	 * @var int|float
-	 */
-	protected $_decay;
+    /**
+     * @var int|float|null
+     */
+    protected int|float|null $_decay = null;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $name
-	 * @param        $origin
-	 * @param        $scale
-	 * @param null   $offset
-	 * @param null   $decay
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function __construct(string $name, $origin, $scale, $offset = null, $decay = null){
-		$this->setName($name);
-		$this->setOrigin($origin);
-		$this->setScale($scale);
-		if($offset !== null){
-			$this->setOffset($offset);
-		}
-		if($decay !== null){
-			$this->setDecay($decay);
-		}
-	}
+    /**
+     * Field constructor.
+     * @param string           $name
+     * @param float|int|string $origin
+     * @param int|float        $scale
+     * @param int|null         $offset
+     * @param float|int|null   $decay
+     */
+    public function __construct(string $name, float|int|string $origin, int|float $scale, ?int $offset = null, float|int|null $decay = null) {
+        $this->setName($name);
+        $this->setOrigin($origin);
+        $this->setScale($scale);
+        $this->setOffset($offset);
+        $this->setDecay($decay);
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getName(){
-		return $this->_name;
-	}
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return $this->_name;
+    }
 
 
-	/**
-	 * @param string $name
-	 * @return Field
-	 */
-	public function setName(string $name){
-		$this->_name = $name;
+    /**
+     * @param string $name
+     * @return Field
+     */
+    public function setName(string $name): self {
+        $this->_name = $name;
 
-		return $this;
-	}
-
-
-	/**
-	 * @return float|int|string
-	 */
-	public function getOrigin(){
-		return $this->_origin;
-	}
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $origin
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setOrigin($origin) : Field{
-		if(!is_scalar($origin)){
-			throw new PredicateException('Origin should be scalar');
-		}
-		$this->_origin = $origin;
-
-		return $this;
-	}
+    /**
+     * @return float|int|string
+     */
+    public function getOrigin(): float|int|string {
+        return $this->_origin;
+    }
 
 
-	/**
-	 * @return float|int|string
-	 */
-	public function getScale(){
-		return $this->_scale;
-	}
+    /**
+     * @param float|int|string $origin
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setOrigin(float|int|string $origin): self {
+        $this->_origin = $origin;
+
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $scale
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setScale($scale) : Field{
-		if(!is_scalar($scale)){
-			throw new PredicateException('Scale should be scalar');
-		}
-		$this->_scale = $scale;
-
-		return $this;
-	}
+    /**
+     * @return float|int
+     */
+    public function getScale(): int|float {
+        return $this->_scale;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getOffset(){
-		return $this->_offset;
-	}
+    /**
+     * @param int|float $scale
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setScale(int|float $scale): self {
+        $this->_scale = $scale;
+
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $offset
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setOffset($offset) : Field{
-		if(!is_int($offset)){
-			throw new PredicateException('Offset should be integer');
-		}
-		$this->_offset = $offset;
-
-		return $this;
-	}
+    /**
+     * @return int|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getOffset(): ?int {
+        return $this->_offset;
+    }
 
 
-	/**
-	 * @return float|int
-	 */
-	public function getDecay(){
-		return $this->_decay;
-	}
+    /**
+     * @param int|null $offset
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setOffset(?int $offset): self {
+        $this->_offset = $offset;
+
+        return $this;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param $decay
-	 * @return \ElasticSearchPredicate\Predicate\FunctionScore\Field\Field
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function setDecay($decay) : Field{
-		if(!is_int($decay) && !is_float($decay)){
-			throw new PredicateException('Decay should be numeric');
-		}
-		$this->_decay = $decay;
-
-		return $this;
-	}
+    /**
+     * @return int|float|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getDecay(): int|float|null {
+        return $this->_decay;
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function toArray() : array{
-		$_name = $this->_name;
-		$_ret  = [
-			$_name => [
-				'origin' => $this->_origin,
-				'scale'  => $this->_scale,
-			],
-		];
+    /**
+     * @param int|float|null $decay
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setDecay(int|float|null $decay): self {
+        $this->_decay = $decay;
 
-		if(isset($this->_offset)){
-			$_ret[$_name]['offset'] = $this->_offset;
-		}
-		if(isset($this->_decay)){
-			$_ret[$_name]['decay'] = $this->_decay;
-		}
+        return $this;
+    }
 
-		return $_ret;
-	}
+
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function toArray(): array {
+        $_name = $this->_name;
+
+        $_ret = [
+            $_name => [
+                'origin' => $this->_origin,
+                'scale'  => $this->_scale,
+            ],
+        ];
+
+        if (isset($this->_offset)) {
+            $_ret[$_name]['offset'] = $this->_offset;
+        }
+        if (isset($this->_decay)) {
+            $_ret[$_name]['decay'] = $this->_decay;
+        }
+
+        return $_ret;
+    }
 
 
 }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class Term
@@ -23,15 +24,12 @@ class Script extends AbstractPredicate {
     /**
      * @var array
      */
-    protected $_script;
+    protected array $_script;
 
 
     /**
-     * Term constructor.
-     * @param string                $term
-     * @param bool|float|int|string $value
-     * @param array                 $options
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * Script constructor.
+     * @param array $script
      */
     public function __construct(array $script) {
         $this->_script = $script;
@@ -39,16 +37,15 @@ class Script extends AbstractPredicate {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function toArray() : array {
-        $_ret = [
+    #[ArrayShape(['script' => "array"])]
+    public function toArray(): array {
+        return [
             'script' => [
                 'script' => $this->_script,
             ],
         ];
-
-        return $_ret;
     }
 }

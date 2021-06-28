@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -10,8 +10,8 @@ declare(strict_types = 1);
  */
 
 namespace ElasticSearchPredicate\Endpoint\Query;
-use ElasticSearchPredicate\Predicate\PredicateSet;
 
+use ElasticSearchPredicate\Predicate\PredicateSet;
 
 /**
  * Interface QueryInterface
@@ -20,18 +20,18 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
 interface QueryInterface {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getQuery() : array;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getQuery(): array;
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-	public function getPredicate() : PredicateSet;
+    /**
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getPredicate(): PredicateSet;
 
 
 }

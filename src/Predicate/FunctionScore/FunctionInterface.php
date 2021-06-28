@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,10 +11,8 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
-
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightInterface;
-
 
 /**
  * Interface FunctionInterface
@@ -24,11 +22,11 @@ use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightInterface;
 interface FunctionInterface extends QueryInterface, WeightInterface {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function toArray() : array;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function toArray(): array;
 
 
 }

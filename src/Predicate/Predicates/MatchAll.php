@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
+use stdClass;
 
 /**
  * Class MatchAll
@@ -28,10 +31,12 @@ class MatchAll extends AbstractPredicate {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      * @return array
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function toArray() : array {
-        return ['match_all' => new \stdClass()];
+    #[ArrayShape(['match_all' => stdClass::class])]
+    #[Pure]
+    public function toArray(): array {
+        return ['match_all' => new stdClass()];
     }
 }

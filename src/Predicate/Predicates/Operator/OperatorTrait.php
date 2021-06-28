@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,10 +11,7 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates\Operator;
 
-
 use ElasticSearchPredicate\Predicate\PredicateException;
-use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
-
 
 /**
  * Class OperatorTrait
@@ -24,37 +21,37 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
 trait OperatorTrait {
 
 
-	/**
-	 * @var string
-	 */
-	protected $_operator;
+    /**
+     * @var string
+     */
+    protected string $_operator;
 
 
-	/**
-	 * @var array
-	 */
-	protected $_operators = [
-		'and',
-		'or',
-	];
+    /**
+     * @var array
+     */
+    protected array $_operators = [
+        'and',
+        'or',
+    ];
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $operator
-	 * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
-	 * @throws \ElasticSearchPredicate\Predicate\PredicateException
-	 */
-	public function operator(string $operator) : PredicateInterface{
-		if(!in_array($operator, $this->_operators, true)){
-			throw new PredicateException('Operator is not valid');
-		}
+    /**
+     * @param string $operator
+     * @return $this
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function operator(string $operator): self {
+        if (!in_array($operator, $this->_operators, true)) {
+            throw new PredicateException('Operator is not valid');
+        }
 
-		$this->_operator = $operator;
-		$this->_simple   = false;
+        $this->_operator = $operator;
+        $this->_simple = false;
 
-		return $this;
-	}
+        return $this;
+    }
 
 
 }

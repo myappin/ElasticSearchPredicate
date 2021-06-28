@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,9 +11,6 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Predicate\PredicateSet;
 
-use ElasticSearchPredicate\Predicate\PredicateSet;
-
-
 /**
  * Class PredicateSetTrait
  * @package   ElasticSearchPredicate\Predicate\PredicateSet
@@ -22,56 +19,56 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
 trait PredicateSetTrait {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $term
-	 * @param        $value
-	 * @param array  $options
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-    public function equalTo(string $term, $value, array $options = []) : PredicateSet {
-		return $this->Term($term, $value, $options);
-	}
+    /**
+     * @param string           $term
+     * @param int|float|string $value
+     * @param array            $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function equalTo(string $term, int|float|string $value, array $options = []): self {
+        return $this->Term($term, $value, $options);
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $term
-	 * @param        $from
-	 * @param        $to
-	 * @param array  $options
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-    public function between(string $term, $from, $to, array $options = []) : PredicateSet {
-		return $this->Range($term, $from, $to, $options);
-	}
+    /**
+     * @param string    $term
+     * @param int|float $from
+     * @param int|float $to
+     * @param array     $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function between(string $term, int|float $from, int|float $to, array $options = []): self {
+        return $this->Range($term, $from, $to, $options);
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $term
-	 * @param        $from
-	 * @param array  $options
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-    public function greaterThan(string $term, $from, array $options = []) : PredicateSet {
+    /**
+     * @param string    $term
+     * @param int|float $from
+     * @param array     $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function greaterThan(string $term, int|float $from, array $options = []): self {
         return $this->Range($term, $from, null, array_merge($options, [
             'types' => [
                 'gt',
                 'lt',
             ],
         ]));
-	}
+    }
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @param string $term
-	 * @param        $to
-	 * @param array  $options
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-	 */
-    public function lessThan(string $term, $to, array $options = []) : PredicateSet {
+    /**
+     * @param string    $term
+     * @param int|float $to
+     * @param array     $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function lessThan(string $term, int|float $to, array $options = []): self {
         return $this->Range($term, null, $to, array_merge($options, [
             'types' => [
                 'gt',
@@ -82,13 +79,13 @@ trait PredicateSetTrait {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param string $term
-     * @param        $from
-     * @param array  $options
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @param string    $term
+     * @param int|float $from
+     * @param array     $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function greaterThanOrEqualTo(string $term, $from, array $options = []) : PredicateSet {
+    public function greaterThanOrEqualTo(string $term, int|float $from, array $options = []): self {
         return $this->Range($term, $from, null, array_merge($options, [
             'types' => [
                 'gte',
@@ -99,13 +96,13 @@ trait PredicateSetTrait {
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     * @param string $term
-     * @param        $to
-     * @param array  $options
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @param string    $term
+     * @param int|float $to
+     * @param array     $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function lessThanOrEqualTo(string $term, $to, array $options = []) : PredicateSet {
+    public function lessThanOrEqualTo(string $term, int|float $to, array $options = []): self {
         return $this->Range($term, null, $to, array_merge($options, [
             'types' => [
                 'gte',

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -11,7 +11,6 @@ declare(strict_types = 1);
 
 namespace ElasticSearchPredicate\Endpoint\Fields;
 
-
 /**
  * Interface FieldsInterface
  * @package ElasticSearchPredicate\Endpoint\Fields
@@ -19,11 +18,11 @@ namespace ElasticSearchPredicate\Endpoint\Fields;
 interface FieldsInterface {
 
 
-	/**
-	 * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-	 * @return array
-	 */
-	public function getFields() : array;
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getFields(): array;
 
 
 }
