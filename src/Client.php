@@ -53,7 +53,7 @@ class Client {
      */
     public function getClientBuilder(): ClientBuilder {
         if (
-            empty($this->_elasticsearch_builde)
+            empty($this->_elasticsearch_builder)
             || isset($this->_elasticsearch)
         ) {
             throw new EndpointException('ElasticSearch client is already built.');
