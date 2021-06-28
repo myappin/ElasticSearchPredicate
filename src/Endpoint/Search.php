@@ -32,7 +32,7 @@ use Exception;
  * @method PredicateSet Term(string $term, bool|float|int|string $value, array $options = [])
  * @method PredicateSet Terms(string $term, array $values, array $options = [])
  * @method PredicateSet Match(string $match, bool|float|int|string $query, array $options = [])
- * @method PredicateSet Range(string $term, int|float|null $from, int|float|null $to, array $options = [])
+ * @method PredicateSet Range(string $term, int|float|null $from, int|float|null $to = null, array $options = [])
  * @method PredicateSet QueryString(bool|float|int|string $query, array $fields = [], array $options = [])
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
@@ -83,15 +83,15 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected int $_limit;
+    protected ?int $_limit = null;
 
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected int $_offset;
+    protected ?int $_offset = null;
 
 
     /**

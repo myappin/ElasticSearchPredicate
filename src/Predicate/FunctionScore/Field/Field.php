@@ -40,13 +40,13 @@ class Field implements FieldInterface {
     /**
      * @var int|null
      */
-    protected ?int $_offset;
+    protected ?int $_offset = null;
 
 
     /**
      * @var int|float|null
      */
-    protected int|float|null $_decay;
+    protected int|float|null $_decay = null;
 
 
     /**
@@ -61,13 +61,8 @@ class Field implements FieldInterface {
         $this->setName($name);
         $this->setOrigin($origin);
         $this->setScale($scale);
-
-        if ($offset !== null) {
-            $this->setOffset($offset);
-        }
-        if ($decay !== null) {
-            $this->setDecay($decay);
-        }
+        $this->setOffset($offset);
+        $this->setDecay($decay);
     }
 
 

@@ -41,11 +41,7 @@ trait QueryTrait {
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getPredicate(): PredicateSet {
-        if (!$this->_predicates instanceof PredicateSet) {
-            $this->_predicates = new PredicateSet();
-        }
-
-        return $this->_predicates;
+        return $this->_predicates ?? ($this->_predicates = new PredicateSet());
     }
 
 
