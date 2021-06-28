@@ -64,11 +64,11 @@ class FunctionScore extends PredicateSet {
 
 
     /**
-     * @param float|int $max_boost
+     * @param float|int|null $max_boost
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setMaxBoost(float|int $max_boost): self {
+    public function setMaxBoost(float|int|null $max_boost): self {
         $this->_max_boost = $max_boost;
 
         return $this;
@@ -85,12 +85,12 @@ class FunctionScore extends PredicateSet {
 
 
     /**
-     * @param string $boost_mode
+     * @param string|null $boost_mode
      * @return $this
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setBoostMode(string $boost_mode): self {
+    public function setBoostMode(?string $boost_mode): self {
         if (!in_array($boost_mode, [
             'multiply',
             'replace',
@@ -98,6 +98,7 @@ class FunctionScore extends PredicateSet {
             'avg',
             'max',
             'min',
+            null,
         ], true)
         ) {
             throw new PredicateException('Invalid boost type');
@@ -119,11 +120,11 @@ class FunctionScore extends PredicateSet {
 
 
     /**
-     * @param float|int $min_score
+     * @param float|int|null $min_score
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setMinScore(float|int $min_score): self {
+    public function setMinScore(float|int|null $min_score): self {
         $this->_min_score = $min_score;
 
         return $this;
@@ -140,12 +141,12 @@ class FunctionScore extends PredicateSet {
 
 
     /**
-     * @param string $score_mode
+     * @param string|null $score_mode
      * @return $this
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setScoreMode(string $score_mode): self {
+    public function setScoreMode(?string $score_mode): self {
         if (!in_array($score_mode, [
             'multiply',
             'sum',
@@ -153,6 +154,7 @@ class FunctionScore extends PredicateSet {
             'first',
             'max',
             'min',
+            null,
         ], true)
         ) {
             throw new PredicateException('Invalid score mode');

@@ -35,9 +35,9 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected string $_modifier = '';
+    protected ?string $_modifier = null;
 
 
     /**
@@ -100,11 +100,11 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @param int|float $factor
+     * @param int|float|null $factor
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setFactor(int|float $factor): self {
+    public function setFactor(int|float|null $factor): self {
         $this->_factor = $factor;
 
         return $this;
@@ -121,11 +121,11 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @param int|float $missing
+     * @param int|float|null $missing
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setMissing(int|float $missing): self {
+    public function setMissing(int|float|null $missing): self {
         $this->_missing = $missing;
 
         return $this;
@@ -142,12 +142,12 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @param string $modifier
+     * @param string|null $modifier
      * @return $this
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setModifier(string $modifier): self {
+    public function setModifier(?string $modifier): self {
         if (!in_array($modifier, [
             'none',
             'log',
@@ -159,10 +159,12 @@ class FieldValueFactor extends AbstractFunction {
             'square',
             'sqrt',
             'reciprocal',
+            null,
         ], true)
         ) {
             throw new PredicateException('Modifier is not supported');
         }
+
         $this->_modifier = $modifier;
 
         return $this;

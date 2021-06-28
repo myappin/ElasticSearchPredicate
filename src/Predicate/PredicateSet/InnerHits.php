@@ -78,11 +78,11 @@ class InnerHits {
 
 
     /**
-     * @param int $size
+     * @param int|null $size
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setSize(int $size): self {
+    public function setSize(?int $size): self {
         $this->_size = $size;
 
         return $this;
@@ -98,11 +98,11 @@ class InnerHits {
 
 
     /**
-     * @param int $offset
+     * @param int|null $offset
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setOffset(int $offset): self {
+    public function setOffset(?int $offset): self {
         $this->_offset = $offset;
 
         return $this;

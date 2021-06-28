@@ -52,7 +52,10 @@ class Client {
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getClientBuilder(): ClientBuilder {
-        if (empty($this->_elasticsearch_builde) || $this->_elasticsearch instanceof \Elasticsearch\Client) {
+        if (
+            empty($this->_elasticsearch_builde)
+            || $this->_elasticsearch instanceof \Elasticsearch\Client
+        ) {
             throw new EndpointException('ElasticSearch client is already built.');
         }
 

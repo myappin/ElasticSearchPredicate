@@ -140,11 +140,11 @@ class Field implements FieldInterface {
 
 
     /**
-     * @param int $offset
+     * @param int|null $offset
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setOffset(int $offset): self {
+    public function setOffset(?int $offset): self {
         $this->_offset = $offset;
 
         return $this;
@@ -161,11 +161,11 @@ class Field implements FieldInterface {
 
 
     /**
-     * @param int|float $decay
+     * @param int|float|null $decay
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setDecay(int|float $decay): self {
+    public function setDecay(int|float|null $decay): self {
         $this->_decay = $decay;
 
         return $this;
