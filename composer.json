@@ -27,14 +27,26 @@
           }
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "myappin/knapsack",
+        "version": "dev-master",
+        "source": {
+          "url": "https://github.com/myappin/knapsack.git",
+          "type": "git",
+          "reference": "master"
+        }
+      }
     }
   ],
   "require": {
     "php": "^8.1",
     "myappin/elasticsearch-php": "dev-master#d032d36333f1c66b27b60601529512448cbdc920",
     "psr/log": "~1.0",
-    "ezimuel/ringphp" : "1.2.0",
-    "dusank/knapsack": "10.0.0"
+    "ezimuel/ringphp": "1.2.0",
+    "myappin/knapsack": "dev-master#e42820bbfe3315aeeec32a164882c5aba32b93b1"
   },
   "require-dev": {
     "phpunit/phpunit": "9.5.6"
