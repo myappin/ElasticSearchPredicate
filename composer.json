@@ -37,6 +37,15 @@
           "url": "https://github.com/myappin/knapsack.git",
           "type": "git",
           "reference": "master"
+        },
+        "autoload": {
+          "files": [
+            "src/collection_functions.php",
+            "src/utility_functions.php"
+          ],
+          "psr-4": {
+            "DusanKasan\\Knapsack\\": "src/"
+          }
         }
       }
     }
