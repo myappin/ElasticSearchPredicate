@@ -31,8 +31,8 @@
   ],
   "require": {
     "php": "^8.1",
-    "myappin/elasticsearch-php": "dev-master#c6ab53c82f97de2d2d2029df9c60e6a509e63318",
-    "psr/log": "3.0.0",
+    "myappin/elasticsearch-php": "dev-master#47def7decaec4fade239191eec06ca7ffa2ff150",
+    "psr/log": "~1.0",
     "ezimuel/ringphp" : "1.2.0",
     "dusank/knapsack": "10.0.0"
   },
