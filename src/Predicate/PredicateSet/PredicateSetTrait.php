@@ -33,25 +33,25 @@ trait PredicateSetTrait {
 
     /**
      * @param string    $term
-     * @param int|float $from
-     * @param int|float $to
+     * @param int|float|string $from
+     * @param int|float|string $to
      * @param array     $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function between(string $term, int|float $from, int|float $to, array $options = []): self {
+    public function between(string $term, int|float|string $from, int|float|string $to, array $options = []): self {
         return $this->Range($term, $from, $to, $options);
     }
 
 
     /**
      * @param string    $term
-     * @param int|float $from
+     * @param int|float|string $from
      * @param array     $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function greaterThan(string $term, int|float $from, array $options = []): self {
+    public function greaterThan(string $term, int|float|string $from, array $options = []): self {
         return $this->Range($term, $from, null, array_merge($options, [
             'types' => [
                 'gt',
@@ -63,12 +63,12 @@ trait PredicateSetTrait {
 
     /**
      * @param string    $term
-     * @param int|float $to
+     * @param int|float|string $to
      * @param array     $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function lessThan(string $term, int|float $to, array $options = []): self {
+    public function lessThan(string $term, int|float|string $to, array $options = []): self {
         return $this->Range($term, null, $to, array_merge($options, [
             'types' => [
                 'gt',
@@ -80,12 +80,12 @@ trait PredicateSetTrait {
 
     /**
      * @param string    $term
-     * @param int|float $from
+     * @param int|float|string $from
      * @param array     $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function greaterThanOrEqualTo(string $term, int|float $from, array $options = []): self {
+    public function greaterThanOrEqualTo(string $term, int|float|string $from, array $options = []): self {
         return $this->Range($term, $from, null, array_merge($options, [
             'types' => [
                 'gte',
@@ -97,12 +97,12 @@ trait PredicateSetTrait {
 
     /**
      * @param string    $term
-     * @param int|float $to
+     * @param int|float|string $to
      * @param array     $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function lessThanOrEqualTo(string $term, int|float $to, array $options = []): self {
+    public function lessThanOrEqualTo(string $term, int|float|string $to, array $options = []): self {
         return $this->Range($term, null, $to, array_merge($options, [
             'types' => [
                 'gte',

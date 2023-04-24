@@ -33,15 +33,15 @@ class Range extends AbstractPredicate implements BoostInterface {
 
 
     /**
-     * @var int|float|null
+     * @var int|float|string|null
      */
-    protected int|float|null $_from;
+    protected int|float|string|null $_from;
 
 
     /**
-     * @var int|float|null
+     * @var int|float|string|null
      */
-    protected int|float|null $_to;
+    protected int|float|string|null $_to;
 
 
     /**
@@ -76,7 +76,7 @@ class Range extends AbstractPredicate implements BoostInterface {
      * @param array          $options
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
-    public function __construct(string $term, int|float|null $from, int|float|null $to = null, array $options = []) {
+    public function __construct(string $term, int|float|string|null $from, int|float|string|null $to = null, array $options = []) {
         $this->_term = $term;
 
         if ($from === null && $to === null) {
