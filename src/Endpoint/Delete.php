@@ -145,14 +145,21 @@ class Delete implements EndpointInterface, QueryInterface {
 
     /**
      * @param bool $refresh
+     * @param bool $wait
      * @return array
      * @throws \Exception
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function execute(bool $refresh = true): array {
+    public function execute(
+        bool $refresh = true,
+        bool $wait = true
+    ): array {
         try {
             $_params = $this->getPreparedParams();
+
             $_params['refresh'] = $refresh ? 'true' : 'false';
+            $_params['wait_for_completion'] = $wait ? 'true' : 'false';
+
             $_result = $this->_client->deleteByQuery($_params);
         }
         catch (Exception $e) {

@@ -163,20 +163,26 @@ class Update implements EndpointInterface, QueryInterface {
 
     /**
      * @param bool $refresh
+     * @param bool $wait
      * @return array
      * @throws \Exception
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function execute(bool $refresh = true): array {
+    public function execute(
+        bool $refresh = true,
+        bool $wait = true
+    ): array {
         try {
             $_params = $this->getPreparedParams();
+
+            $_params['refresh'] = $refresh ? 'true' : 'false';
+            $_params['wait_for_completion'] = $wait ? 'true' : 'false';
+
             if (isset($_params['body']['query'])) {
-                $_params['refresh'] = $refresh ? 'true' : 'false';
                 $_params['conflicts'] = 'proceed';
                 $_result = $this->_client->updateByQuery($_params);
             }
             else {
-                $_params['refresh'] = $refresh ? 'true' : 'false';
                 $_params['retry_on_conflict'] = 5;
                 $_result = $this->_client->update($_params);
             }
