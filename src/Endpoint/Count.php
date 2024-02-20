@@ -140,11 +140,14 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
     /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function predicate(): PredicateSet {
-        return $this->getPredicate();
+    public function clearParams(): self {
+        $this->_prepared_params = [];
+        $this->_is_prepared = false;
+
+        return $this;
     }
 
 
@@ -155,7 +158,20 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
      */
     public function execute(): array {
         try {
-            $_result = $this->_client->count($this->getPreparedParams());
+            $_params = $this->getPreparedParams();
+
+            if (isset($_params['index'])) {
+                $_indexes = explode(',', $_params['index']);
+
+                foreach ($_indexes as $_index) {
+                    $_result[] = $this->_client->count(array_merge($_params, [
+                        'index' => $_index,
+                    ]));
+                }
+            }
+            else {
+                $_result = [$this->_client->count($_params)];
+            }
         }
         catch (Exception $e) {
             $this->clearParams();
@@ -170,14 +186,11 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
     /**
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function clearParams(): self {
-        $this->_prepared_params = [];
-        $this->_is_prepared = false;
-
-        return $this;
+    public function predicate(): PredicateSet {
+        return $this->getPredicate();
     }
 
 

@@ -153,11 +153,14 @@ class Update implements EndpointInterface, QueryInterface {
 
 
     /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function predicate(): PredicateSet {
-        return $this->getPredicate();
+    public function clearParams(): self {
+        $this->_prepared_params = [];
+        $this->_is_prepared = false;
+
+        return $this;
     }
 
 
@@ -180,11 +183,33 @@ class Update implements EndpointInterface, QueryInterface {
 
             if (isset($_params['body']['query'])) {
                 $_params['conflicts'] = 'proceed';
-                $_result = $this->_client->updateByQuery($_params);
             }
             else {
                 $_params['retry_on_conflict'] = 5;
-                $_result = $this->_client->update($_params);
+            }
+
+            if (isset($_params['index'])) {
+                $_indexes = explode(',', $_params['index']);
+                if (isset($_params['body']['query'])) {
+                    foreach ($_indexes as $_index) {
+                        $_result[] = $this->_client->updateByQuery(array_merge($_params, [
+                            'index' => $_index,
+                        ]));
+                    }
+                }
+                else {
+                    foreach ($_indexes as $_index) {
+                        $_result[] = $this->_client->update(array_merge($_params, [
+                            'index' => $_index,
+                        ]));
+                    }
+                }
+            }
+            else if (isset($_params['body']['query'])) {
+                $_result = [$this->_client->updateByQuery($_params)];
+            }
+            else {
+                $_result = [$this->_client->update($_params)];
             }
         }
         catch (Exception $e) {
@@ -200,14 +225,11 @@ class Update implements EndpointInterface, QueryInterface {
 
 
     /**
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function clearParams(): self {
-        $this->_prepared_params = [];
-        $this->_is_prepared = false;
-
-        return $this;
+    public function predicate(): PredicateSet {
+        return $this->getPredicate();
     }
 
 
