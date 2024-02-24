@@ -197,9 +197,12 @@ class Update implements EndpointInterface, QueryInterface {
                                 ['index' => $_index],
                                 $_index['wait_for_response'] ? [] : [
                                     'client' => [
-                                        'curl' => [
+                                        'curl'    => [
                                             CURLOPT_RETURNTRANSFER => 0,
                                             CURLOPT_TIMEOUT_MS     => 1,
+                                        ],
+                                        'headers' => [
+                                            'Connection' => 'close',
                                         ],
                                     ],
                                 ]
@@ -215,9 +218,12 @@ class Update implements EndpointInterface, QueryInterface {
                                 ['index' => $_index],
                                 $_index['wait_for_response'] ? [] : [
                                     'client' => [
-                                        'curl' => [
+                                        'curl'    => [
                                             CURLOPT_RETURNTRANSFER => 0,
                                             CURLOPT_TIMEOUT_MS     => 1,
+                                        ],
+                                        'headers' => [
+                                            'Connection' => 'close',
                                         ],
                                     ],
                                 ]

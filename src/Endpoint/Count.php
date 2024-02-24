@@ -168,9 +168,12 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
                             ['index' => $_index],
                             $_index['wait_for_response'] ? [] : [
                                 'client' => [
-                                    'curl' => [
+                                    'curl'    => [
                                         CURLOPT_RETURNTRANSFER => 0,
                                         CURLOPT_TIMEOUT_MS     => 1,
+                                    ],
+                                    'headers' => [
+                                        'Connection' => 'close',
                                     ],
                                 ],
                             ]
