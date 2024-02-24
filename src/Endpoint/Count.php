@@ -161,12 +161,20 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
             $_params = $this->getPreparedParams();
 
             if (isset($_params['index'])) {
-                $_indexes = explode(',', $_params['index']);
-
-                foreach ($_indexes as $_index) {
-                    $_result[] = $this->_client->count(array_merge($_params, [
-                        'index' => $_index,
-                    ]));
+                foreach ($_params['index'] as $_index) {
+                    $_result[] = $this->_client->count(
+                        array_merge(
+                            $_params,
+                            ['index' => $_index],
+                            $_index['wait_for_response'] ? [] : [
+                                'client' => [
+                                    'curl' => [
+                                        CURLOPT_RETURNTRANSFER => 0,
+                                    ],
+                                ],
+                            ]
+                        )
+                    );
                 }
             }
             else {

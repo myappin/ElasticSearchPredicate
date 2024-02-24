@@ -51,7 +51,8 @@
     }
   ],
   "require": {
-    "php": "^8.1",
+    "ext-curl": "*",
+    "php": ">=8.1",
     "myappin/elasticsearch-php": "dev-master#d032d36333f1c66b27b60601529512448cbdc920",
     "psr/log": "~1.0",
     "ezimuel/ringphp": "1.2.0",

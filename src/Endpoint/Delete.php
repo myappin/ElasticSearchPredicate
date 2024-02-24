@@ -164,12 +164,20 @@ class Delete implements EndpointInterface, QueryInterface {
             $_params['wait_for_completion'] = $wait ? 'true' : 'false';
 
             if (isset($_params['index'])) {
-                $_indexes = explode(',', $_params['index']);
-
-                foreach ($_indexes as $_index) {
-                    $_result[] = $this->_client->deleteByQuery(array_merge($_params, [
-                        'index' => $_index,
-                    ]));
+                foreach ($_params['index'] as $_index) {
+                    $_result[] = $this->_client->deleteByQuery(
+                        array_merge(
+                            $_params,
+                            ['index' => $_index],
+                            $_index['wait_for_response'] ? [] : [
+                                'client' => [
+                                    'curl' => [
+                                        CURLOPT_RETURNTRANSFER => 0,
+                                    ],
+                                ],
+                            ]
+                        )
+                    );
                 }
             }
             else {

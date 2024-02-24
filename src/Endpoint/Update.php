@@ -189,19 +189,38 @@ class Update implements EndpointInterface, QueryInterface {
             }
 
             if (isset($_params['index'])) {
-                $_indexes = explode(',', $_params['index']);
                 if (isset($_params['body']['query'])) {
-                    foreach ($_indexes as $_index) {
-                        $_result[] = $this->_client->updateByQuery(array_merge($_params, [
-                            'index' => $_index,
-                        ]));
+                    foreach ($_params['index'] as $_index) {
+                        $_result[] = $this->_client->updateByQuery(
+                            array_merge(
+                                $_params,
+                                ['index' => $_index],
+                                $_index['wait_for_response'] ? [] : [
+                                    'client' => [
+                                        'curl' => [
+                                            CURLOPT_RETURNTRANSFER => 0,
+                                        ],
+                                    ],
+                                ]
+                            )
+                        );
                     }
                 }
                 else {
-                    foreach ($_indexes as $_index) {
-                        $_result[] = $this->_client->update(array_merge($_params, [
-                            'index' => $_index,
-                        ]));
+                    foreach ($_params['index'] as $_index) {
+                        $_result[] = $this->_client->update(
+                            array_merge(
+                                $_params,
+                                ['index' => $_index],
+                                $_index['wait_for_response'] ? [] : [
+                                    'client' => [
+                                        'curl' => [
+                                            CURLOPT_RETURNTRANSFER => 0,
+                                        ],
+                                    ],
+                                ]
+                            )
+                        );
                     }
                 }
             }
