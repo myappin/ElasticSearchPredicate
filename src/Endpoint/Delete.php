@@ -181,7 +181,6 @@ class Delete implements EndpointInterface, QueryInterface {
                                 'client' => [
                                     'curl' => [
                                         CURLOPT_RETURNTRANSFER => 0,
-                                        CURLOPT_TIMEOUT_MS     => 1,
                                     ],
                                     'headers' => [
                                         'Connection' => 'close',
