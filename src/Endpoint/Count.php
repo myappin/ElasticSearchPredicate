@@ -170,6 +170,7 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
                                 'client' => [
                                     'curl' => [
                                         CURLOPT_RETURNTRANSFER => 0,
+                                        CURLOPT_TIMEOUT_MS     => 1,
                                     ],
                                 ],
                             ]
