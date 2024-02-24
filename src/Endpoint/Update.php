@@ -51,9 +51,9 @@ class Update implements EndpointInterface, QueryInterface {
     use QueryTrait;
 
     /**
-     * @var string
+     * @var string|array
      */
-    protected string $_index;
+    protected string|array $_index;
 
 
     /**
@@ -93,14 +93,13 @@ class Update implements EndpointInterface, QueryInterface {
 
 
     /**
-     * Update constructor.
      * @param \Elasticsearch\Client $client
-     * @param string                $index
+     * @param string|array          $index
      * @param string                $type
      * @param string                $script
      * @param array                 $params
      */
-    public function __construct(Client $client, string $index, string $type, string $script, array $params = []) {
+    public function __construct(Client $client, string|array $index, string $type, string $script, array $params = []) {
         $this->_client = $client;
         $this->_index = $index;
         $this->_type = $type;
@@ -189,6 +188,15 @@ class Update implements EndpointInterface, QueryInterface {
             }
 
             if (isset($_params['index'])) {
+                if (is_scalar($_params['index'])) {
+                    $_params['index'] = [
+                        [
+                            'index'             => $_params['index'],
+                            'wait_for_response' => true,
+                        ],
+                    ];
+                }
+
                 if (isset($_params['body']['query'])) {
                     foreach ($_params['index'] as $_index) {
                         $_result[] = $this->_client->updateByQuery(

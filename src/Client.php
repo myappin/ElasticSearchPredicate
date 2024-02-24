@@ -103,25 +103,25 @@ class Client {
 
 
     /**
-     * @param string $index
+     * @param string|array $index
      * @param string $type
      * @return \ElasticSearchPredicate\Endpoint\Delete
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function delete(string $index, string $type): Delete {
+    public function delete(string|array $index, string $type): Delete {
         return new Delete($this->getElasticSearchClient(), $index, $type);
     }
 
 
     /**
-     * @param string $index
+     * @param string|array $index
      * @param string $type
      * @param string $script
      * @param array  $params
      * @return \ElasticSearchPredicate\Endpoint\Update
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function update(string $index, string $type, string $script, array $params = []): Update {
+    public function update(string|array $index, string $type, string $script, array $params = []): Update {
         return new Update($this->getElasticSearchClient(), $index, $type, $script, $params);
     }
 

@@ -158,32 +158,7 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
      */
     public function execute(): array {
         try {
-            $_params = $this->getPreparedParams();
-
-            if (isset($_params['index'])) {
-                foreach ($_params['index'] as $_index) {
-                    $_result[] = $this->_client->count(
-                        array_merge(
-                            $_params,
-                            ['index' => $_index],
-                            $_index['wait_for_response'] ? [] : [
-                                'client' => [
-                                    'curl'    => [
-                                        CURLOPT_RETURNTRANSFER => 0,
-                                        CURLOPT_TIMEOUT_MS     => 1,
-                                    ],
-                                    'headers' => [
-                                        'Connection' => 'close',
-                                    ],
-                                ],
-                            ]
-                        )
-                    );
-                }
-            }
-            else {
-                $_result = [$this->_client->count($_params)];
-            }
+            $_result = $this->_client->count($this->getPreparedParams());
         }
         catch (Exception $e) {
             $this->clearParams();

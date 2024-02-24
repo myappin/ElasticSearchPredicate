@@ -49,9 +49,9 @@ class Delete implements EndpointInterface, QueryInterface {
     use QueryTrait;
 
     /**
-     * @var string
+     * @var string|array
      */
-    protected string $_index;
+    protected string|array $_index;
 
 
     /**
@@ -79,12 +79,11 @@ class Delete implements EndpointInterface, QueryInterface {
 
 
     /**
-     * SearchPredicate constructor.
      * @param \Elasticsearch\Client $client
-     * @param string                $index
+     * @param string|array          $index
      * @param string                $type
      */
-    public function __construct(Client $client, string $index, string $type) {
+    public function __construct(Client $client, string|array $index, string $type) {
         $this->_client = $client;
         $this->_index = $index;
         $this->_type = $type;
@@ -164,6 +163,15 @@ class Delete implements EndpointInterface, QueryInterface {
             $_params['wait_for_completion'] = $wait ? 'true' : 'false';
 
             if (isset($_params['index'])) {
+                if (is_scalar($_params['index'])) {
+                    $_params['index'] = [
+                        [
+                            'index'             => $_params['index'],
+                            'wait_for_response' => true,
+                        ],
+                    ];
+                }
+
                 foreach ($_params['index'] as $_index) {
                     $_result[] = $this->_client->deleteByQuery(
                         array_merge(
