@@ -176,7 +176,7 @@ class Delete implements EndpointInterface, QueryInterface {
                     $_result[] = $this->_client->deleteByQuery(
                         array_merge(
                             $_params,
-                            ['index' => $_index],
+                            ['index' => $_index['index']],
                             $_index['wait_for_response'] ? [] : [
                                 'client' => [
                                     'curl' => [

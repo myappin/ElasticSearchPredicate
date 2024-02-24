@@ -202,7 +202,7 @@ class Update implements EndpointInterface, QueryInterface {
                         $_result[] = $this->_client->updateByQuery(
                             array_merge(
                                 $_params,
-                                ['index' => $_index],
+                                ['index' => $_index['index']],
                                 $_index['wait_for_response'] ? [] : [
                                     'client' => [
                                         'curl'    => [
@@ -223,7 +223,7 @@ class Update implements EndpointInterface, QueryInterface {
                         $_result[] = $this->_client->update(
                             array_merge(
                                 $_params,
-                                ['index' => $_index],
+                                ['index' => $_index['index']],
                                 $_index['wait_for_response'] ? [] : [
                                     'client' => [
                                         'curl'    => [
