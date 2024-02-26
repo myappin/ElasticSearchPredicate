@@ -51,9 +51,9 @@ class Update implements EndpointInterface, QueryInterface {
     use QueryTrait;
 
     /**
-     * @var string|array
+     * @var array
      */
-    protected string|array $_index;
+    protected array $_index;
 
 
     /**
@@ -101,10 +101,11 @@ class Update implements EndpointInterface, QueryInterface {
      */
     public function __construct(Client $client, string|array $index, string $type, string $script, array $params = []) {
         $this->_client = $client;
-        $this->_index = $index;
         $this->_type = $type;
         $this->_script = $script;
         $this->_params = $params;
+
+        $this->setIndex($index);
     }
 
 
@@ -139,10 +140,10 @@ class Update implements EndpointInterface, QueryInterface {
 
 
     /**
-     * @return array|string
+     * @return array
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getIndex(): array|string {
+    public function getIndex(): array {
         return $this->_index;
     }
 
@@ -153,7 +154,21 @@ class Update implements EndpointInterface, QueryInterface {
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setIndex(array|string $index): Update {
-        $this->_index = $index;
+        $_index = [];
+
+        if (is_scalar($index)) {
+            foreach (explode(',', $index) as $idx) {
+                $_index[] = [
+                    'index'             => $idx,
+                    'wait_for_response' => true,
+                ];
+            }
+        }
+        else {
+            $_index = $index;
+        }
+
+        $this->_index = $_index;
 
         $this->clearParams();
 
@@ -280,15 +295,6 @@ class Update implements EndpointInterface, QueryInterface {
             }
 
             if (isset($_params['index'])) {
-                if (is_scalar($_params['index'])) {
-                    $_params['index'] = [
-                        [
-                            'index'             => $_params['index'],
-                            'wait_for_response' => true,
-                        ],
-                    ];
-                }
-
                 if (isset($_params['body']['query'])) {
                     foreach ($_params['index'] as $_index) {
                         $_result[] = $this->_client->updateByQuery(

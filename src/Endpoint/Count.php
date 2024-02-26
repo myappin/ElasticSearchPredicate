@@ -127,20 +127,20 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
     /**
-     * @return array|string
+     * @return string
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getIndex(): array|string {
+    public function getIndex(): string {
         return $this->_index;
     }
 
 
     /**
-     * @param array|string $index
+     * @param string $index
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setIndex(array|string $index): Count {
+    public function setIndex(string $index): Count {
         $this->_index = $index;
 
         $this->clearParams();

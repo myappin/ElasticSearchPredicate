@@ -49,9 +49,9 @@ class Delete implements EndpointInterface, QueryInterface {
     use QueryTrait;
 
     /**
-     * @var string|array
+     * @var array
      */
-    protected string|array $_index;
+    protected array $_index;
 
 
     /**
@@ -85,8 +85,9 @@ class Delete implements EndpointInterface, QueryInterface {
      */
     public function __construct(Client $client, string|array $index, string $type) {
         $this->_client = $client;
-        $this->_index = $index;
         $this->_type = $type;
+
+        $this->setIndex($this->_index);
     }
 
 
@@ -121,10 +122,10 @@ class Delete implements EndpointInterface, QueryInterface {
 
 
     /**
-     * @return array|string
+     * @return array
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getIndex(): array|string {
+    public function getIndex(): array {
         return $this->_index;
     }
 
@@ -135,7 +136,21 @@ class Delete implements EndpointInterface, QueryInterface {
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setIndex(array|string $index): Delete {
-        $this->_index = $index;
+        $_index = [];
+
+        if (is_scalar($index)) {
+            foreach (explode(',', $index) as $idx) {
+                $_index[] = [
+                    'index'             => $idx,
+                    'wait_for_response' => true,
+                ];
+            }
+        }
+        else {
+            $_index = $index;
+        }
+
+        $this->_index = $_index;
 
         $this->clearParams();
 
