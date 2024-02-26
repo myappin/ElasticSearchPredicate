@@ -160,7 +160,11 @@ class Delete implements EndpointInterface, QueryInterface {
             $_params = $this->getPreparedParams();
 
             $_params['refresh'] = $refresh ? 'true' : 'false';
-            $_params['wait_for_completion'] = $wait ? 'true' : 'false';
+
+            if (isset($_params['body']['query'])) {
+                $_params['conflicts'] = 'proceed';
+                $_params['wait_for_completion'] = $wait ? 'true' : 'false';
+            }
 
             if (isset($_params['index'])) {
                 if (is_scalar($_params['index'])) {
@@ -228,8 +232,6 @@ class Delete implements EndpointInterface, QueryInterface {
         if (!empty($this->_type)) {
             $_prepared_params['type'] = $this->_type;
         }
-
-        $_prepared_params['conflicts'] = 'proceed';
 
         $_prepared_params['body'] = [];
 

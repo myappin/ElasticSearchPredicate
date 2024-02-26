@@ -178,10 +178,10 @@ class Update implements EndpointInterface, QueryInterface {
             $_params = $this->getPreparedParams();
 
             $_params['refresh'] = $refresh ? 'true' : 'false';
-            $_params['wait_for_completion'] = $wait ? 'true' : 'false';
 
             if (isset($_params['body']['query'])) {
                 $_params['conflicts'] = 'proceed';
+                $_params['wait_for_completion'] = $wait ? 'true' : 'false';
             }
             else {
                 $_params['retry_on_conflict'] = 5;
