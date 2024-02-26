@@ -87,7 +87,7 @@ class Delete implements EndpointInterface, QueryInterface {
         $this->_client = $client;
         $this->_type = $type;
 
-        $this->setIndex($this->_index);
+        $this->setIndex($index);
     }
 
 
