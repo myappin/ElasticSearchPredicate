@@ -151,15 +151,33 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
     /**
      * @return array
-     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getAggs(): array {
+        return $this->_aggs;
+    }
+
+
+    /**
+     * @return string
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getPreparedParams(): array {
-        if (!$this->_is_prepared) {
-            $this->prepareParams();
-        }
+    public function getIndex(): string {
+        return $this->_index;
+    }
 
-        return $this->_prepared_params;
+
+    /**
+     * @param string $index
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setIndex(string $index): Search {
+        $this->_index = $index;
+
+        $this->clearParams();
+
+        return $this;
     }
 
 
@@ -169,6 +187,15 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
      */
     public function getLimit(): ?int {
         return $this->_limit;
+    }
+
+
+    /**
+     * @return int|null
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getOffset(): ?int {
+        return $this->_offset;
     }
 
 
@@ -183,28 +210,64 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
     /**
      * @return array
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getAggs(): array {
-        return $this->_aggs;
+    public function getPreparedParams(): array {
+        if (!$this->_is_prepared) {
+            $this->prepareParams();
+        }
+
+        return $this->_prepared_params;
     }
 
 
     /**
-     * @return int|null
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getOffset(): ?int {
-        return $this->_offset;
+    public function getType(): string {
+        return $this->_type;
     }
 
 
     /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @param string $type
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setType(string $type): Search {
+        $this->_type = $type;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
+     * @param array $aggs
+     * @return \ElasticSearchPredicate\Endpoint\Search
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function predicate(): PredicateSet {
-        return $this->getPredicate();
+    public function aggs(array $aggs): self {
+        $this->_aggs = $aggs;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function clearParams(): self {
+        $this->_prepared_params = [];
+        $this->_is_prepared = false;
+
+        return $this;
     }
 
 
@@ -230,24 +293,26 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
     /**
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function clearParams(): self {
-        $this->_prepared_params = [];
-        $this->_is_prepared = false;
-
-        return $this;
-    }
-
-
-    /**
      * @param int $limit
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function limit(int $limit): self {
         $this->_limit = $limit;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
+     * @param int $offset
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function offset(int $offset): self {
+        $this->_offset = $offset;
 
         return $this;
     }
@@ -272,19 +337,18 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
 
         $this->_order[] = [$term => $asc];
 
+        $this->clearParams();
+
         return $this;
     }
 
 
     /**
-     * @param array $aggs
-     * @return \ElasticSearchPredicate\Endpoint\Search
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function aggs(array $aggs): self {
-        $this->_aggs = $aggs;
-
-        return $this;
+    public function predicate(): PredicateSet {
+        return $this->getPredicate();
     }
 
 
@@ -295,17 +359,7 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
     public function resetOrder(): self {
         $this->_order = [];
 
-        return $this;
-    }
-
-
-    /**
-     * @param int $offset
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function offset(int $offset): self {
-        $this->_offset = $offset;
+        $this->clearParams();
 
         return $this;
     }

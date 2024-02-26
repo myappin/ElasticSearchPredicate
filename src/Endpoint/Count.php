@@ -127,6 +127,29 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
 
 
     /**
+     * @return array|string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getIndex(): array|string {
+        return $this->_index;
+    }
+
+
+    /**
+     * @param array|string $index
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setIndex(array|string $index): Count {
+        $this->_index = $index;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
@@ -136,6 +159,29 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
         }
 
         return $this->_prepared_params;
+    }
+
+
+    /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getType(): string {
+        return $this->_type;
+    }
+
+
+    /**
+     * @param string $type
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setType(string $type): Count {
+        $this->_type = $type;
+
+        $this->clearParams();
+
+        return $this;
     }
 
 

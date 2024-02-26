@@ -121,6 +121,29 @@ class Delete implements EndpointInterface, QueryInterface {
 
 
     /**
+     * @return array|string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getIndex(): array|string {
+        return $this->_index;
+    }
+
+
+    /**
+     * @param array|string $index
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setIndex(array|string $index): Delete {
+        $this->_index = $index;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
@@ -130,6 +153,29 @@ class Delete implements EndpointInterface, QueryInterface {
         }
 
         return $this->_prepared_params;
+    }
+
+
+    /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getType(): string {
+        return $this->_type;
+    }
+
+
+    /**
+     * @param string $type
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setType(string $type): Delete {
+        $this->_type = $type;
+
+        $this->clearParams();
+
+        return $this;
     }
 
 
@@ -183,7 +229,7 @@ class Delete implements EndpointInterface, QueryInterface {
                             ['index' => $_index['index']],
                             $_index['wait_for_response'] ? [] : [
                                 'client' => [
-                                    'curl' => [
+                                    'curl'    => [
                                         CURLOPT_RETURNTRANSFER => 0,
                                     ],
                                     'headers' => [

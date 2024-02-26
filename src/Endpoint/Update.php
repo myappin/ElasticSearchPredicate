@@ -139,6 +139,52 @@ class Update implements EndpointInterface, QueryInterface {
 
 
     /**
+     * @return array|string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getIndex(): array|string {
+        return $this->_index;
+    }
+
+
+    /**
+     * @param array|string $index
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setIndex(array|string $index): Update {
+        $this->_index = $index;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
+     * @return array
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getParams(): array {
+        return $this->_params;
+    }
+
+
+    /**
+     * @param array $params
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setParams(array $params): Update {
+        $this->_params = $params;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
@@ -148,6 +194,52 @@ class Update implements EndpointInterface, QueryInterface {
         }
 
         return $this->_prepared_params;
+    }
+
+
+    /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getScript(): string {
+        return $this->_script;
+    }
+
+
+    /**
+     * @param string $script
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setScript(string $script): Update {
+        $this->_script = $script;
+
+        $this->clearParams();
+
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getType(): string {
+        return $this->_type;
+    }
+
+
+    /**
+     * @param string $type
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setType(string $type): Update {
+        $this->_type = $type;
+
+        $this->clearParams();
+
+        return $this;
     }
 
 
