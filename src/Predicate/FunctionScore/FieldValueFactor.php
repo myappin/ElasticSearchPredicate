@@ -70,27 +70,6 @@ class FieldValueFactor extends AbstractFunction {
 
 
     /**
-     * @return string
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getField(): string {
-        return $this->_field;
-    }
-
-
-    /**
-     * @param string $field
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setField(string $field): self {
-        $this->_field = $field;
-
-        return $this;
-    }
-
-
-    /**
      * @return int|float|null
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
@@ -106,6 +85,27 @@ class FieldValueFactor extends AbstractFunction {
      */
     public function setFactor(int|float|null $factor): self {
         $this->_factor = $factor;
+
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getField(): string {
+        return $this->_field;
+    }
+
+
+    /**
+     * @param string $field
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setField(string $field): self {
+        $this->_field = $field;
 
         return $this;
     }
@@ -179,7 +179,8 @@ class FieldValueFactor extends AbstractFunction {
         'field_value_factor' => "array",
         'weight'             => "int|float",
         'filter'             => "array",
-    ])] public function toArray(): array {
+    ])]
+    public function toArray(): array {
         $_ret = [
             'field_value_factor' => [
                 'field' => $this->_field,

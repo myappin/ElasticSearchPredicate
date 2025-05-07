@@ -83,6 +83,27 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getTerm(): string {
+        return $this->_term;
+    }
+
+
+    /**
+     * @param string $term
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setTerm(string $term): self {
+        $this->_term = $term;
+
+        return $this;
+    }
+
+
+    /**
      * @param int|float $fuzziness
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -97,20 +118,6 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
-     * @param int $prefix_length
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function prefix_length(int $prefix_length): void {
-        if ($prefix_length < 0 || $prefix_length > 20) {
-            throw new PredicateException('Invalid prefix_length');
-        }
-
-        $this->_prefix_length = $prefix_length;
-    }
-
-
-    /**
      * @param int $max_expansions
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -121,6 +128,37 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
         }
 
         $this->_max_expansions = $max_expansions;
+    }
+
+
+    /**
+     * @param string $path
+     * @return self
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function pathFix(string $path): self {
+        if (
+            !empty($path)
+            && !str_starts_with($this->_term, $path)
+        ) {
+            $this->setTerm($path . '.' . $this->_term);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param int $prefix_length
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function prefix_length(int $prefix_length): void {
+        if ($prefix_length < 0 || $prefix_length > 20) {
+            throw new PredicateException('Invalid prefix_length');
+        }
+
+        $this->_prefix_length = $prefix_length;
     }
 
 

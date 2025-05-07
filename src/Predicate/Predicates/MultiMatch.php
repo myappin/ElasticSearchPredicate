@@ -98,17 +98,21 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
 
 
     /**
-     * @param int|float $tie_breaker
-     * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @return array|string[]
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function tie_breaker(int|float $tie_breaker): self {
-        if ($tie_breaker < 0 || $tie_breaker > 1) {
-            throw new PredicateException('Tie breaker must be between 0 and 1');
-        }
+    public function getFields(): array {
+        return $this->_fields;
+    }
 
-        $this->_tie_breaker = $tie_breaker;
+
+    /**\
+     * @param array $fields
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setFields(array $fields): self {
+        $this->_fields = $fields;
 
         return $this;
     }
@@ -126,6 +130,41 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
         }
 
         $this->_minimum_should_match = $minimum_should_match;
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $path
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function pathFix(string $path): self {
+        if (!empty($path)) {
+            foreach ($this->_fields as $key => $field) {
+                if (!str_starts_with($field, $path)) {
+                    $this->_fields[$key] = $path . '.' . $field;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param int|float $tie_breaker
+     * @return $this
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function tie_breaker(int|float $tie_breaker): self {
+        if ($tie_breaker < 0 || $tie_breaker > 1) {
+            throw new PredicateException('Tie breaker must be between 0 and 1');
+        }
+
+        $this->_tie_breaker = $tie_breaker;
 
         return $this;
     }

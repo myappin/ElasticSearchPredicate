@@ -67,6 +67,27 @@ class Field implements FieldInterface {
 
 
     /**
+     * @return int|float|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getDecay(): int|float|null {
+        return $this->_decay;
+    }
+
+
+    /**
+     * @param int|float|null $decay
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setDecay(int|float|null $decay): self {
+        $this->_decay = $decay;
+
+        return $this;
+    }
+
+
+    /**
      * @return string
      */
     public function getName(): string {
@@ -80,6 +101,27 @@ class Field implements FieldInterface {
      */
     public function setName(string $name): self {
         $this->_name = $name;
+
+        return $this;
+    }
+
+
+    /**
+     * @return int|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getOffset(): ?int {
+        return $this->_offset;
+    }
+
+
+    /**
+     * @param int|null $offset
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setOffset(?int $offset): self {
+        $this->_offset = $offset;
 
         return $this;
     }
@@ -120,48 +162,6 @@ class Field implements FieldInterface {
      */
     public function setScale(int|float $scale): self {
         $this->_scale = $scale;
-
-        return $this;
-    }
-
-
-    /**
-     * @return int|null
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getOffset(): ?int {
-        return $this->_offset;
-    }
-
-
-    /**
-     * @param int|null $offset
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setOffset(?int $offset): self {
-        $this->_offset = $offset;
-
-        return $this;
-    }
-
-
-    /**
-     * @return int|float|null
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getDecay(): int|float|null {
-        return $this->_decay;
-    }
-
-
-    /**
-     * @param int|float|null $decay
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setDecay(int|float|null $decay): self {
-        $this->_decay = $decay;
 
         return $this;
     }

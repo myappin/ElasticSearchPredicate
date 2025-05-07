@@ -55,27 +55,6 @@ class FunctionScore extends PredicateSet {
 
 
     /**
-     * @return float|int|null
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getMaxBoost(): float|int|null {
-        return $this->_max_boost;
-    }
-
-
-    /**
-     * @param float|int|null $max_boost
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setMaxBoost(float|int|null $max_boost): self {
-        $this->_max_boost = $max_boost;
-
-        return $this;
-    }
-
-
-    /**
      * @return string|null
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
@@ -105,6 +84,36 @@ class FunctionScore extends PredicateSet {
         }
 
         $this->_boost_mode = $boost_mode;
+
+        return $this;
+    }
+
+
+    /**
+     * @return \DusanKasan\Knapsack\Collection
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getFunctions(): Collection {
+        return $this->_functions ?? ($this->_functions = new Collection([]));
+    }
+
+
+    /**
+     * @return float|int|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getMaxBoost(): float|int|null {
+        return $this->_max_boost;
+    }
+
+
+    /**
+     * @param float|int|null $max_boost
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setMaxBoost(float|int|null $max_boost): self {
+        $this->_max_boost = $max_boost;
 
         return $this;
     }
@@ -163,15 +172,6 @@ class FunctionScore extends PredicateSet {
         $this->_score_mode = $score_mode;
 
         return $this;
-    }
-
-
-    /**
-     * @return \DusanKasan\Knapsack\Collection
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getFunctions(): Collection {
-        return $this->_functions ?? ($this->_functions = new Collection([]));
     }
 
 

@@ -91,6 +91,27 @@ class Range extends AbstractPredicate implements BoostInterface {
 
 
     /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getTerm(): string {
+        return $this->_term;
+    }
+
+
+    /**
+     * @param string $term
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setTerm(string $term): self {
+        $this->_term = $term;
+
+        return $this;
+    }
+
+
+    /**
      * @param string $format
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
@@ -101,34 +122,19 @@ class Range extends AbstractPredicate implements BoostInterface {
 
 
     /**
-     * @param string|null $from
-     * @param string|null $to
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @param string $path
+     * @return self
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function types(?string $from, ?string $to): void {
-        if ($from !== null) {
-            if (!in_array($from, [
-                'gte',
-                'gt',
-            ], true)
-            ) {
-                throw new PredicateException('From type can be one of gt and gte');
-            }
-
-            $this->_from_type = $from;
+    public function pathFix(string $path): self {
+        if (
+            !empty($path)
+            && !str_starts_with($this->_term, $path)
+        ) {
+            $this->setTerm($path . '.' . $this->_term);
         }
-        if ($to !== null) {
-            if (!in_array($to, [
-                'lte',
-                'lt',
-            ], true)
-            ) {
-                throw new PredicateException('From type can be one of gt and gte');
-            }
 
-            $this->_to_type = $to;
-        }
+        return $this;
     }
 
 
@@ -163,5 +169,37 @@ class Range extends AbstractPredicate implements BoostInterface {
         }
 
         return $_ret;
+    }
+
+
+    /**
+     * @param string|null $from
+     * @param string|null $to
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function types(?string $from, ?string $to): void {
+        if ($from !== null) {
+            if (!in_array($from, [
+                'gte',
+                'gt',
+            ], true)
+            ) {
+                throw new PredicateException('From type can be one of gt and gte');
+            }
+
+            $this->_from_type = $from;
+        }
+        if ($to !== null) {
+            if (!in_array($to, [
+                'lte',
+                'lt',
+            ], true)
+            ) {
+                throw new PredicateException('From type can be one of gt and gte');
+            }
+
+            $this->_to_type = $to;
+        }
     }
 }

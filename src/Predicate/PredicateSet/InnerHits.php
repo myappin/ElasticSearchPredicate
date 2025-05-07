@@ -72,26 +72,6 @@ class InnerHits {
     /**
      * @return int|null
      */
-    public function getSize(): ?int {
-        return $this->_size;
-    }
-
-
-    /**
-     * @param int|null $size
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setSize(?int $size): self {
-        $this->_size = $size;
-
-        return $this;
-    }
-
-
-    /**
-     * @return int|null
-     */
     public function getOffset(): ?int {
         return $this->_offset;
     }
@@ -104,6 +84,26 @@ class InnerHits {
      */
     public function setOffset(?int $offset): self {
         $this->_offset = $offset;
+
+        return $this;
+    }
+
+
+    /**
+     * @return int|null
+     */
+    public function getSize(): ?int {
+        return $this->_size;
+    }
+
+
+    /**
+     * @param int|null $size
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setSize(?int $size): self {
+        $this->_size = $size;
 
         return $this;
     }

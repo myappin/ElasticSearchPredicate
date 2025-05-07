@@ -48,6 +48,12 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
+     * @var string
+     */
+    protected string $_path = '';
+
+
+    /**
      * @var \ElasticSearchPredicate\Predicate\PredicateSet|null
      */
     protected ?PredicateSet $_unnest = null;
@@ -143,27 +149,6 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @return Collection
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getPredicates(): Collection {
-        return $this->_predicates;
-    }
-
-
-    /**
-     * @param \DusanKasan\Knapsack\Collection $predicates
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setPredicates(Collection $predicates): self {
-        $this->_predicates = $predicates;
-
-        return $this;
-    }
-
-
-    /**
      * @return string
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
@@ -190,13 +175,66 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getPath(): string {
+        return $this->_path;
+    }
+
+
+    /**
+     * @param string $path
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setPath(string $path): self {
+        $this->_path = $path;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getPredicates(): Collection {
+        return $this->_predicates;
+    }
+
+
+    /**
+     * @param \DusanKasan\Knapsack\Collection $predicates
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setPredicates(Collection $predicates): self {
+        $this->_predicates = $predicates;
+
+        return $this;
+    }
+
+
+    /**
      * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
      * @return \ElasticSearchPredicate\Predicate\PredicateSet
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function orPredicate(PredicateInterface $predicate): PredicateSet {
-        $this->setCombiner(self::C_OR);
+    public function and(PredicateInterface $predicate): PredicateSet {
+        return $this->andPredicate($predicate);
+    }
+
+
+    /**
+     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function andPredicate(PredicateInterface $predicate): PredicateSet {
+        $this->setCombiner(self::C_AND);
 
         return $this->append($predicate);
     }
@@ -230,102 +268,6 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function and(PredicateInterface $predicate): PredicateSet {
-        return $this->andPredicate($predicate);
-    }
-
-
-    /**
-     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function andPredicate(PredicateInterface $predicate): PredicateSet {
-        $this->setCombiner(self::C_AND);
-
-        return $this->append($predicate);
-    }
-
-
-    /**
-     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function or(PredicateInterface $predicate): PredicateSet {
-        return $this->andPredicate($predicate);
-    }
-
-
-    /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function not(): PredicateSet {
-        if ($this->_last) {
-            $this->_last->setCombiner($this->_combiner);
-        }
-
-        $_not = new NotPredicateSet($this);
-        $this->_last = $_not;
-        $this->_predicates = $this->_predicates->append($_not);
-
-        $this->_combiner = self::C_AND;
-
-        return $_not;
-    }
-
-
-    /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     */
-    public function nest(): PredicateSet {
-        if ($this->_last) {
-            $this->_last->setCombiner($this->_combiner);
-        }
-
-        $_nest = new PredicateSet($this);
-        $this->_last = $_nest;
-
-        $this->_predicates = $this->_predicates->append($_nest);
-
-        $this->_combiner = self::C_AND;
-
-        return $_nest;
-    }
-
-
-    /**
-     * @param string $path
-     * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     */
-    public function nested(string $path): NestedPredicateSet {
-        if ($this->_last) {
-            $this->_last->setCombiner($this->_combiner);
-        }
-
-        $_nest = new NestedPredicateSet($this);
-        $_nest->setPath($path);
-        $this->_last = $_nest;
-
-        $this->_predicates = $this->_predicates->append($_nest);
-
-        $this->_combiner = self::C_AND;
-
-        return $_nest;
-    }
-
-
-    /**
      * @param string $type
      * @return \ElasticSearchPredicate\Predicate\HasChildPredicateSet
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
@@ -348,28 +290,6 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @param string $type
-     * @return \ElasticSearchPredicate\Predicate\HasParentPredicateSet
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     */
-    public function parent(string $type): HasParentPredicateSet {
-        if ($this->_last) {
-            $this->_last->setCombiner($this->_combiner);
-        }
-
-        $_nest = new HasParentPredicateSet($this);
-        $_nest->setType($type);
-        $this->_last = $_nest;
-
-        $this->_predicates = $this->_predicates->append($_nest);
-
-        $this->_combiner = self::C_AND;
-
-        return $_nest;
-    }
-
-
-    /**
      * @return \ElasticSearchPredicate\Predicate\FilterPredicateSet
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
@@ -379,6 +299,8 @@ class PredicateSet implements PredicateSetInterface {
         }
 
         $_nest = new FilterPredicateSet($this);
+        $_nest->setPath($this->_path);
+
         $this->_last = $_nest;
 
         $this->_predicates = $this->_predicates->append($_nest);
@@ -390,114 +312,63 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @return bool
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function unnest(): PredicateSet {
-        if (empty($this->_unnest)) {
-            throw new PredicateException('Can not unnest not nested predicate');
-        }
-
-        $_unnest = $this->_unnest;
-        $this->_unnest = null;
-
-        return $_unnest;
+    public function isEmpty(): bool {
+        return $this->_predicates->isEmpty();
     }
 
 
     /**
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function toArray(): array {
-        $_predicates = $this->normalize();
-        $_size = $_predicates->size();
-
-        if ($_size < 1) {
-            return [];
-        }
-        if ($_size === 1) {
-            return $_predicates->first()->toArray();
+    public function nest(): PredicateSet {
+        if ($this->_last) {
+            $this->_last->setCombiner($this->_combiner);
         }
 
-        if ($_size === 2) {
-            if ($_predicates->first()->getCombiner() === self::C_AND) {
-                return [
-                    'bool' => [
-                        'must' => $_predicates->map(function(PredicateInterface $predicate) {
-                            return $predicate->toArray();
-                        })->values()->toArray(),
-                    ],
-                ];
-            }
+        $_nest = new PredicateSet($this);
+        $_nest->setPath($this->_path);
 
-            return [
-                'bool' => [
-                    'should' => $_predicates->map(function(PredicateInterface $predicate) {
-                        return $predicate->toArray();
-                    })->values()->toArray(),
-                ],
-            ];
+        $this->_last = $_nest;
+
+        $this->_predicates = $this->_predicates->append($_nest);
+
+        $this->_combiner = self::C_AND;
+
+        return $_nest;
+    }
+
+
+    /**
+     * @param string $path
+     * @return \ElasticSearchPredicate\Predicate\NestedPredicateSet
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     */
+    public function nested(string $path): NestedPredicateSet {
+        if ($this->_last) {
+            $this->_last->setCombiner($this->_combiner);
         }
 
-        $_combiner = null;
-        $_index = 0;
-        $_partitions = $_predicates->partitionBy(function(PredicateInterface $predicate) use (&$_combiner, &$_index) {
-            if ($_combiner === PredicateSet::C_OR) {
-                $_index++;
-            }
-            $_combiner = $predicate->getCombiner();
-
-            return $_index;
-        });
-
-        if ($_partitions->sizeIs(1)) {
-            return [
-                'bool' => $_partitions->map(function(Collection $partition) {
-                    if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
-                        return [
-                            'must' => $partition->map(function(PredicateInterface $predicate) {
-                                return $predicate->toArray();
-                            })->values()->toArray(),
-                        ];
-                    }
-
-                    return [
-                        'should' => $partition->map(function(PredicateInterface $predicate) {
-                            return $predicate->toArray();
-                        })->values()->toArray(),
-                    ];
-                })->first(),
-            ];
+        if (
+            !empty($this->_path)
+            && !str_starts_with($path, $this->_path)
+        ) {
+            $path = $this->_path . '.' . $path;
         }
 
-        return [
-            'bool' => [
-                'should' => $_partitions->map(function(Collection $partition) {
-                    if ($partition->sizeIs(1)) {
-                        return $partition->first()->toArray();
-                    }
+        $_nest = new NestedPredicateSet($this);
+        $_nest->setPath($path);
 
-                    if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
-                        return [
-                            'bool' => [
-                                'must' => $partition->map(function(PredicateInterface $predicate) {
-                                    return $predicate->toArray();
-                                })->values()->toArray(),
-                            ],
-                        ];
-                    }
+        $this->_last = $_nest;
 
-                    return [
-                        'bool' => [
-                            'should' => $partition->map(function(PredicateInterface $predicate) {
-                                return $predicate->toArray();
-                            })->values()->toArray(),
-                        ],
-                    ];
-                })->values()->toArray(),
-            ],
-        ];
+        $this->_predicates = $this->_predicates->append($_nest);
+
+        $this->_combiner = self::C_AND;
+
+        return $_nest;
     }
 
 
@@ -521,11 +392,202 @@ class PredicateSet implements PredicateSetInterface {
 
 
     /**
-     * @return bool
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function not(): PredicateSet {
+        if ($this->_last) {
+            $this->_last->setCombiner($this->_combiner);
+        }
+
+        $_not = new NotPredicateSet($this);
+        $_not->setPath($this->_path);
+
+        $this->_last = $_not;
+        $this->_predicates = $this->_predicates->append($_not);
+
+        $this->_combiner = self::C_AND;
+
+        return $_not;
+    }
+
+
+    /**
+     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function or(PredicateInterface $predicate): PredicateSet {
+        return $this->andPredicate($predicate);
+    }
+
+
+    /**
+     * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function orPredicate(PredicateInterface $predicate): PredicateSet {
+        $this->setCombiner(self::C_OR);
+
+        return $this->append($predicate);
+    }
+
+
+    /**
+     * @param string $type
+     * @return \ElasticSearchPredicate\Predicate\HasParentPredicateSet
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
-    public function isEmpty(): bool {
-        return $this->_predicates->isEmpty();
+    public function parent(string $type): HasParentPredicateSet {
+        if ($this->_last) {
+            $this->_last->setCombiner($this->_combiner);
+        }
+
+        $_nest = new HasParentPredicateSet($this);
+        $_nest->setType($type);
+
+        $this->_last = $_nest;
+
+        $this->_predicates = $this->_predicates->append($_nest);
+
+        $this->_combiner = self::C_AND;
+
+        return $_nest;
+    }
+
+
+    /**
+     * @param string $path
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function pathFix(string $path): self {
+        foreach ($this->_predicates as $predicate) {
+            if ($predicate instanceof PredicateSet) {
+                $predicate->setPath($path);
+            }
+
+            if ($predicate instanceof PredicateInterface) {
+                $predicate->pathFix($path);
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function toArray(): array {
+        $_predicates = $this->normalize();
+        $_size = $_predicates->size();
+
+        if ($_size < 1) {
+            return [];
+        }
+        if ($_size === 1) {
+            return $_predicates->first()->toArray();
+        }
+
+        if ($_size === 2) {
+            if ($_predicates->first()->getCombiner() === self::C_AND) {
+                return [
+                    'bool' => [
+                        'must' => $_predicates->map(function(PredicateInterface $predicate) {
+                            return $predicate->pathFix($this->getPath())->toArray();
+                        })->values()->toArray(),
+                    ],
+                ];
+            }
+
+            return [
+                'bool' => [
+                    'should' => $_predicates->map(function(PredicateInterface $predicate) {
+                        return $predicate->pathFix($this->getPath())->toArray();
+                    })->values()->toArray(),
+                ],
+            ];
+        }
+
+        $_combiner = null;
+        $_index = 0;
+        $_partitions = $_predicates->partitionBy(function(PredicateInterface $predicate) use (&$_combiner, &$_index) {
+            if ($_combiner === PredicateSet::C_OR) {
+                $_index++;
+            }
+            $_combiner = $predicate->getCombiner();
+
+            return $_index;
+        });
+
+        if ($_partitions->sizeIs(1)) {
+            return [
+                'bool' => $_partitions->map(function(Collection $partition) {
+                    if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
+                        return [
+                            'must' => $partition->map(function(PredicateInterface $predicate) {
+                                return $predicate->pathFix($this->getPath())->toArray();
+                            })->values()->toArray(),
+                        ];
+                    }
+
+                    return [
+                        'should' => $partition->map(function(PredicateInterface $predicate) {
+                            return $predicate->pathFix($this->getPath())->toArray();
+                        })->values()->toArray(),
+                    ];
+                })->first(),
+            ];
+        }
+
+        return [
+            'bool' => [
+                'should' => $_partitions->map(function(Collection $partition) {
+                    if ($partition->sizeIs(1)) {
+                        return $partition->first()->pathFix($this->getPath())->toArray();
+                    }
+
+                    if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
+                        return [
+                            'bool' => [
+                                'must' => $partition->map(function(PredicateInterface $predicate) {
+                                    return $predicate->pathFix($this->getPath())->toArray();
+                                })->values()->toArray(),
+                            ],
+                        ];
+                    }
+
+                    return [
+                        'bool' => [
+                            'should' => $partition->map(function(PredicateInterface $predicate) {
+                                return $predicate->pathFix($this->getPath())->toArray();
+                            })->values()->toArray(),
+                        ],
+                    ];
+                })->values()->toArray(),
+            ],
+        ];
+    }
+
+
+    /**
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     */
+    public function unnest(): PredicateSet {
+        if (empty($this->_unnest)) {
+            throw new PredicateException('Can not unnest not nested predicate');
+        }
+
+        $_unnest = $this->_unnest;
+        $this->_unnest = null;
+
+        return $_unnest;
     }
 
 

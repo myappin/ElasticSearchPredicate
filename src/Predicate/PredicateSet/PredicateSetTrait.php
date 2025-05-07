@@ -21,6 +21,19 @@ trait PredicateSetTrait {
 
     /**
      * @param string           $term
+     * @param int|float|string $from
+     * @param int|float|string $to
+     * @param array            $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function between(string $term, int|float|string $from, int|float|string $to, array $options = []): self {
+        return $this->Range($term, $from, $to, $options);
+    }
+
+
+    /**
+     * @param string           $term
      * @param int|float|string $value
      * @param array            $options
      * @return $this
@@ -32,22 +45,9 @@ trait PredicateSetTrait {
 
 
     /**
-     * @param string    $term
+     * @param string           $term
      * @param int|float|string $from
-     * @param int|float|string $to
-     * @param array     $options
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function between(string $term, int|float|string $from, int|float|string $to, array $options = []): self {
-        return $this->Range($term, $from, $to, $options);
-    }
-
-
-    /**
-     * @param string    $term
-     * @param int|float|string $from
-     * @param array     $options
+     * @param array            $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
@@ -62,26 +62,9 @@ trait PredicateSetTrait {
 
 
     /**
-     * @param string    $term
-     * @param int|float|string $to
-     * @param array     $options
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function lessThan(string $term, int|float|string $to, array $options = []): self {
-        return $this->Range($term, null, $to, array_merge($options, [
-            'types' => [
-                'gt',
-                'lt',
-            ],
-        ]));
-    }
-
-
-    /**
-     * @param string    $term
+     * @param string           $term
      * @param int|float|string $from
-     * @param array     $options
+     * @param array            $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
@@ -96,9 +79,26 @@ trait PredicateSetTrait {
 
 
     /**
-     * @param string    $term
+     * @param string           $term
      * @param int|float|string $to
-     * @param array     $options
+     * @param array            $options
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function lessThan(string $term, int|float|string $to, array $options = []): self {
+        return $this->Range($term, null, $to, array_merge($options, [
+            'types' => [
+                'gt',
+                'lt',
+            ],
+        ]));
+    }
+
+
+    /**
+     * @param string           $term
+     * @param int|float|string $to
+     * @param array            $options
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */

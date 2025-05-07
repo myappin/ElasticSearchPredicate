@@ -35,6 +35,11 @@ interface PredicateSetInterface extends PredicateInterface {
      */
     public function andPredicate(PredicateInterface $predicate): PredicateSet;
 
+    /**
+     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function nest(): PredicateSet;
 
     /**
      * @param \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface $predicate
@@ -42,14 +47,6 @@ interface PredicateSetInterface extends PredicateInterface {
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function orPredicate(PredicateInterface $predicate): PredicateSet;
-
-
-    /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function nest(): PredicateSet;
-
 
     /**
      * @return \ElasticSearchPredicate\Predicate\PredicateSet

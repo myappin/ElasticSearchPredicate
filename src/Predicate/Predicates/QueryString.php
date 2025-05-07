@@ -79,6 +79,45 @@ class QueryString extends AbstractPredicate implements BoostInterface, AnalyzerI
 
 
     /**
+     * @return array|string[]
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getFields(): array {
+        return $this->_fields;
+    }
+
+
+    /**
+     * @param array $fields
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setFields(array $fields): self {
+        $this->_fields = $fields;
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $path
+     * @return self
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function pathFix(string $path): self {
+        if (!empty($path)) {
+            foreach ($this->_fields as $key => $field) {
+                if (!str_starts_with($field, $path)) {
+                    $this->_fields[$key] = $path . '.' . $field;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */

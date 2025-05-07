@@ -37,6 +37,16 @@ class Script extends AbstractPredicate {
 
 
     /**
+     * @param string $path
+     * @return self
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function pathFix(string $path): self {
+        return $this;
+    }
+
+
+    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */

@@ -46,6 +46,15 @@ class Decay extends AbstractFunction {
 
 
     /**
+     * @return \DusanKasan\Knapsack\Collection
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getFields(): Collection {
+        return $this->_fields ?? ($this->_fields = new Collection([]));
+    }
+
+
+    /**
      * @return string
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
@@ -73,15 +82,6 @@ class Decay extends AbstractFunction {
         $this->_type = $type;
 
         return $this;
-    }
-
-
-    /**
-     * @return \DusanKasan\Knapsack\Collection
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getFields(): Collection {
-        return $this->_fields ?? ($this->_fields = new Collection([]));
     }
 
 

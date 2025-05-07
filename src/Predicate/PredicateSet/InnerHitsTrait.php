@@ -30,6 +30,15 @@ trait InnerHitsTrait {
 
 
     /**
+     * @return bool
+     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+     */
+    public function hasInnerHits(): bool {
+        return isset($this->_inner_hits);
+    }
+
+
+    /**
      * @param string|null $name
      * @param null        $inner_hits
      * @return $this
@@ -44,15 +53,6 @@ trait InnerHitsTrait {
         $this->_inner_hits = $inner_hits = new InnerHits($name);
 
         return $this;
-    }
-
-
-    /**
-     * @return bool
-     * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
-     */
-    public function hasInnerHits(): bool {
-        return isset($this->_inner_hits);
     }
 
 

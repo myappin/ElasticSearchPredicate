@@ -83,17 +83,6 @@ class Client {
     /**
      * @param string $index
      * @param string $type
-     * @return \ElasticSearchPredicate\Endpoint\Search
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function search(string $index, string $type): Search {
-        return new Search($this->getElasticSearchClient(), $index, $type);
-    }
-
-
-    /**
-     * @param string $index
-     * @param string $type
      * @return \ElasticSearchPredicate\Endpoint\Count
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
@@ -104,7 +93,7 @@ class Client {
 
     /**
      * @param string|array $index
-     * @param string $type
+     * @param string       $type
      * @return \ElasticSearchPredicate\Endpoint\Delete
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
@@ -114,10 +103,21 @@ class Client {
 
 
     /**
-     * @param string|array $index
+     * @param string $index
      * @param string $type
-     * @param string $script
-     * @param array  $params
+     * @return \ElasticSearchPredicate\Endpoint\Search
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function search(string $index, string $type): Search {
+        return new Search($this->getElasticSearchClient(), $index, $type);
+    }
+
+
+    /**
+     * @param string|array $index
+     * @param string       $type
+     * @param string       $script
+     * @param array        $params
      * @return \ElasticSearchPredicate\Endpoint\Update
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */

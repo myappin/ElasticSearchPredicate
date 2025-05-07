@@ -70,6 +70,44 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
 
 
     /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getMatch(): string {
+        return $this->_match;
+    }
+
+
+    /**
+     * @param string $match
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setMatch(string $match): self {
+        $this->_match = $match;
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $path
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function pathFix(string $path): self {
+        if (
+            !empty($path)
+            && !str_starts_with($this->_match, $path)
+        ) {
+            $this->setMatch($path . '.' . $this->_match);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */

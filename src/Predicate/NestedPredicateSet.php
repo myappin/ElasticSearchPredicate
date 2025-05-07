@@ -27,24 +27,6 @@ class NestedPredicateSet extends PredicateSet implements InnerHitsInterface {
     use InnerHitsTrait;
 
     /**
-     * @var string
-     */
-    protected string $_path;
-
-
-    /**
-     * @param string $path
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setPath(string $path): self {
-        $this->_path = $path;
-
-        return $this;
-    }
-
-
-    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */

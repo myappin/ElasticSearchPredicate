@@ -63,6 +63,44 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getTerm(): string {
+        return $this->_term;
+    }
+
+
+    /**
+     * @param string $term
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setTerm(string $term): self {
+        $this->_term = $term;
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $path
+     * @return self
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function pathFix(string $path): self {
+        if (
+            !empty($path)
+            && !str_starts_with($this->_term, $path)
+        ) {
+            $this->setTerm($path . '.' . $this->_term);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
