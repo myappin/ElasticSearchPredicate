@@ -16,6 +16,7 @@ use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeTrait;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -143,9 +144,7 @@ class MultiMatch extends AbstractPredicate implements TypeInterface, OperatorInt
     public function pathFix(string $path): self {
         if (!empty($path)) {
             foreach ($this->_fields as $key => $field) {
-                if (!str_starts_with($field, $path)) {
-                    $this->_fields[$key] = $path . '.' . $field;
-                }
+                $this->_fields[$key] = PredicateSet::pathFixer($path, $field);
             }
         }
 

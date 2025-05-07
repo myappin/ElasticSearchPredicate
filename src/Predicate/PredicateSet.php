@@ -352,13 +352,6 @@ class PredicateSet implements PredicateSetInterface {
             $this->_last->setCombiner($this->_combiner);
         }
 
-        if (
-            !empty($this->_path)
-            && !str_starts_with($path, $this->_path)
-        ) {
-            $path = $this->_path . '.' . $path;
-        }
-
         $_nest = new NestedPredicateSet($this);
         $_nest->setPath($path);
 
@@ -465,17 +458,47 @@ class PredicateSet implements PredicateSetInterface {
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function pathFix(string $path): self {
-        foreach ($this->_predicates as $predicate) {
-            if ($predicate instanceof PredicateSet) {
-                $predicate->setPath($path);
-            }
+        if (!empty($path)) {
+            $this->_path = self::pathFixer($path, $this->_path);
+        }
 
-            if ($predicate instanceof PredicateInterface) {
-                $predicate->pathFix($path);
-            }
+        foreach ($this->_predicates as $predicate) {
+            $predicate->pathFix($this->_path);
         }
 
         return $this;
+    }
+
+
+    /**
+     * @param string $path
+     * @param string $_value
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public static function pathFixer(string $path, string $_value): string {
+        if (empty($path)) {
+            return $_value;
+        }
+
+        $_parts = explode('.', $path);
+        $_found = false;
+        for ($i = count($_parts); $i >= 1; $i--) {
+            $_candidate = implode('.', array_slice($_parts, -$i));
+            if (str_starts_with($_value, $_candidate)) {
+                $_missing = implode('.', array_slice($_parts, 0, count($_parts) - $i));
+                if ($_missing !== '') {
+                    $_value = $_missing . '.' . $_value;
+                }
+                $_found = true;
+                break;
+            }
+        }
+        if (!$_found) {
+            $_value = $path . '.' . $_value;
+        }
+
+        return $_value;
     }
 
 
@@ -490,7 +513,7 @@ class PredicateSet implements PredicateSetInterface {
             return [];
         }
         if ($_size === 1) {
-            return $_predicates->first()->toArray();
+            return $_predicates->first()->pathFix($this->_path)->toArray();
         }
 
         if ($_size === 2) {
@@ -498,7 +521,7 @@ class PredicateSet implements PredicateSetInterface {
                 return [
                     'bool' => [
                         'must' => $_predicates->map(function(PredicateInterface $predicate) {
-                            return $predicate->pathFix($this->getPath())->toArray();
+                            return $predicate->pathFix($this->_path)->toArray();
                         })->values()->toArray(),
                     ],
                 ];
@@ -507,7 +530,7 @@ class PredicateSet implements PredicateSetInterface {
             return [
                 'bool' => [
                     'should' => $_predicates->map(function(PredicateInterface $predicate) {
-                        return $predicate->pathFix($this->getPath())->toArray();
+                        return $predicate->pathFix($this->_path)->toArray();
                     })->values()->toArray(),
                 ],
             ];
@@ -530,14 +553,14 @@ class PredicateSet implements PredicateSetInterface {
                     if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
                         return [
                             'must' => $partition->map(function(PredicateInterface $predicate) {
-                                return $predicate->pathFix($this->getPath())->toArray();
+                                return $predicate->pathFix($this->_path)->toArray();
                             })->values()->toArray(),
                         ];
                     }
 
                     return [
                         'should' => $partition->map(function(PredicateInterface $predicate) {
-                            return $predicate->pathFix($this->getPath())->toArray();
+                            return $predicate->pathFix($this->_path)->toArray();
                         })->values()->toArray(),
                     ];
                 })->first(),
@@ -548,14 +571,14 @@ class PredicateSet implements PredicateSetInterface {
             'bool' => [
                 'should' => $_partitions->map(function(Collection $partition) {
                     if ($partition->sizeIs(1)) {
-                        return $partition->first()->pathFix($this->getPath())->toArray();
+                        return $partition->first()->pathFix($this->_path)->toArray();
                     }
 
                     if ($partition->first()->getCombiner() === PredicateSet::C_AND) {
                         return [
                             'bool' => [
                                 'must' => $partition->map(function(PredicateInterface $predicate) {
-                                    return $predicate->pathFix($this->getPath())->toArray();
+                                    return $predicate->pathFix($this->_path)->toArray();
                                 })->values()->toArray(),
                             ],
                         ];
@@ -564,7 +587,7 @@ class PredicateSet implements PredicateSetInterface {
                     return [
                         'bool' => [
                             'should' => $partition->map(function(PredicateInterface $predicate) {
-                                return $predicate->pathFix($this->getPath())->toArray();
+                                return $predicate->pathFix($this->_path)->toArray();
                             })->values()->toArray(),
                         ],
                     ];

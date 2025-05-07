@@ -20,6 +20,7 @@ use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Type\TypeTrait;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -96,11 +97,8 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function pathFix(string $path): self {
-        if (
-            !empty($path)
-            && !str_starts_with($this->_match, $path)
-        ) {
-            $this->setMatch($path . '.' . $this->_match);
+        if (!empty($path)) {
+            $this->_match = PredicateSet::pathFixer($path, $this->_match);
         }
 
         return $this;

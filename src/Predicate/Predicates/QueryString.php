@@ -16,6 +16,7 @@ use ElasticSearchPredicate\Predicate\Predicates\Analyzer\AnalyzerInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Analyzer\AnalyzerTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -107,9 +108,7 @@ class QueryString extends AbstractPredicate implements BoostInterface, AnalyzerI
     public function pathFix(string $path): self {
         if (!empty($path)) {
             foreach ($this->_fields as $key => $field) {
-                if (!str_starts_with($field, $path)) {
-                    $this->_fields[$key] = $path . '.' . $field;
-                }
+                $this->_fields[$key] = PredicateSet::pathFixer($path, $field);
             }
         }
 

@@ -13,6 +13,7 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
+use ElasticSearchPredicate\Predicate\PredicateSet;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -70,11 +71,8 @@ class Missing extends AbstractPredicate implements BoostInterface {
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function pathFix(string $path): self {
-        if (
-            !empty($path)
-            && !str_starts_with($this->_term, $path)
-        ) {
-            $this->setTerm($path . '.' . $this->_term);
+        if (!empty($path)) {
+            $this->_term = PredicateSet::pathFixer($path, $this->_term);
         }
 
         return $this;
