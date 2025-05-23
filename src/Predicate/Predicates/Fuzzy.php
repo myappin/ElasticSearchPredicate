@@ -42,9 +42,9 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
-     * @var int|float
+     * @var int|float|string
      */
-    protected int|float $_fuzziness;
+    protected int|float|string $_fuzziness;
 
 
     /**
@@ -105,15 +105,11 @@ class Fuzzy extends AbstractPredicate implements BoostInterface, SimpleInterface
 
 
     /**
-     * @param int|float $fuzziness
+     * @param int|float|string $fuzziness
      * @throws \ElasticSearchPredicate\Predicate\PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function fuzziness(int|float $fuzziness): void {
-        if ($fuzziness < 0 || $fuzziness > 2) {
-            throw new PredicateException('Invalid fuzziness');
-        }
-
+    public function fuzziness(int|float|string $fuzziness): void {
         $this->_fuzziness = $fuzziness;
     }
 
