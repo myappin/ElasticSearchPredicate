@@ -18,26 +18,26 @@ use stdClass;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class InnerHits {
-
-
+    
+    
     /**
      * @var string|null
      */
     protected ?string $_name = null;
-
-
+    
+    
     /**
      * @var int|null
      */
     protected ?int $_size = null;
-
-
+    
+    
     /**
      * @var int|null
      */
     protected ?int $_offset = null;
-
-
+    
+    
     /**
      * InnerHits constructor.
      * @param string|null $name
@@ -47,16 +47,16 @@ class InnerHits {
             $this->setName($name);
         }
     }
-
-
+    
+    
     /**
      * @return null|string
      */
     public function getName(): ?string {
         return $this->_name;
     }
-
-
+    
+    
     /**
      * @param string $name
      * @return $this
@@ -64,19 +64,19 @@ class InnerHits {
      */
     public function setName(string $name): self {
         $this->_name = $name;
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @return int|null
      */
     public function getOffset(): ?int {
         return $this->_offset;
     }
-
-
+    
+    
     /**
      * @param int|null $offset
      * @return $this
@@ -84,19 +84,19 @@ class InnerHits {
      */
     public function setOffset(?int $offset): self {
         $this->_offset = $offset;
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @return int|null
      */
     public function getSize(): ?int {
         return $this->_size;
     }
-
-
+    
+    
     /**
      * @param int|null $size
      * @return $this
@@ -104,19 +104,19 @@ class InnerHits {
      */
     public function setSize(?int $size): self {
         $this->_size = $size;
-
+        
         return $this;
     }
-
-
+    
+    
     /**
-     * @return array|\stdClass
+     * @return array|stdClass
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
     #[Pure]
     public function toArray(): array|stdClass {
         $_ret = [];
-
+        
         if ($this->_name) {
             $_ret['name'] = $this->_name;
         }
@@ -126,9 +126,9 @@ class InnerHits {
         if ($this->_offset) {
             $_ret['offset'] = $this->_offset;
         }
-
+        
         return empty($_ret) ? new stdClass() : $_ret;
     }
-
-
+    
+    
 }

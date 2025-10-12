@@ -15,13 +15,13 @@ namespace ElasticSearchPredicate\Predicate\PredicateSet;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 interface InnerHitsInterface {
-
-
+    
+    
     /**
      * @return bool
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
     public function hasInnerHits(): bool;
-
-
+    
+    
 }

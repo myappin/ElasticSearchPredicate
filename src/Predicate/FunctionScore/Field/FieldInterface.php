@@ -17,13 +17,13 @@ namespace ElasticSearchPredicate\Predicate\FunctionScore\Field;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 interface FieldInterface {
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function toArray(): array;
-
-
+    
+    
 }

@@ -11,30 +11,32 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\FunctionScore\Weight;
 
+use ElasticSearchPredicate\Predicate\FunctionScore\AbstractFunction;
+
 /**
  * Class WeightTrait
  * @package   ElasticSearchPredicate\Predicate\FunctionScore\Weigh
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 trait WeightTrait {
-
-
+    
+    
     /**
      * @var int|float|null
      */
     protected int|float|null $_weight;
-
-
+    
+    
     /**
      * @param int|float|null $weight
-     * @return $this
+     * @return AbstractFunction|WeightTrait
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setWeight(int|float|null $weight): self {
         $this->_weight = $weight;
-
+        
         return $this;
     }
-
-
+    
+    
 }

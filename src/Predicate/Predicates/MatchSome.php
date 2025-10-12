@@ -29,47 +29,41 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInterface, TypeInterface, OperatorInterface {
-
-
+    
+    
     use BoostTrait, SimpleTrait, TypeTrait, OperatorTrait;
-
+    
     /**
      * @var string
      */
     protected string $_match;
-
-
+    
+    
     /**
      * @var mixed|bool|float|int|string|null
      */
     protected mixed $_value;
-
-
+    
+    
     /**
-     * MatchSome constructor.
      * @param string                $match
      * @param bool|float|int|string $query
      * @param array                 $options
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
      */
     public function __construct(string $match, bool|float|int|string $query, array $options = []) {
         $this->_match = $match;
-
-        if (!is_scalar($query) && $query !== null) {
-            throw new PredicateException('Match value must be scalar');
-        }
-
+        
         $this->_value = $query;
-
+        
         $this->_types = [
             'phrase',
             'phrase_prefix',
         ];
-
+        
         $this->configure($options);
     }
-
-
+    
+    
     /**
      * @return string
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -77,8 +71,8 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
     public function getMatch(): string {
         return $this->_match;
     }
-
-
+    
+    
     /**
      * @param string $match
      * @return $this
@@ -86,11 +80,11 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
      */
     public function setMatch(string $match): self {
         $this->_match = $match;
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @param string $path
      * @return $this
@@ -100,11 +94,11 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
         if (!empty($path)) {
             $this->_match = PredicateSet::pathFixer($path, $this->_match);
         }
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -119,7 +113,7 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
                 ],
             ];
         }
-
+        
         $_ret = [
             'match' => [
                 $_match => [
@@ -127,19 +121,19 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
                 ],
             ],
         ];
-
+        
         if (!empty($this->_boost)) {
             $_ret['match'][$_match]['boost'] = $this->_boost;
         }
-
+        
         if (!empty($this->_type)) {
             $_ret['match'][$_match]['type'] = $this->_type;
         }
-
+        
         if (!empty($this->_operator)) {
             $_ret['match'][$_match]['operator'] = $this->_operator;
         }
-
+        
         return $_ret;
     }
 }

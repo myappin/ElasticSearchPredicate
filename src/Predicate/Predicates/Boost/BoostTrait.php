@@ -12,6 +12,14 @@ declare(strict_types=1);
 namespace ElasticSearchPredicate\Predicate\Predicates\Boost;
 
 use ElasticSearchPredicate\Predicate\PredicateException;
+use ElasticSearchPredicate\Predicate\Predicates\Exists;
+use ElasticSearchPredicate\Predicate\Predicates\Fuzzy;
+use ElasticSearchPredicate\Predicate\Predicates\MatchSome;
+use ElasticSearchPredicate\Predicate\Predicates\Missing;
+use ElasticSearchPredicate\Predicate\Predicates\QueryString;
+use ElasticSearchPredicate\Predicate\Predicates\Range;
+use ElasticSearchPredicate\Predicate\Predicates\Term;
+use ElasticSearchPredicate\Predicate\Predicates\Terms;
 
 /**
  * Class BoostTrait
@@ -19,30 +27,30 @@ use ElasticSearchPredicate\Predicate\PredicateException;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 trait BoostTrait {
-
-
+    
+    
     /**
      * @var int|float
      */
     protected int|float $_boost;
-
-
+    
+    
     /**
      * @param int|float $boost
-     * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @return Missing|BoostTrait|Exists|Fuzzy|MatchSome|QueryString|Range|Term|Terms
+     * @throws PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function boost(int|float $boost): self {
         if ($boost < 0) {
             throw new PredicateException('Boost must be greater than 0');
         }
-
+        
         $this->_boost = $boost;
         $this->_simple = false;
-
+        
         return $this;
     }
-
-
+    
+    
 }

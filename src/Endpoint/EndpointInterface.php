@@ -16,25 +16,25 @@ namespace ElasticSearchPredicate\Endpoint;
  * @package ElasticSearchPredicate\Endpoint
  */
 interface EndpointInterface {
-
-
-    /**
-     * @return array
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getPreparedParams(): array;
-
+    
+    
     /**
      * @return EndpointInterface
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function clearParams(): EndpointInterface;
-
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function execute(): array;
-
-
+    
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getPreparedParams(): array;
+    
+    
 }

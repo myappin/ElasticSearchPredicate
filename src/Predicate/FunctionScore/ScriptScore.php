@@ -20,36 +20,58 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class ScriptScore extends AbstractFunction {
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_script;
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_params = [];
-
-
+    
+    
     /**
      * ScriptScore constructor.
      * @param array $script
      * @param array $params
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      */
     public function __construct(array $script, array $params = []) {
         $this->setScript($script);
         $this->setParams($params);
     }
-
-
+    
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getScript(): array {
+        return $this->_script;
+    }
+    
+    /**
+     * @param array $script
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setScript(array $script): self {
+        if (isset($script['inline'])) {
+            $script['inline'] = trim($script['inline']);
+        }
+        
+        $this->_script = $script;
+        
+        return $this;
+    }
+    
     /**
      * @param array $params
      * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setParams(array $params): self {
@@ -61,38 +83,12 @@ class ScriptScore extends AbstractFunction {
                 throw new PredicateException('Wrong parameter value type');
             }
         }
-
+        
         $this->_params = $params;
-
+        
         return $this;
     }
-
-
-    /**
-     * @return array
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getScript(): array {
-        return $this->_script;
-    }
-
-
-    /**
-     * @param array $script
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setScript(array $script): self {
-        if (isset($script['inline'])) {
-            $script['inline'] = trim($script['inline']);
-        }
-
-        $this->_script = $script;
-
-        return $this;
-    }
-
-
+    
     /**
      * @return array
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -108,21 +104,21 @@ class ScriptScore extends AbstractFunction {
                 'script' => $this->_script,
             ],
         ];
-
+        
         if (!empty($_params = $this->_params)) {
             $_ret['script_score']['script']['params'] = $_params;
         }
-
+        
         if (!empty($_query = $this->getQuery())) {
             $_ret['filter'] = $_query;
         }
-
+        
         if (!empty($this->_weight)) {
             $_ret['weight'] = $this->_weight;
         }
-
+        
         return $_ret;
     }
-
-
+    
+    
 }

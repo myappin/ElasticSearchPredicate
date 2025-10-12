@@ -24,22 +24,22 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class Term extends AbstractPredicate implements BoostInterface, SimpleInterface {
-
-
+    
+    
     use BoostTrait, SimpleTrait;
-
+    
     /**
      * @var string
      */
     protected string $_term;
-
-
+    
+    
     /**
      * @var bool|float|int|string
      */
     protected bool|float|int|string $_value;
-
-
+    
+    
     /**
      * Term constructor.
      * @param string                $term
@@ -49,11 +49,11 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
     public function __construct(string $term, bool|float|int|string $value, array $options = []) {
         $this->_term = $term;
         $this->_value = $value;
-
+        
         $this->configure($options);
     }
-
-
+    
+    
     /**
      * @return string
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -61,8 +61,8 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
     public function getTerm(): string {
         return $this->_term;
     }
-
-
+    
+    
     /**
      * @param string $term
      * @return $this
@@ -70,11 +70,11 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
      */
     public function setTerm(string $term): self {
         $this->_term = $term;
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @param string $path
      * @return self
@@ -84,11 +84,11 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
         if (!empty($path)) {
             $this->_term = PredicateSet::pathFixer($path, $this->_term);
         }
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -96,7 +96,7 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
     #[ArrayShape(['term' => "array"])]
     public function toArray(): array {
         $_term = $this->_term;
-
+        
         if ($this->_simple) {
             return [
                 'term' => [
@@ -104,7 +104,7 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
                 ],
             ];
         }
-
+        
         $_ret = [
             'term' => [
                 $_term => [
@@ -112,11 +112,11 @@ class Term extends AbstractPredicate implements BoostInterface, SimpleInterface 
                 ],
             ],
         ];
-
+        
         if (!empty($this->_boost)) {
             $_ret['term'][$_term]['boost'] = $this->_boost;
         }
-
+        
         return $_ret;
     }
 }

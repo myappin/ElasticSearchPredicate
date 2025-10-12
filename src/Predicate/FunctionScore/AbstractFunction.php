@@ -26,10 +26,10 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @property PredicateSet or
  */
 abstract class AbstractFunction implements FunctionInterface {
-
-
+    
+    
     use QueryTrait, WeightTrait;
-
+    
     /**
      * @param $name
      * @param $arguments
@@ -40,14 +40,14 @@ abstract class AbstractFunction implements FunctionInterface {
         if (empty($arguments)) {
             return $this->getPredicate()->$name();
         }
-
+        
         return $this->getPredicate()->$name(...$arguments);
     }
-
-
+    
+    
     /**
      * @param $name
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @return PredicateSet
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function __get($name): PredicateSet {
@@ -55,16 +55,16 @@ abstract class AbstractFunction implements FunctionInterface {
         if ($_name === 'predicate' || $_name === 'predicates') {
             return $this->getPredicate();
         }
-
+        
         return $this->getPredicate()->{$name};
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     abstract public function toArray(): array;
-
-
+    
+    
 }

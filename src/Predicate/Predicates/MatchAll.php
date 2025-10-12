@@ -21,15 +21,15 @@ use stdClass;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class MatchAll extends AbstractPredicate {
-
-
+    
+    
     /**
      * Match constructor.
      */
     public function __construct() {
     }
-
-
+    
+    
     /**
      * @param string $path
      * @return self
@@ -38,8 +38,8 @@ class MatchAll extends AbstractPredicate {
     public function pathFix(string $path): self {
         return $this;
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)

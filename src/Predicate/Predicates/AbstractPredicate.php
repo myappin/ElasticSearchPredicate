@@ -20,46 +20,19 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 abstract class AbstractPredicate implements PredicateInterface {
-
-
+    
+    
     /**
      * @var string
      */
     protected string $_combiner = PredicateSet::C_AND;
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_other_options = [];
-
-
-    /**
-     * @return string
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getCombiner(): string {
-        return $this->_combiner;
-    }
-
-
-    /**
-     * @param string $combiner
-     * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setCombiner(string $combiner): self {
-        if ($combiner !== PredicateSet::C_AND && $combiner !== PredicateSet::C_OR) {
-            throw new PredicateException('Unsupported combiner');
-        }
-
-        $this->_combiner = $combiner;
-
-        return $this;
-    }
-
-
+    
     /**
      * @param array $options
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -71,19 +44,18 @@ abstract class AbstractPredicate implements PredicateInterface {
                 if (in_array($key, $this->_other_options, true)) {
                     if (empty($opt)) {
                         $this->$key();
-                    }
-                    else {
+                    } else {
                         if (is_scalar($opt)) {
                             $opt = [$opt];
                         }
-
+                        
                         $this->$key(...$opt);
                     }
                     continue;
                 }
                 $_method = strtolower($key);
                 $_key = ucfirst($_method);
-
+                
                 if (!in_array(
                     'ElasticSearchPredicate\Predicate\\Predicates\\' . $_key . '\\' . $_key . 'Interface',
                     $_implements,
@@ -92,27 +64,49 @@ abstract class AbstractPredicate implements PredicateInterface {
                 ) {
                     continue;
                 }
-
+                
                 if (empty($opt)) {
                     $this->$_method();
-                }
-                else {
+                } else {
                     if (is_scalar($opt)) {
                         $opt = [$opt];
                     }
-
+                    
                     $this->$_method(...$opt);
                 }
             }
         }
     }
-
-
+    
+    /**
+     * @return string
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getCombiner(): string {
+        return $this->_combiner;
+    }
+    
+    /**
+     * @param string $combiner
+     * @return $this
+     * @throws PredicateException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setCombiner(string $combiner): self {
+        if ($combiner !== PredicateSet::C_AND && $combiner !== PredicateSet::C_OR) {
+            throw new PredicateException('Unsupported combiner');
+        }
+        
+        $this->_combiner = $combiner;
+        
+        return $this;
+    }
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     abstract public function toArray(): array;
-
-
+    
+    
 }

@@ -16,36 +16,33 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
  * @package ElasticSearchPredicate\Predicate\Predicates
  */
 interface PredicateInterface {
-
-
-    /**
-     * @param string $combiner
-     * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function setCombiner(string $combiner): PredicateInterface;
-
-
+    
+    
     /**
      * @return string
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getCombiner(): string;
-
-
+    
     /**
      * @param string $path
-     * @return \ElasticSearchPredicate\Predicate\Predicates\PredicateInterface
+     * @return PredicateInterface
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function pathFix(string $path): PredicateInterface;
-
-
+    
+    /**
+     * @param string $combiner
+     * @return PredicateInterface
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function setCombiner(string $combiner): PredicateInterface;
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function toArray(): array;
-
-
+    
+    
 }

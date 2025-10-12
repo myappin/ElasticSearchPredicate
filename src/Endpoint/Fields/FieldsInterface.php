@@ -16,13 +16,13 @@ namespace ElasticSearchPredicate\Endpoint\Fields;
  * @package ElasticSearchPredicate\Endpoint\Fields
  */
 interface FieldsInterface {
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getFields(): array;
-
-
+    
+    
 }

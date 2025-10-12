@@ -21,39 +21,48 @@ use ElasticSearchPredicate\Predicate\PredicateException;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class Decay extends AbstractFunction {
-
-
+    
+    
     /**
      * @var string
      */
     protected string $_type;
-
-
+    
+    
     /**
-     * @var \DusanKasan\Knapsack\Collection
+     * @var Collection
      */
     protected Collection $_fields;
-
-
+    
+    
     /**
      * Decay constructor.
      * @param string $type
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      */
     public function __construct(string $type) {
         $this->setType($type);
     }
-
-
+    
     /**
-     * @return \DusanKasan\Knapsack\Collection
+     * @param FieldInterface $field
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function addField(FieldInterface $field): self {
+        $this->_fields = $this->getFields()->append($field);
+        
+        return $this;
+    }
+    
+    /**
+     * @return Collection
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getFields(): Collection {
         return $this->_fields ?? ($this->_fields = new Collection([]));
     }
-
-
+    
     /**
      * @return string
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -61,12 +70,11 @@ class Decay extends AbstractFunction {
     public function getType(): string {
         return $this->_type;
     }
-
-
+    
     /**
      * @param string $type
      * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setType(string $type): self {
@@ -78,54 +86,41 @@ class Decay extends AbstractFunction {
         ) {
             throw new PredicateException('Invalid decay function');
         }
-
+        
         $this->_type = $type;
-
+        
         return $this;
     }
-
-
-    /**
-     * @param \ElasticSearchPredicate\Predicate\FunctionScore\Field\FieldInterface $field
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function addField(FieldInterface $field): self {
-        $this->_fields = $this->getFields()->append($field);
-
-        return $this;
-    }
-
-
+    
     /**
      * @return array
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function toArray(): array {
         $_fields = $this->getFields();
-
+        
         if ($_fields->isEmpty()) {
             throw new PredicateException('Decay should contain at least one field');
         }
         $_type = $this->_type;
-
+        
         $_ret = [
-            $_type => $this->getFields()->map(function(FieldInterface $item) {
+            $_type => $this->getFields()->map(function (FieldInterface $item) {
                 return $item->toArray();
             })->flatten(1)->toArray(),
         ];
-
+        
         if (!empty($_query = $this->getQuery())) {
             $_ret['filter'] = $_query;
         }
-
+        
         if (!empty($this->_weight)) {
             $_ret['weight'] = $this->_weight;
         }
-
+        
         return $_ret;
     }
-
-
+    
+    
 }

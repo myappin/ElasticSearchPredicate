@@ -18,14 +18,14 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
  * @package ElasticSearchPredicate\Predicate\Predicates\Type
  */
 interface TypeInterface {
-
-
+    
+    
     /**
      * @param string $type
      * @return mixed
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function type(string $type): PredicateInterface;
-
-
+    
+    
 }

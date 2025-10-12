@@ -19,14 +19,14 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class Script extends AbstractPredicate {
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_script;
-
-
+    
+    
     /**
      * Script constructor.
      * @param array $script
@@ -34,8 +34,8 @@ class Script extends AbstractPredicate {
     public function __construct(array $script) {
         $this->_script = $script;
     }
-
-
+    
+    
     /**
      * @param string $path
      * @return self
@@ -44,8 +44,8 @@ class Script extends AbstractPredicate {
     public function pathFix(string $path): self {
         return $this;
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)

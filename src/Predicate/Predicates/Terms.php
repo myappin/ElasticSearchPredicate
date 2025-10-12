@@ -25,44 +25,44 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface {
-
-
+    
+    
     use BoostTrait, SimpleTrait;
-
+    
     /**
      * @var string
      */
     protected string $_term;
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_values;
-
-
+    
+    
     /**
      * Terms constructor.
      * @param string $term
      * @param array  $values
      * @param array  $options
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      */
     public function __construct(string $term, array $values, array $options = []) {
         $this->_term = $term;
-
+        
         foreach ($values as $val) {
             if (!is_scalar($val) && $val !== null) {
                 throw new PredicateException('Term values must be scalar');
             }
         }
-
+        
         $this->_values = $values;
-
+        
         $this->configure($options);
     }
-
-
+    
+    
     /**
      * @return string
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -70,8 +70,8 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
     public function getTerm(): string {
         return $this->_term;
     }
-
-
+    
+    
     /**
      * @param string $term
      * @return $this
@@ -79,11 +79,11 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
      */
     public function setTerm(string $term): self {
         $this->_term = $term;
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @param string $path
      * @return self
@@ -93,11 +93,11 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
         if (!empty($path)) {
             $this->_term = PredicateSet::pathFixer($path, $this->_term);
         }
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -105,7 +105,7 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
     #[ArrayShape(['terms' => "array"])]
     public function toArray(): array {
         $_term = $this->_term;
-
+        
         if ($this->_simple) {
             return [
                 'terms' => [
@@ -113,7 +113,7 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
                 ],
             ];
         }
-
+        
         $_ret = [
             'terms' => [
                 $_term => [
@@ -121,11 +121,11 @@ class Terms extends AbstractPredicate implements BoostInterface, SimpleInterface
                 ],
             ],
         ];
-
+        
         if (!empty($this->_boost)) {
             $_ret['terms'][$_term]['boost'] = $this->_boost;
         }
-
+        
         return $_ret;
     }
 }

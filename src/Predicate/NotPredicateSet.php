@@ -20,23 +20,23 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class NotPredicateSet extends PredicateSet {
-
-
+    
+    
     /**
      * @param string $combiner
      * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setCombiner(string $combiner): self {
         if (strtoupper($combiner) === 'or') {
             throw new PredicateException('Not allowed combiner inside not predicate');
         }
-
+        
         return parent::setCombiner($combiner);
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -45,12 +45,12 @@ class NotPredicateSet extends PredicateSet {
     public function toArray(): array {
         return [
             'bool' => [
-                'must_not' => $this->_predicates->map(function(PredicateInterface $predicate) {
+                'must_not' => $this->_predicates->map(function (PredicateInterface $predicate) {
                     return $predicate->toArray();
                 })->values()->toArray(),
             ],
         ];
     }
-
-
+    
+    
 }

@@ -18,14 +18,14 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
  * @package ElasticSearchPredicate\Predicate\Predicates\Operator
  */
 interface OperatorInterface {
-
-
+    
+    
     /**
      * @param string $operator
      * @return mixed
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function operator(string $operator): PredicateInterface;
-
-
+    
+    
 }

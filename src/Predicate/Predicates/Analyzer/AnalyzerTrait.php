@@ -11,31 +11,32 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates\Analyzer;
 
+use ElasticSearchPredicate\Predicate\Predicates\QueryString;
+
 /**
  * Class AnalyzerTrait
  * @package   ElasticSearchPredicate\Predicate\Predicates\Analyzer
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 trait AnalyzerTrait {
-
-
+    
+    
     /**
      * @var string
      */
     protected string $_analyzer;
-
-
+    
+    
     /**
      * @param string $analyzer
-     * @return $this
+     * @return AnalyzerTrait|QueryString
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function analyzer(string $analyzer): self {
         $this->_analyzer = $analyzer;
-        $this->_simple = false;
-
+        
         return $this;
     }
-
-
+    
+    
 }

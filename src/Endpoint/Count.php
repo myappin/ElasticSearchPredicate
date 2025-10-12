@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Endpoint;
 
-use Elasticsearch\Client;
+use Elastic\Elasticsearch\Client;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\ServerResponseException;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
@@ -23,6 +25,7 @@ use ElasticSearchPredicate\Predicate\NestedPredicateSet;
 use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use Exception;
+use Throwable;
 
 /**
  * Class Count
@@ -49,53 +52,45 @@ use Exception;
  * @property PredicateSet  or
  */
 class Count implements EndpointInterface, QueryInterface, FieldsInterface {
-
-
+    
+    
     use QueryTrait, FieldsTrait;
-
+    
     /**
      * @var string
      */
     protected string $_index;
-
-
+    
+    
     /**
-     * @var string
-     */
-    protected string $_type;
-
-
-    /**
-     * @var \Elasticsearch\Client
+     * @var Client
      */
     protected Client $_client;
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_prepared_params;
-
-
+    
+    
     /**
      * @var bool
      */
     protected bool $_is_prepared = false;
-
-
+    
+    
     /**
      * SearchPredicate constructor.
-     * @param \Elasticsearch\Client $client
-     * @param string                $index
-     * @param string                $type
+     * @param Client $client
+     * @param string $index
      */
-    public function __construct(Client $client, string $index, string $type) {
+    public function __construct(Client $client, string $index) {
         $this->_client = $client;
         $this->_index = $index;
-        $this->_type = $type;
     }
-
-
+    
+    
     /**
      * @param $name
      * @param $arguments
@@ -106,14 +101,14 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
         if (empty($arguments)) {
             return $this->getPredicate()->$name();
         }
-
+        
         return $this->getPredicate()->$name(...$arguments);
     }
-
-
+    
+    
     /**
      * @param $name
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @return PredicateSet
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function __get($name): PredicateSet {
@@ -121,11 +116,42 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
         if ($_name === 'predicate' || $_name === 'predicates') {
             return $this->getPredicate();
         }
-
+        
         return $this->getPredicate()->{$name};
     }
-
-
+    
+    /**
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function clearParams(): self {
+        $this->_prepared_params = [];
+        $this->_is_prepared = false;
+        
+        return $this;
+    }
+    
+    /**
+     * @return array
+     * @throws ClientResponseException
+     * @throws ServerResponseException
+     * @throws Throwable
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function execute(): array {
+        try {
+            $_result = $this->_client->count($this->getPreparedParams());
+        } catch (Exception $e) {
+            $this->clearParams();
+            
+            throw $e;
+        }
+        
+        $this->clearParams();
+        
+        return $_result->wait();
+    }
+    
     /**
      * @return string
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -133,8 +159,7 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
     public function getIndex(): string {
         return $this->_index;
     }
-
-
+    
     /**
      * @param string $index
      * @return $this
@@ -142,13 +167,12 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
      */
     public function setIndex(string $index): Count {
         $this->_index = $index;
-
+        
         $this->clearParams();
-
+        
         return $this;
     }
-
-
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -157,76 +181,20 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
         if (!$this->_is_prepared) {
             $this->prepareParams();
         }
-
+        
         return $this->_prepared_params;
     }
-
-
+    
+    
     /**
-     * @return string
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getType(): string {
-        return $this->_type;
-    }
-
-
-    /**
-     * @param string $type
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setType(string $type): Count {
-        $this->_type = $type;
-
-        $this->clearParams();
-
-        return $this;
-    }
-
-
-    /**
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function clearParams(): self {
-        $this->_prepared_params = [];
-        $this->_is_prepared = false;
-
-        return $this;
-    }
-
-
-    /**
-     * @return array
-     * @throws \Exception
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function execute(): array {
-        try {
-            $_result = $this->_client->count($this->getPreparedParams());
-        }
-        catch (Exception $e) {
-            $this->clearParams();
-
-            throw $e;
-        }
-
-        $this->clearParams();
-
-        return $_result;
-    }
-
-
-    /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @return PredicateSet
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
     public function predicate(): PredicateSet {
         return $this->getPredicate();
     }
-
-
+    
+    
     /**
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
@@ -235,22 +203,19 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
         if (!empty($this->_index)) {
             $_prepared_params['index'] = $this->_index;
         }
-        if (!empty($this->_type)) {
-            $_prepared_params['type'] = $this->_type;
-        }
-
+        
         $_prepared_params['body'] = [];
-
+        
         if (!empty($_fields = $this->getFields())) {
             $_prepared_params['body']['stored_fields'] = $_fields;
         }
         if (!empty($_query = $this->getQuery())) {
             $_prepared_params['body']['query'] = $_query;
         }
-
+        
         $this->_prepared_params = $_prepared_params;
         $this->_is_prepared = true;
     }
-
-
+    
+    
 }

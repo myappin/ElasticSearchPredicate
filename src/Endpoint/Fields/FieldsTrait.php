@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Endpoint\Fields;
 
+use ElasticSearchPredicate\Endpoint\Count;
 use ElasticSearchPredicate\Endpoint\EndpointException;
+use ElasticSearchPredicate\Endpoint\Search;
 
 /**
  * Class FieldsTrait
@@ -19,27 +21,17 @@ use ElasticSearchPredicate\Endpoint\EndpointException;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 trait FieldsTrait {
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_fields = [];
-
-
-    /**
-     * @return array
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getFields(): array {
-        return $this->_fields;
-    }
-
-
+    
     /**
      * @param array $fields
-     * @return $this
-     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @return FieldsTrait|Count|Search
+     * @throws EndpointException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function fields(array $fields): self {
@@ -49,9 +41,17 @@ trait FieldsTrait {
             }
         }
         $this->_fields = $fields;
-
+        
         return $this;
     }
-
-
+    
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getFields(): array {
+        return $this->_fields;
+    }
+    
+    
 }

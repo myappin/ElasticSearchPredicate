@@ -17,12 +17,12 @@ namespace ElasticSearchPredicate\Predicate\Predicates\Simple;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 trait SimpleTrait {
-
-
+    
+    
     /**
      * @var bool
      */
     protected bool $_simple = true;
-
-
+    
+    
 }

@@ -18,14 +18,14 @@ use ElasticSearchPredicate\Predicate\Predicates\PredicateInterface;
  * @package ElasticSearchPredicate\Predicate\Predicates\Analyzer
  */
 interface AnalyzerInterface {
-
-
+    
+    
     /**
      * @param string $analyzer
      * @return mixed
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function analyzer(string $analyzer): PredicateInterface;
-
-
+    
+    
 }

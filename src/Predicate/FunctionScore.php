@@ -22,38 +22,48 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class FunctionScore extends PredicateSet {
-
-
+    
+    
     /**
      * @var int|float|null
      */
     protected int|float|null $_max_boost;
-
-
+    
+    
     /**
      * @var string|null
      */
     protected ?string $_score_mode = null;
-
-
+    
+    
     /**
      * @var string|null
      */
     protected ?string $_boost_mode = null;
-
-
+    
+    
     /**
      * @var float|int|null
      */
     protected float|int|null $_min_score;
-
-
+    
+    
     /**
      * @var Collection
      */
     protected Collection $_functions;
-
-
+    
+    /**
+     * @param FunctionInterface $function
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function addFunction(FunctionInterface $function): self {
+        $this->_functions = $this->getFunctions()->append($function);
+        
+        return $this;
+    }
+    
     /**
      * @return string|null
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -61,12 +71,11 @@ class FunctionScore extends PredicateSet {
     public function getBoostMode(): ?string {
         return $this->_boost_mode;
     }
-
-
+    
     /**
      * @param string|null $boost_mode
      * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setBoostMode(?string $boost_mode): self {
@@ -82,22 +91,20 @@ class FunctionScore extends PredicateSet {
         ) {
             throw new PredicateException('Invalid boost type');
         }
-
+        
         $this->_boost_mode = $boost_mode;
-
+        
         return $this;
     }
-
-
+    
     /**
-     * @return \DusanKasan\Knapsack\Collection
+     * @return Collection
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function getFunctions(): Collection {
         return $this->_functions ?? ($this->_functions = new Collection([]));
     }
-
-
+    
     /**
      * @return float|int|null
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -105,8 +112,7 @@ class FunctionScore extends PredicateSet {
     public function getMaxBoost(): float|int|null {
         return $this->_max_boost;
     }
-
-
+    
     /**
      * @param float|int|null $max_boost
      * @return $this
@@ -114,11 +120,10 @@ class FunctionScore extends PredicateSet {
      */
     public function setMaxBoost(float|int|null $max_boost): self {
         $this->_max_boost = $max_boost;
-
+        
         return $this;
     }
-
-
+    
     /**
      * @return float|int|null
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -126,8 +131,7 @@ class FunctionScore extends PredicateSet {
     public function getMinScore(): float|int|null {
         return $this->_min_score;
     }
-
-
+    
     /**
      * @param float|int|null $min_score
      * @return $this
@@ -135,11 +139,10 @@ class FunctionScore extends PredicateSet {
      */
     public function setMinScore(float|int|null $min_score): self {
         $this->_min_score = $min_score;
-
+        
         return $this;
     }
-
-
+    
     /**
      * @return string|null
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -147,12 +150,11 @@ class FunctionScore extends PredicateSet {
     public function getScoreMode(): ?string {
         return $this->_score_mode;
     }
-
-
+    
     /**
      * @param string|null $score_mode
      * @return $this
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function setScoreMode(?string $score_mode): self {
@@ -168,28 +170,15 @@ class FunctionScore extends PredicateSet {
         ) {
             throw new PredicateException('Invalid score mode');
         }
-
+        
         $this->_score_mode = $score_mode;
-
+        
         return $this;
     }
-
-
-    /**
-     * @param \ElasticSearchPredicate\Predicate\FunctionScore\FunctionInterface $function
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function addFunction(FunctionInterface $function): self {
-        $this->_functions = $this->getFunctions()->append($function);
-
-        return $this;
-    }
-
-
+    
     /**
      * @return array
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     #[ArrayShape(['function_score' => "array"])]
@@ -198,16 +187,16 @@ class FunctionScore extends PredicateSet {
         if ($_functions->isEmpty()) {
             throw new PredicateException('FunctionScore should contain at least one function');
         }
-
+        
         $_ret = [
             'function_score' => [
             ],
         ];
-
+        
         if (!empty($_query = parent::toArray())) {
             $_ret['function_score']['query'] = $_query;
         }
-
+        
         if (isset($this->_boost_mode)) {
             $_ret['function_score']['boost_mode'] = $this->_boost_mode;
         }
@@ -220,13 +209,13 @@ class FunctionScore extends PredicateSet {
         if (isset($this->_min_score)) {
             $_ret['function_score']['min_score'] = $this->_min_score;
         }
-
-        $_ret['function_score']['functions'] = $_functions->map(function(FunctionInterface $item) {
+        
+        $_ret['function_score']['functions'] = $_functions->map(function (FunctionInterface $item) {
             return $item->toArray();
         })->toArray();
-
+        
         return $_ret;
     }
-
-
+    
+    
 }

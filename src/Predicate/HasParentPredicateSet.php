@@ -22,16 +22,16 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class HasParentPredicateSet extends PredicateSet implements InnerHitsInterface {
-
-
+    
+    
     use InnerHitsTrait;
-
+    
     /**
      * @var string
      */
     protected string $_type;
-
-
+    
+    
     /**
      * @param string $type
      * @return $this
@@ -39,11 +39,11 @@ class HasParentPredicateSet extends PredicateSet implements InnerHitsInterface {
      */
     public function setType(string $type): self {
         $this->_type = $type;
-
+        
         return $this;
     }
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -55,17 +55,17 @@ class HasParentPredicateSet extends PredicateSet implements InnerHitsInterface {
                 'parent_type' => $this->_type,
             ],
         ];
-
+        
         if (!empty($_query = parent::toArray())) {
             $_ret['has_parent']['query'] = $_query;
         }
-
+        
         if ($this->_inner_hits) {
             $_ret['has_parent']['inner_hits'] = $this->_inner_hits->toArray();
         }
-
+        
         return $_ret;
     }
-
-
+    
+    
 }

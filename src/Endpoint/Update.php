@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Endpoint;
 
-use Elasticsearch\Client;
+use Elastic\Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
@@ -46,69 +46,61 @@ use Exception;
  * @property PredicateSet or
  */
 class Update implements EndpointInterface, QueryInterface {
-
-
+    
+    
     use QueryTrait;
-
+    
     /**
      * @var array
      */
     protected array $_index;
-
-
-    /**
-     * @var string
-     */
-    protected string $_type;
-
-
+    
+    
     /**
      * @var string
      */
     protected string $_script;
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_params;
-
-
+    
+    
     /**
-     * @var \Elasticsearch\Client
+     * @var Client
      */
     protected Client $_client;
-
-
+    
+    
     /**
      * @var array
      */
     protected array $_prepared_params;
-
-
+    
+    
     /**
      * @var bool
      */
     protected bool $_is_prepared = false;
-
-
+    
+    
     /**
-     * @param \Elasticsearch\Client $client
-     * @param string|array          $index
-     * @param string                $type
-     * @param string                $script
-     * @param array                 $params
+     * @param Client       $client
+     * @param string|array $index
+     * @param string       $script
+     * @param array        $params
      */
-    public function __construct(Client $client, string|array $index, string $type, string $script, array $params = []) {
+    public function __construct(Client $client, string|array $index, string $script, array $params = []) {
         $this->_client = $client;
-        $this->_type = $type;
         $this->_script = $script;
         $this->_params = $params;
-
+        
         $this->setIndex($index);
     }
-
-
+    
+    
     /**
      * @param $name
      * @param $arguments
@@ -119,14 +111,14 @@ class Update implements EndpointInterface, QueryInterface {
         if (empty($arguments)) {
             return $this->getPredicate()->$name();
         }
-
+        
         return $this->getPredicate()->$name(...$arguments);
     }
-
-
+    
+    
     /**
      * @param $name
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @return PredicateSet
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function __get($name): PredicateSet {
@@ -134,130 +126,10 @@ class Update implements EndpointInterface, QueryInterface {
         if ($_name === 'predicate' || $_name === 'predicates') {
             return $this->getPredicate();
         }
-
+        
         return $this->getPredicate()->{$name};
     }
-
-
-    /**
-     * @return array
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getIndex(): array {
-        return $this->_index;
-    }
-
-
-    /**
-     * @param array|string $index
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setIndex(array|string $index): Update {
-        $_index = [];
-
-        if (is_scalar($index)) {
-            foreach (explode(',', $index) as $idx) {
-                $_index[] = [
-                    'index'             => $idx,
-                    'wait_for_response' => true,
-                ];
-            }
-        }
-        else {
-            $_index = $index;
-        }
-
-        $this->_index = $_index;
-
-        $this->clearParams();
-
-        return $this;
-    }
-
-
-    /**
-     * @return array
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getParams(): array {
-        return $this->_params;
-    }
-
-
-    /**
-     * @param array $params
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setParams(array $params): Update {
-        $this->_params = $params;
-
-        $this->clearParams();
-
-        return $this;
-    }
-
-
-    /**
-     * @return array
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function getPreparedParams(): array {
-        if (!$this->_is_prepared) {
-            $this->prepareParams();
-        }
-
-        return $this->_prepared_params;
-    }
-
-
-    /**
-     * @return string
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getScript(): string {
-        return $this->_script;
-    }
-
-
-    /**
-     * @param string $script
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setScript(string $script): Update {
-        $this->_script = $script;
-
-        $this->clearParams();
-
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function getType(): string {
-        return $this->_type;
-    }
-
-
-    /**
-     * @param string $type
-     * @return $this
-     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
-     */
-    public function setType(string $type): Update {
-        $this->_type = $type;
-
-        $this->clearParams();
-
-        return $this;
-    }
-
-
+    
     /**
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -265,35 +137,35 @@ class Update implements EndpointInterface, QueryInterface {
     public function clearParams(): self {
         $this->_prepared_params = [];
         $this->_is_prepared = false;
-
+        
         return $this;
     }
-
-
+    
     /**
      * @param bool $refresh
      * @param bool $wait
      * @return array
-     * @throws \Exception
+     * @throws Exception
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function execute(
         bool $refresh = true,
-        bool $wait = true
+        bool $wait = true,
     ): array {
         try {
+            $_result = [];
+            
             $_params = $this->getPreparedParams();
-
+            
             $_params['refresh'] = $refresh ? 'true' : 'false';
-
+            
             if (isset($_params['body']['query'])) {
                 $_params['conflicts'] = 'proceed';
                 $_params['wait_for_completion'] = $wait ? 'true' : 'false';
-            }
-            else {
+            } else {
                 $_params['retry_on_conflict'] = 5;
             }
-
+            
             if (isset($_params['index'])) {
                 if (isset($_params['body']['query'])) {
                     foreach ($_params['index'] as $_index) {
@@ -314,8 +186,7 @@ class Update implements EndpointInterface, QueryInterface {
                             )
                         );
                     }
-                }
-                else {
+                } else {
                     foreach ($_params['index'] as $_index) {
                         $_result[] = $this->_client->update(
                             array_merge(
@@ -335,67 +206,148 @@ class Update implements EndpointInterface, QueryInterface {
                         );
                     }
                 }
-            }
-            else if (isset($_params['body']['query'])) {
+            } else if (isset($_params['body']['query'])) {
                 $_result = [$this->_client->updateByQuery($_params)];
-            }
-            else {
+            } else {
                 $_result = [$this->_client->update($_params)];
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->clearParams();
-
+            
             throw $e;
         }
-
+        
         $this->clearParams();
-
+        
         return $_result;
     }
-
-
+    
     /**
-     * @return \ElasticSearchPredicate\Predicate\PredicateSet
+     * @return array
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getIndex(): array {
+        return $this->_index;
+    }
+    
+    /**
+     * @param array|string $index
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setIndex(array|string $index): Update {
+        $_index = [];
+        
+        if (is_scalar($index)) {
+            foreach (explode(',', $index) as $idx) {
+                $_index[] = [
+                    'index'             => $idx,
+                    'wait_for_response' => true,
+                ];
+            }
+        } else {
+            $_index = $index;
+        }
+        
+        $this->_index = $_index;
+        
+        $this->clearParams();
+        
+        return $this;
+    }
+    
+    /**
+     * @return array
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getParams(): array {
+        return $this->_params;
+    }
+    
+    /**
+     * @param array $params
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setParams(array $params): Update {
+        $this->_params = $params;
+        
+        $this->clearParams();
+        
+        return $this;
+    }
+    
+    /**
+     * @return array
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function getPreparedParams(): array {
+        if (!$this->_is_prepared) {
+            $this->prepareParams();
+        }
+        
+        return $this->_prepared_params;
+    }
+    
+    /**
+     * @return string
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getScript(): string {
+        return $this->_script;
+    }
+    
+    /**
+     * @param string $script
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setScript(string $script): Update {
+        $this->_script = $script;
+        
+        $this->clearParams();
+        
+        return $this;
+    }
+    
+    /**
+     * @return PredicateSet
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
     public function predicate(): PredicateSet {
         return $this->getPredicate();
     }
-
-
+    
+    
     /**
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     private function prepareParams(): void {
         $_prepared_params = [];
-
+        
         if (!empty($this->_index)) {
             $_prepared_params['index'] = $this->_index;
         }
-        if (!empty($this->_type)) {
-            $_prepared_params['type'] = $this->_type;
-        }
-
+        
         $_prepared_params['body'] = [];
-
+        
         if (!empty($this->_script)) {
             $_prepared_params['body']['script'] = [
                 'inline' => $this->_script,
             ];
-
+            
             if (!empty($this->_params)) {
                 $_prepared_params['body']['script']['params'] = $this->_params;
             }
         }
-
+        
         if (!empty($_query = $this->getQuery())) {
             $_prepared_params['body']['query'] = $_query;
         }
-
+        
         $this->_prepared_params = $_prepared_params;
         $this->_is_prepared = true;
     }
-
-
+    
+    
 }

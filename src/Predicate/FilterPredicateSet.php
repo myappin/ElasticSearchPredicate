@@ -20,8 +20,8 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class FilterPredicateSet extends PredicateSet {
-
-
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -34,6 +34,6 @@ class FilterPredicateSet extends PredicateSet {
             ],
         ];
     }
-
-
+    
+    
 }

@@ -22,10 +22,10 @@ use JetBrains\PhpStorm\ArrayShape;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class NestedPredicateSet extends PredicateSet implements InnerHitsInterface {
-
-
+    
+    
     use InnerHitsTrait;
-
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
@@ -37,17 +37,17 @@ class NestedPredicateSet extends PredicateSet implements InnerHitsInterface {
                 'path' => $this->_path,
             ],
         ];
-
+        
         if (!empty($_query = parent::toArray())) {
             $_ret['nested']['query'] = $_query;
         }
-
+        
         if ($this->_inner_hits) {
             $_ret['nested']['inner_hits'] = $this->_inner_hits->toArray();
         }
-
+        
         return $_ret;
     }
-
-
+    
+    
 }
