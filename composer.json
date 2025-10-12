@@ -8,7 +8,10 @@
     "predicate"
   ],
   "config": {
-    "discard-changes": true
+    "discard-changes": true,
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   },
   "repositories": [
     {
@@ -36,7 +39,7 @@
   "require": {
     "ext-curl": "*",
     "php": ">=8.1",
-    "elasticsearch/elasticsearch": "8.19.0",
+    "elasticsearch/elasticsearch": "v9.1.0",
     "myappin/knapsack": "dev-master#e42820bbfe3315aeeec32a164882c5aba32b93b1"
   },
   "require-dev": {
