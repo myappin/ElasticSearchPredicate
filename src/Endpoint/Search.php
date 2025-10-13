@@ -181,7 +181,7 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
         
         $this->clearParams();
         
-        return $_result->wait();
+        return $_result;
     }
     
     /**
