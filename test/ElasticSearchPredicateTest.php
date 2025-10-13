@@ -19,7 +19,7 @@ use ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor;
 use ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore;
 use ElasticSearchPredicate\Predicate\Predicates\MatchSome;
 use ElasticSearchPredicate\Predicate\PredicateSet;
-use OpenSearch\GuzzleClientFactory;
+use OpenSearch\ClientBuilder;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -38,9 +38,7 @@ class ElasticSearchPredicateTest extends TestCase {
     public function setUp(): void {
         $this->_client = new Client();
         
-        $_opensearch_client = (new GuzzleClientFactory())->create([
-            'base_uri' => 'https://localhost:9200',
-        ]);
+        $_opensearch_client = ClientBuilder::create()->build();
         
         $this->_client->setClient($_opensearch_client);
     }

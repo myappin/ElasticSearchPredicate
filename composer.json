@@ -39,7 +39,7 @@
   "require": {
     "ext-curl": "*",
     "php": ">=8.1",
-    "opensearch-project/opensearch-php": "2.4.5",
+    "opensearch-project/opensearch-php": "2.3.1",
     "myappin/knapsack": "dev-master#e42820bbfe3315aeeec32a164882c5aba32b93b1",
     "guzzlehttp/guzzle": "7.9.2"
   },
