@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Endpoint;
 
-use Elastic\Elasticsearch\Client;
-use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Elastic\Elasticsearch\Exception\ServerResponseException;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
@@ -24,6 +21,7 @@ use ElasticSearchPredicate\Predicate\NestedPredicateSet;
 use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use Exception;
+use OpenSearch\Client;
 use Throwable;
 
 /**
@@ -170,9 +168,6 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
     /**
      * @return array
      * @throws EndpointException
-     * @throws ClientResponseException
-     * @throws ServerResponseException
-     * @throws Throwable
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function execute(): array {

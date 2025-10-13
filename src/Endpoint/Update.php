@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Endpoint;
 
-use Elastic\Elasticsearch\Client;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
 use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
@@ -20,6 +19,7 @@ use ElasticSearchPredicate\Predicate\NestedPredicateSet;
 use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use Exception;
+use OpenSearch\Client;
 
 /**
  * Class Update
