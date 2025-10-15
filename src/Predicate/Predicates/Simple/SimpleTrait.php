@@ -1,4 +1,13 @@
 <?php
+/*
+ * *
+ *  * MyAppIn (http://www.myappin.com)
+ *  * @author    Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+ *  * @link      http://www.myappin.com
+ *  * @copyright Copyright (c) 2025 MyAppIn s.r.o. (http://www.myappin.com)
+ *
+ */
+
 declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)

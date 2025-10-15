@@ -12,13 +12,16 @@ declare(strict_types=1);
 namespace ElasticSearchPredicateTest;
 
 use ElasticSearchPredicate\Client;
+use ElasticSearchPredicate\Endpoint\EndpointException;
 use ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
 use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
 use ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor;
 use ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore;
-use ElasticSearchPredicate\Predicate\Predicates\MatchSome;
+use ElasticSearchPredicate\Predicate\PredicateException;
+use ElasticSearchPredicate\Predicate\Predicates\MatchPhrase;
 use ElasticSearchPredicate\Predicate\PredicateSet;
+use Exception;
 use OpenSearch\ClientBuilder;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -45,7 +48,7 @@ class ElasticSearchPredicateTest extends TestCase {
     
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_appends_with_combiner(): void {
@@ -274,7 +277,7 @@ class ElasticSearchPredicateTest extends TestCase {
     
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_field_value_factor_function_score(): void {
@@ -308,8 +311,8 @@ class ElasticSearchPredicateTest extends TestCase {
     
     
     /**
-     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
-     * @throws \Exception
+     * @throws EndpointException
+     * @throws Exception
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_fields(): void {
@@ -333,7 +336,7 @@ class ElasticSearchPredicateTest extends TestCase {
     
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_has_child(): void {
@@ -357,7 +360,7 @@ class ElasticSearchPredicateTest extends TestCase {
     
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_has_child_function_score(): void {
@@ -408,7 +411,7 @@ class ElasticSearchPredicateTest extends TestCase {
     
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_has_parent(): void {
@@ -432,7 +435,7 @@ class ElasticSearchPredicateTest extends TestCase {
     
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_has_parent_function_score(): void {
@@ -534,8 +537,8 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
-     * @throws \Exception
+     * @throws EndpointException
+     * @throws Exception
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_limit_offset(): void {
@@ -572,19 +575,16 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_match_phrase(): void {
         $_search = $this->_client->search('elasticsearchpredicate');
-        $_search->predicate->and((new MatchSome('name', 'test1'))->type('phrase'));
+        $_search->predicate->and((new MatchPhrase('name', 'test1')));
         
         self::assertSame([
-            'match' => [
-                'name' => [
-                    'query' => 'test1',
-                    'type'  => 'phrase',
-                ],
+            'match_phrase' => [
+                'name' => 'test1',
             ],
         ], $_search->getQuery());
     }
@@ -612,7 +612,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_nested_term(): void {
@@ -795,7 +795,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_nesting_terms(): void {
@@ -841,7 +841,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_not_append_match_phrase(): void {
@@ -862,10 +862,10 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function test_not_match_phrase(): void {
+    public function test_not_match(): void {
         $_search = $this->_client->search('elasticsearchpredicate');
         $_search->predicate->not()->Match('name', 'test1')->unnest();
         
@@ -883,7 +883,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_not_term(): void {
@@ -904,7 +904,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_not_term_combination(): void {
@@ -930,8 +930,8 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
-     * @throws \Exception
+     * @throws EndpointException
+     * @throws Exception
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_order(): void {
@@ -1045,7 +1045,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_script_score_function_score(): void {
@@ -1089,8 +1089,8 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
-     * @throws \ElasticSearchPredicate\Endpoint\EndpointException
+     * @throws EndpointException
+     * @throws EndpointException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_search_base_params(): void {
@@ -1101,7 +1101,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_skip_append_empty(): void {
@@ -1127,7 +1127,7 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
-     * @throws \ElasticSearchPredicate\Predicate\PredicateException
+     * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function test_switch_combiner(): void {

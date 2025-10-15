@@ -22,7 +22,6 @@ use ElasticSearchPredicate\Predicate\NotPredicateSet;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use Exception;
 use OpenSearch\Client;
-use Throwable;
 
 /**
  * Class Search
@@ -33,6 +32,7 @@ use Throwable;
  * @method PredicateSet Term(string $term, bool|float|int|string $value, array $options = [])
  * @method PredicateSet Terms(string $term, array $values, array $options = [])
  * @method PredicateSet Match(string $match, bool|float|int|string $query, array $options = [])
+ * @method PredicateSet MatchPhrase(string $match, bool|float|int|string $query, array $options = [])
  * @method PredicateSet Range(string $term, int|float|null $from, int|float|null $to = null, array $options = [])
  * @method PredicateSet QueryString(bool|float|int|string $query, array $fields = [], array $options = [])
  * @method PredicateSet Exists(string $term, array $options = [])

@@ -22,32 +22,44 @@ namespace ElasticSearchPredicate\Predicate\Predicates;
 
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
+use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorTrait;
+use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
+use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
- * Class Missing
+ * Class MatchPhrase
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class Missing extends AbstractPredicate implements BoostInterface {
+class MatchPhrase extends AbstractPredicate implements BoostInterface, SimpleInterface, OperatorInterface {
     
     
-    use BoostTrait;
+    use BoostTrait, SimpleTrait, OperatorTrait;
     
     /**
      * @var string
      */
-    protected string $_term;
+    protected string $_match;
     
     
     /**
-     * Missing constructor.
-     * @param string $term
-     * @param array  $options
+     * @var mixed|bool|float|int|string|null
      */
-    public function __construct(string $term, array $options = []) {
-        $this->_term = $term;
+    protected mixed $_value;
+    
+    
+    /**
+     * @param string                $match
+     * @param bool|float|int|string $query
+     * @param array                 $options
+     */
+    public function __construct(string $match, bool|float|int|string $query, array $options = []) {
+        $this->_match = $match;
+        
+        $this->_value = $query;
         
         $this->configure($options);
     }
@@ -57,18 +69,18 @@ class Missing extends AbstractPredicate implements BoostInterface {
      * @return string
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function getTerm(): string {
-        return $this->_term;
+    public function getMatch(): string {
+        return $this->_match;
     }
     
     
     /**
-     * @param string $term
+     * @param string $match
      * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
-    public function setTerm(string $term): self {
-        $this->_term = $term;
+    public function setMatch(string $match): self {
+        $this->_match = $match;
         
         return $this;
     }
@@ -76,12 +88,12 @@ class Missing extends AbstractPredicate implements BoostInterface {
     
     /**
      * @param string $path
-     * @return self
+     * @return $this
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
      */
     public function pathFix(string $path): self {
         if (!empty($path)) {
-            $this->_term = PredicateSet::pathFixer($path, $this->_term);
+            $this->_match = PredicateSet::pathFixer($path, $this->_match);
         }
         
         return $this;
@@ -92,22 +104,31 @@ class Missing extends AbstractPredicate implements BoostInterface {
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    #[ArrayShape(['bool' => "array"])]
+    #[ArrayShape(['match' => "array",])]
     public function toArray(): array {
-        $_term = $this->_term;
+        $_match = $this->_match;
+        if ($this->_simple) {
+            return [
+                'match_phrase' => [
+                    $_match => $this->_value,
+                ],
+            ];
+        }
         
         $_ret = [
-            'bool' => [
-                'must_not' => [
-                    'exists' => [
-                        'field' => $_term,
-                    ],
+            'match_phrase' => [
+                $_match => [
+                    'query' => $this->_value,
                 ],
             ],
         ];
         
         if (!empty($this->_boost)) {
-            $_ret['bool']['must_not']['exists']['boost'] = $this->_boost;
+            $_ret['match_phrase'][$_match]['boost'] = $this->_boost;
+        }
+        
+        if (!empty($this->_operator)) {
+            $_ret['match_phrase'][$_match]['operator'] = $this->_operator;
         }
         
         return $_ret;

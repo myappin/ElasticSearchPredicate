@@ -1,4 +1,13 @@
 <?php
+/*
+ * *
+ *  * MyAppIn (http://www.myappin.com)
+ *  * @author    Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
+ *  * @link      http://www.myappin.com
+ *  * @copyright Copyright (c) 2025 MyAppIn s.r.o. (http://www.myappin.com)
+ *
+ */
+
 declare(strict_types=1);
 /**
  * MyAppIn (http://www.myappin.cz)
@@ -11,27 +20,24 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\Predicates;
 
-use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Boost\BoostTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Operator\OperatorTrait;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleInterface;
 use ElasticSearchPredicate\Predicate\Predicates\Simple\SimpleTrait;
-use ElasticSearchPredicate\Predicate\Predicates\Type\TypeInterface;
-use ElasticSearchPredicate\Predicate\Predicates\Type\TypeTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
- * Class Match
+ * Class MatchSome
  * @package   ElasticSearchPredicate\Predicate\Predicates
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInterface, TypeInterface, OperatorInterface {
+class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInterface, OperatorInterface {
     
     
-    use BoostTrait, SimpleTrait, TypeTrait, OperatorTrait;
+    use BoostTrait, SimpleTrait, OperatorTrait;
     
     /**
      * @var string
@@ -54,11 +60,6 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
         $this->_match = $match;
         
         $this->_value = $query;
-        
-        $this->_types = [
-            'phrase',
-            'phrase_prefix',
-        ];
         
         $this->configure($options);
     }
@@ -124,10 +125,6 @@ class MatchSome extends AbstractPredicate implements BoostInterface, SimpleInter
         
         if (!empty($this->_boost)) {
             $_ret['match'][$_match]['boost'] = $this->_boost;
-        }
-        
-        if (!empty($this->_type)) {
-            $_ret['match'][$_match]['type'] = $this->_type;
         }
         
         if (!empty($this->_operator)) {
