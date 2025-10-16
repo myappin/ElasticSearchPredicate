@@ -102,6 +102,12 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
     
     
     /**
+     * @var string|null
+     */
+    protected ?string $_preference = null;
+    
+    
+    /**
      * SearchPredicate constructor.
      * @param Client $client
      * @param string $index
@@ -238,6 +244,27 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
     }
     
     /**
+     * @return string|null
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getPreference(): ?string {
+        return $this->_preference;
+    }
+    
+    /**
+     * @param string|null $preference
+     * @return $this
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function setPreference(?string $preference): Search {
+        $this->_preference = $preference;
+        
+        $this->clearParams();
+        
+        return $this;
+    }
+    
+    /**
      * @return array
      * @throws EndpointException
      * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
@@ -340,6 +367,9 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
                 throw new EndpointException('Offset must be used with limit');
             }
             $_prepared_params['from'] = $this->_limit * $this->_offset;
+        }
+        if (!empty($this->_preference)) {
+            $_prepared_params['preference'] = $this->_preference;
         }
         
         $_prepared_params['body'] = [];
