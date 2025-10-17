@@ -324,8 +324,9 @@ class ElasticSearchPredicateTest extends TestCase {
             'index' => 'elasticsearchpredicate',
             'size'  => 10,
             'body'  => [
-                'stored_fields' => ['name'],
-                'query'         => [
+                '_source' => false,
+                'fields'  => ['name'],
+                'query'   => [
                     'term' => [
                         'name' => 'test10',
                     ],
