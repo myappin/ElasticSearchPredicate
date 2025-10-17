@@ -534,6 +534,61 @@ class ElasticSearchPredicateTest extends TestCase {
                 ],
             ],
         ], $_search->getQuery());
+        
+        
+        $_search = $this->_client->search('elasticsearchpredicate');
+        $_search->predicate->append(
+            (new PredicateSet())
+                ->nest()
+                ->Term('name', 'test1')
+                ->or
+                ->Term('name', 'test2')
+                ->unnest()
+        );
+        $_search->predicate->addHook(PredicateSet::HOOK_BEFORE_TO_ARRAY, static function (PredicateSet $predicate_set): PredicateSet {
+            $_new_predicate_set = new PredicateSet();
+            
+            $_new_predicate_set
+                ->equalTo('APP_ID', 'APP_ID_VALUE')
+                ->equalTo('type', 'TestType');
+            
+            $_new_predicate_set->append($predicate_set);
+            
+            return $_new_predicate_set;
+        });
+        
+        self::assertSame([
+            'bool' => [
+                'must' => [
+                    [
+                        'term' => [
+                            'APP_ID' => 'APP_ID_VALUE',
+                        ],
+                    ],
+                    [
+                        'term' => [
+                            'type' => 'TestType',
+                        ],
+                    ],
+                    [
+                        'bool' => [
+                            'should' => [
+                                [
+                                    'term' => [
+                                        'name' => 'test1',
+                                    ],
+                                ],
+                                [
+                                    'term' => [
+                                        'name' => 'test2',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
     }
     
     /**

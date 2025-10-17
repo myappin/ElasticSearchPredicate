@@ -42,10 +42,9 @@ class PredicateSet implements PredicateSetInterface {
     use PredicateSetTrait;
     
     public const C_AND = 'AND';
-    
-    
     public const C_OR = 'OR';
     public const HOOK_BEFORE_TO_ARRAY = 'beforeToArray';
+    
     /**
      * @var string
      */
@@ -66,7 +65,15 @@ class PredicateSet implements PredicateSetInterface {
      * @var PredicateInterface|null
      */
     protected ?PredicateInterface $_last = null;
+    /**
+     * @var array
+     */
     protected array $_hooks = [];
+    
+    /**
+     * @var bool
+     */
+    private bool $_normalized = false;
     
     /**
      * PredicateSet constructor.
@@ -140,6 +147,8 @@ class PredicateSet implements PredicateSetInterface {
         $this->_predicates = $this->_predicates->append($_predicate);
         
         $this->_combiner = self::C_AND;
+        
+        $this->_normalized = false;
         
         return $this;
     }
@@ -222,6 +231,8 @@ class PredicateSet implements PredicateSetInterface {
         
         $this->_combiner = self::C_AND;
         
+        $this->_normalized = false;
+        
         return $this;
     }
     
@@ -241,6 +252,8 @@ class PredicateSet implements PredicateSetInterface {
         
         $this->_combiner = self::C_AND;
         
+        $this->_normalized = false;
+        
         return $_nest;
     }
     
@@ -259,6 +272,8 @@ class PredicateSet implements PredicateSetInterface {
         $this->_predicates = $this->_predicates->append($_nest);
         
         $this->_combiner = self::C_AND;
+        
+        $this->_normalized = false;
         
         return $_nest;
     }
@@ -322,6 +337,8 @@ class PredicateSet implements PredicateSetInterface {
     public function setPredicates(Collection $predicates): self {
         $this->_predicates = $predicates;
         
+        $this->_normalized = false;
+        
         return $this;
     }
     
@@ -330,6 +347,8 @@ class PredicateSet implements PredicateSetInterface {
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
     public function isEmpty(): bool {
+        $this->normalize();
+        
         return $this->_predicates->isEmpty();
     }
     
@@ -348,6 +367,8 @@ class PredicateSet implements PredicateSetInterface {
         $this->_predicates = $this->_predicates->append($_nest);
         
         $this->_combiner = self::C_AND;
+        
+        $this->_normalized = false;
         
         return $_nest;
     }
@@ -369,6 +390,8 @@ class PredicateSet implements PredicateSetInterface {
         
         $this->_combiner = self::C_AND;
         
+        $this->_normalized = false;
+        
         return $_nest;
     }
     
@@ -377,17 +400,28 @@ class PredicateSet implements PredicateSetInterface {
      * @author Martin Lonsky (martin.lonsky@myappin.com, +420736645876)
      */
     public function normalize(): Collection {
-        return $this->_predicates->filter(function ($predicate) {
-            if ($predicate instanceof PredicateSet) {
-                if ($predicate instanceof InnerHitsInterface && $predicate->hasInnerHits()) {
-                    return true;
+        if ($this->_normalized) {
+            return $this->_predicates;
+        }
+        
+        $this->_normalized = true;
+        
+        $this->_predicates = $this->_predicates
+            ->filter(static function ($predicate) {
+                if ($predicate instanceof PredicateSet) {
+                    $predicate->normalize();
+                    
+                    if ($predicate instanceof InnerHitsInterface && $predicate->hasInnerHits()) {
+                        return true;
+                    }
+                    
+                    return $predicate->isEmpty() === false;
                 }
                 
-                return $predicate->isEmpty() === false;
-            }
-            
-            return true;
-        });
+                return true;
+            });
+        
+        return $this->_predicates;
     }
     
     /**
@@ -404,6 +438,8 @@ class PredicateSet implements PredicateSetInterface {
         $this->_predicates = $this->_predicates->append($_not);
         
         $this->_combiner = self::C_AND;
+        
+        $this->_normalized = false;
         
         return $_not;
     }
@@ -447,6 +483,8 @@ class PredicateSet implements PredicateSetInterface {
         
         $this->_combiner = self::C_AND;
         
+        $this->_normalized = false;
+        
         return $_nest;
     }
     
@@ -471,15 +509,17 @@ class PredicateSet implements PredicateSetInterface {
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
     public function toArray(): array {
-        $_predicate_set = $this;
+        $_predicate_set = new PredicateSet();
+        $_predicate_set->setPredicates($this->getPredicates());
+        $_predicate_set->setCombiner($this->getCombiner());
+        $_predicate_set->setPath($this->getPath());
         
         if (isset($this->_hooks[self::HOOK_BEFORE_TO_ARRAY])) {
-            $_hooks = $this->_hooks[self::HOOK_BEFORE_TO_ARRAY];
-            $this->_hooks[self::HOOK_BEFORE_TO_ARRAY] = [];
-            
-            foreach ($_hooks as $function) {
+            foreach ($this->_hooks[self::HOOK_BEFORE_TO_ARRAY] as $function) {
                 /** @var PredicateSet $_predicate_set */
                 $_predicate_set = $function($_predicate_set);
+                
+                $_predicate_set->setCombiner($this->getCombiner());
                 $_predicate_set->setPath($this->getPath());
             }
         }
@@ -588,6 +628,8 @@ class PredicateSet implements PredicateSetInterface {
         
         $_unnest = $this->_unnest;
         $this->_unnest = null;
+        
+        $this->_normalized = false;
         
         return $_unnest;
     }
