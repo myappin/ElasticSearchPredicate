@@ -15,6 +15,8 @@ use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Endpoint\Routing\RoutingInterface;
+use ElasticSearchPredicate\Endpoint\Routing\RoutingTrait;
 use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
 use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
 use ElasticSearchPredicate\Predicate\NestedPredicateSet;
@@ -48,10 +50,10 @@ use OpenSearch\Client;
  * @property PredicateSet OR
  * @property PredicateSet or
  */
-class Search implements EndpointInterface, QueryInterface, FieldsInterface {
+class Search implements EndpointInterface, QueryInterface, FieldsInterface, RoutingInterface {
     
     
-    use QueryTrait, FieldsTrait;
+    use QueryTrait, FieldsTrait, RoutingTrait;
     
     /**
      * @var string
@@ -358,6 +360,9 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface {
         
         if (!empty($this->_index)) {
             $_prepared_params['index'] = $this->_index;
+        }
+        if (!empty($this->_routing)) {
+            $_prepared_params['routing'] = $this->_routing;
         }
         if (is_int($this->_limit)) {
             $_prepared_params['size'] = $this->_limit;

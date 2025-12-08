@@ -1101,6 +1101,28 @@ class ElasticSearchPredicateTest extends TestCase {
     }
     
     /**
+     * @throws EndpointException
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function test_routing(): void {
+        $_search = $this->_client->search('elasticsearchpredicate');
+        $_search->setRouting('route1');
+        $_search->predicate->Term('name', 'test10');
+        
+        self::assertSame([
+            'index'   => 'elasticsearchpredicate',
+            'routing' => 'route1',
+            'body'    => [
+                'query' => [
+                    'term' => [
+                        'name' => 'test10',
+                    ],
+                ],
+            ],
+        ], $_search->getPreparedParams());
+    }
+    
+    /**
      * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */

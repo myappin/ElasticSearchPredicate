@@ -15,6 +15,8 @@ use ElasticSearchPredicate\Endpoint\Fields\FieldsInterface;
 use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Endpoint\Routing\RoutingInterface;
+use ElasticSearchPredicate\Endpoint\Routing\RoutingTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
 use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
@@ -49,10 +51,10 @@ use OpenSearch\Client;
  * @property PredicateSet  OR
  * @property PredicateSet  or
  */
-class Count implements EndpointInterface, QueryInterface, FieldsInterface {
+class Count implements EndpointInterface, QueryInterface, FieldsInterface, RoutingInterface {
     
     
-    use QueryTrait, FieldsTrait;
+    use QueryTrait, FieldsTrait, RoutingTrait;
     
     /**
      * @var string
@@ -198,6 +200,9 @@ class Count implements EndpointInterface, QueryInterface, FieldsInterface {
         $_prepared_params = [];
         if (!empty($this->_index)) {
             $_prepared_params['index'] = $this->_index;
+        }
+        if (!empty($this->_routing)) {
+            $_prepared_params['routing'] = $this->_routing;
         }
         
         $_prepared_params['body'] = [];

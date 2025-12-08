@@ -13,6 +13,8 @@ namespace ElasticSearchPredicate\Endpoint;
 
 use ElasticSearchPredicate\Endpoint\Query\QueryInterface;
 use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Endpoint\Routing\RoutingInterface;
+use ElasticSearchPredicate\Endpoint\Routing\RoutingTrait;
 use ElasticSearchPredicate\Predicate\HasChildPredicateSet;
 use ElasticSearchPredicate\Predicate\HasParentPredicateSet;
 use ElasticSearchPredicate\Predicate\NestedPredicateSet;
@@ -45,10 +47,10 @@ use OpenSearch\Client;
  * @property PredicateSet OR
  * @property PredicateSet or
  */
-class Update implements EndpointInterface, QueryInterface {
+class Update implements EndpointInterface, QueryInterface, RoutingInterface {
     
     
-    use QueryTrait;
+    use QueryTrait, RoutingTrait;
     
     /**
      * @var array
@@ -327,6 +329,9 @@ class Update implements EndpointInterface, QueryInterface {
         
         if (!empty($this->_index)) {
             $_prepared_params['index'] = $this->_index;
+        }
+        if (!empty($this->_routing)) {
+            $_prepared_params['routing'] = $this->_routing;
         }
         
         $_prepared_params['body'] = [];
