@@ -29,6 +29,11 @@ trait FieldsTrait {
     protected array $_fields = [];
     
     /**
+     * @var array
+     */
+    protected array $_source = [];
+    
+    /**
      * @param array $fields
      * @return FieldsTrait|Count|Search
      * @throws EndpointException
@@ -51,6 +56,25 @@ trait FieldsTrait {
      */
     public function getFields(): array {
         return $this->_fields;
+    }
+    
+    /**
+     * @return array
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function getSource(): array {
+        return $this->_source;
+    }
+    
+    /**
+     * @param array $source
+     * @return FieldsTrait|Count|Search
+     * @author Martin Lonsky (martin.lonsky@myappin.cz, +420 736 645 876)
+     */
+    public function source(array $source): self {
+        $this->_source = $source;
+        
+        return $this;
     }
     
     

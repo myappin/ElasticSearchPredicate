@@ -385,6 +385,13 @@ class Search implements EndpointInterface, QueryInterface, FieldsInterface, Rout
             $_prepared_params['body']['_source'] = false;
             $_prepared_params['body']['fields'] = $_fields;
         }
+        if (!empty($_source = $this->getSource())) {
+            $_prepared_params['body']['_source'] = $_source;
+            
+            if (isset($_prepared_params['body']['fields'])) {
+                unset($_prepared_params['body']['fields']);
+            }
+        }
         if (!empty($_query = $this->getQuery())) {
             $_prepared_params['body']['query'] = $_query;
         }
