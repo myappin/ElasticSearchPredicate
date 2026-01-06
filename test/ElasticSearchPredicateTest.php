@@ -17,10 +17,11 @@ use ElasticSearchPredicate\Predicate\FunctionScore;
 use ElasticSearchPredicate\Predicate\FunctionScore\Decay;
 use ElasticSearchPredicate\Predicate\FunctionScore\Field\Field;
 use ElasticSearchPredicate\Predicate\FunctionScore\FieldValueFactor;
-use ElasticSearchPredicate\Predicate\FunctionScore\ScriptScore;
 use ElasticSearchPredicate\Predicate\PredicateException;
 use ElasticSearchPredicate\Predicate\Predicates\MatchPhrase;
+use ElasticSearchPredicate\Predicate\Predicates\Neural;
 use ElasticSearchPredicate\Predicate\PredicateSet;
+use ElasticSearchPredicate\Predicate\ScriptScore;
 use Exception;
 use OpenSearch\ClientBuilder;
 use PHPUnit\Framework\TestCase;
@@ -209,7 +210,7 @@ class ElasticSearchPredicateTest extends TestCase {
         
         $_linear = (new Decay('linear'))->addField(new Field('range_param', 1, 2))
             ->addField(new Field('range_param', 2, 4));
-        $_linear->predicate->Range('range_param', 1, 5);
+        $_linear->filter->Range('range_param', 1, 5);
         $_linear->setWeight(1);
         
         $_function_score = new FunctionScore();
@@ -364,13 +365,54 @@ class ElasticSearchPredicateTest extends TestCase {
      * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function test_has_child_function_score(): void {
+    public function test_has_child_script_score(): void {
+        $_search = $this->_client->search('elasticsearchpredicate');
+        
+        $_script_score = new ScriptScore();
+        
+        $_script_score->setScript([
+            'lang'   => 'painless',
+            'source' => 'TEST SCRIPT',
+        ]);
+        $_script_score->setParams([
+            'test_param1' => 1,
+        ]);
+        
+        $_script_score->Term('test_param2', 1);
+        
+        $_search->predicate
+            ->child('ChildType')
+            ->append($_script_score)
+            ->unnest();
+        
+        self::assertSame([
+            'has_child' => [
+                'type'  => 'ChildType',
+                'query' => [
+                    'script_score' => [
+                        'script' => [
+                            'lang'   => 'painless',
+                            'source' => 'TEST SCRIPT',
+                            'params' => [
+                                'test_param1' => 1,
+                            ],
+                        ],
+                        'query'  => [
+                            'term' => [
+                                'test_param2' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+        
         $_search = $this->_client->search('elasticsearchpredicate');
         
         $_function_score = new FunctionScore();
-        $_function_score->addFunction(new ScriptScore([
-            'lang'   => 'groovy',
-            'inline' => 'TEST SCRIPT',
+        $_function_score->addFunction(new FunctionScore\ScriptScore([
+            'lang'   => 'painless',
+            'source' => 'TEST SCRIPT',
         ], [
             'test_param1' => 1,
         ]));
@@ -395,8 +437,8 @@ class ElasticSearchPredicateTest extends TestCase {
                             [
                                 'script_score' => [
                                     'script' => [
-                                        'lang'   => 'groovy',
-                                        'inline' => 'TEST SCRIPT',
+                                        'lang'   => 'painless',
+                                        'source' => 'TEST SCRIPT',
                                         'params' => [
                                             'test_param1' => 1,
                                         ],
@@ -409,7 +451,6 @@ class ElasticSearchPredicateTest extends TestCase {
             ],
         ], $_search->getQuery());
     }
-    
     
     /**
      * @throws PredicateException
@@ -428,57 +469,6 @@ class ElasticSearchPredicateTest extends TestCase {
                 'query'       => [
                     'term' => [
                         'test_param1' => 1,
-                    ],
-                ],
-            ],
-        ], $_search->getQuery());
-    }
-    
-    
-    /**
-     * @throws PredicateException
-     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
-     */
-    public function test_has_parent_function_score(): void {
-        $_search = $this->_client->search('elasticsearchpredicate');
-        
-        $_function_score = new FunctionScore();
-        $_function_score->addFunction(new ScriptScore([
-            'lang'   => 'groovy',
-            'inline' => 'TEST SCRIPT',
-        ], [
-            'test_param1' => 1,
-        ]));
-        $_function_score->Term('test_param2', 1);
-        
-        $_search->predicate
-            ->parent('ParentType')
-            ->append($_function_score)
-            ->unnest();
-        
-        self::assertSame([
-            'has_parent' => [
-                'parent_type' => 'ParentType',
-                'query'       => [
-                    'function_score' => [
-                        'query'     => [
-                            'term' => [
-                                'test_param2' => 1,
-                            ],
-                        ],
-                        'functions' => [
-                            [
-                                'script_score' => [
-                                    'script' => [
-                                        'lang'   => 'groovy',
-                                        'inline' => 'TEST SCRIPT',
-                                        'params' => [
-                                            'test_param1' => 1,
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
                     ],
                 ],
             ],
@@ -648,6 +638,78 @@ class ElasticSearchPredicateTest extends TestCase {
     /**
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
+    public function test_ml_neural(): void {
+        $_search = $this->_client->search('elasticsearchpredicate');
+        $_search->predicate
+            ->Term('name', 'test10')
+            ->Neural('This is test', 'neural_field', [
+                'model_id' => 'xxx',
+                'k'        => 10,
+            ]);
+        
+        self::assertSame([
+            'bool' => [
+                'must' => [
+                    [
+                        'term' => [
+                            'name' => 'test10',
+                        ],
+                    ],
+                    [
+                        'neural' => [
+                            'neural_field' => [
+                                'query_text' => 'This is test',
+                                'k'          => 10,
+                                'model_id'   => 'xxx',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+        
+        $_search = $this->_client->search('elasticsearchpredicate');
+        
+        $_neural = new Neural('This is test', 'neural_field', [
+            'model_id' => 'xxx',
+            'k'        => 10,
+        ]);
+        $_neural->getFilterPredicate()->Term('test_param1', 1);
+        
+        $_search->predicate
+            ->Term('name', 'test10')
+            ->append($_neural);
+        
+        self::assertSame([
+            'bool' => [
+                'must' => [
+                    [
+                        'term' => [
+                            'name' => 'test10',
+                        ],
+                    ],
+                    [
+                        'neural' => [
+                            'neural_field' => [
+                                'query_text' => 'This is test',
+                                'k'          => 10,
+                                'model_id'   => 'xxx',
+                                'filter'     => [
+                                    'term' => [
+                                        'test_param1' => 1,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+    }
+    
+    /**
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
     public function test_multimatch_string(): void {
         $_search = $this->_client->search('elasticsearchpredicate');
         $_search->predicate->MultiMatch(1, [
@@ -663,6 +725,99 @@ class ElasticSearchPredicateTest extends TestCase {
                     'test_param3',
                 ],
                 'type'   => 'phrase',
+            ],
+        ], $_search->getQuery());
+    }
+    
+    /**
+     * @throws PredicateException
+     * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
+     */
+    public function test_nested_script_score(): void {
+        $_search = $this->_client->search('elasticsearchpredicate');
+        
+        $_script_score = new ScriptScore();
+        
+        $_script_score->setScript([
+            'lang'   => 'painless',
+            'source' => 'TEST SCRIPT',
+        ]);
+        $_script_score->setParams([
+            'test_param1' => 1,
+        ]);
+        
+        $_script_score->Term('test_param2', 1);
+        
+        $_search->predicate
+            ->nested('nested_path')
+            ->append($_script_score)
+            ->unnest();
+        
+        var_dump($_search->getQuery());
+        
+        self::assertSame([
+            'nested' => [
+                'path'  => 'nested_path',
+                'query' => [
+                    'script_score' => [
+                        'script' => [
+                            'lang'   => 'painless',
+                            'source' => 'TEST SCRIPT',
+                            'params' => [
+                                'test_param1' => 1,
+                            ],
+                        ],
+                        'query'  => [
+                            'term' => [
+                                'nested_path.test_param2' => 1,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $_search->getQuery());
+        
+        $_search = $this->_client->search('elasticsearchpredicate');
+        
+        $_function_score = new FunctionScore();
+        $_function_score->addFunction(new FunctionScore\ScriptScore([
+            'lang'   => 'painless',
+            'source' => 'TEST SCRIPT',
+        ], [
+            'test_param1' => 1,
+        ]));
+        $_function_score->Term('test_param2', 1);
+        
+        $_search->predicate
+            ->nested('nested_path')
+            ->append($_function_score)
+            ->unnest();
+        
+        self::assertSame([
+            'nested' => [
+                'path'  => 'nested_path',
+                'query' => [
+                    'function_score' => [
+                        'query'     => [
+                            'term' => [
+                                'nested_path.test_param2' => 1,
+                            ],
+                        ],
+                        'functions' => [
+                            [
+                                'script_score' => [
+                                    'script' => [
+                                        'lang'   => 'painless',
+                                        'source' => 'TEST SCRIPT',
+                                        'params' => [
+                                            'test_param1' => 1,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ], $_search->getQuery());
     }
@@ -1126,19 +1281,52 @@ class ElasticSearchPredicateTest extends TestCase {
      * @throws PredicateException
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)
      */
-    public function test_script_score_function_score(): void {
+    public function test_script_score_and_function_score(): void {
         $_search = $this->_client->search('elasticsearchpredicate');
         
-        $_linear = (new ScriptScore([
-            'lang'   => 'groovy',
-            'inline' => '_score * doc["range_param"].value / pow(param1, param2)',
+        $_script_score = new ScriptScore();
+
+        $_script_score->setScript([
+            'lang'   => 'painless',
+            'source' => '_score * doc["range_param"].value / pow(param1, param2)',
+        ]);
+        $_script_score->setParams([
+            'param1' => 2,
+            'param2' => 3,
+        ]);
+        
+        $_script_score->MatchAll();
+        
+        $_search->predicate->append($_script_score);
+        
+        self::assertSame(serialize([
+            'script_score' => [
+                'script' => [
+                    'lang'   => 'painless',
+                    'source' => '_score * doc["range_param"].value / pow(param1, param2)',
+                    'params' => [
+                        'param1' => 2,
+                        'param2' => 3,
+                    ],
+                ],
+                'query'  => [
+                    'match_all' => new stdClass(),
+                ],
+            ],
+        ]), serialize($_search->getQuery()));
+        
+        $_search = $this->_client->search('elasticsearchpredicate');
+        
+        $_script_score = (new FunctionScore\ScriptScore([
+            'lang'   => 'painless',
+            'source' => '_score * doc["range_param"].value / pow(param1, param2)',
         ], [
             'param1' => 2,
             'param2' => 3,
         ]));
         
         $_function_score = new FunctionScore();
-        $_function_score->addFunction($_linear);
+        $_function_score->addFunction($_script_score);
         $_function_score->MatchAll();
         
         $_search->predicate->append($_function_score);
@@ -1152,8 +1340,8 @@ class ElasticSearchPredicateTest extends TestCase {
                     [
                         'script_score' => [
                             'script' => [
-                                'lang'   => 'groovy',
-                                'inline' => '_score * doc["range_param"].value / pow(param1, param2)',
+                                'lang'   => 'painless',
+                                'source' => '_score * doc["range_param"].value / pow(param1, param2)',
                                 'params' => [
                                     'param1' => 2,
                                     'param2' => 3,

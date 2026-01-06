@@ -197,8 +197,8 @@ class FieldValueFactor extends AbstractFunction {
             $_ret['field_value_factor']['missing'] = $this->_missing;
         }
         
-        if (!empty($_query = $this->getQuery())) {
-            $_ret['filter'] = $_query;
+        if (!empty($_filter = $this->getFilter())) {
+            $_ret['filter'] = $_filter;
         }
         
         if (!empty($this->_weight)) {

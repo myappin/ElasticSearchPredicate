@@ -22,6 +22,11 @@ use JetBrains\PhpStorm\ArrayShape;
 class FilterPredicateSet extends PredicateSet {
     
     
+    public function __construct() {
+        parent::__construct();
+    }
+    
+    
     /**
      * @return array
      * @author Martin Lonsky (martin@lonsky.net, +420 736 645876)

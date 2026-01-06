@@ -31,6 +31,8 @@ use ElasticSearchPredicate\Predicate\PredicateSet\PredicateSetTrait;
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
  * @method PredicateSet Script(array $script)
+ * @method PredicateSet Neural(string $query_text, string $vector_field, array $options = [])
+ * @method PredicateSet ScriptScore(array $script, array $params = [])
  * @property PredicateSet AND
  * @property PredicateSet and
  * @property PredicateSet OR
@@ -498,7 +500,7 @@ class PredicateSet implements PredicateSetInterface {
             $this->_path = self::pathFixer($path, $this->_path);
         }
         
-        foreach ($this->_predicates as $predicate) {
+        foreach ($this->getPredicates() as $predicate) {
             $predicate->pathFix($this->_path);
         }
         

@@ -53,6 +53,11 @@ class FunctionScore extends PredicateSet {
      */
     protected Collection $_functions;
     
+    
+    public function __construct() {
+        parent::__construct();
+    }
+    
     /**
      * @param FunctionInterface $function
      * @return $this

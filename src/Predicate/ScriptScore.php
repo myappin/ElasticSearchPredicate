@@ -9,9 +9,8 @@ declare(strict_types=1);
  * Time: 10:51
  */
 
-namespace ElasticSearchPredicate\Predicate\FunctionScore;
+namespace ElasticSearchPredicate\Predicate;
 
-use ElasticSearchPredicate\Predicate\PredicateException;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
@@ -19,7 +18,7 @@ use JetBrains\PhpStorm\ArrayShape;
  * @package   ElasticSearchPredicate\Predicate\FunctionScore
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
-class ScriptScore extends AbstractFunction {
+class ScriptScore extends PredicateSet {
     
     
     /**
@@ -34,15 +33,8 @@ class ScriptScore extends AbstractFunction {
     protected array $_params = [];
     
     
-    /**
-     * ScriptScore constructor.
-     * @param array $script
-     * @param array $params
-     * @throws PredicateException
-     */
-    public function __construct(array $script, array $params = []) {
-        $this->setScript($script);
-        $this->setParams($params);
+    public function __construct() {
+        parent::__construct();
     }
     
     /**
@@ -95,8 +87,7 @@ class ScriptScore extends AbstractFunction {
      */
     #[ArrayShape([
         'script_score' => "array",
-        'weight'       => "int|float",
-        'filter'       => "array",
+        'query'        => "array",
     ])]
     public function toArray(): array {
         $_ret = [
@@ -109,12 +100,8 @@ class ScriptScore extends AbstractFunction {
             $_ret['script_score']['script']['params'] = $_params;
         }
         
-        if (!empty($_filter = $this->getFilter())) {
-            $_ret['filter'] = $_filter;
-        }
-        
-        if (!empty($this->_weight)) {
-            $_ret['weight'] = $this->_weight;
+        if (!empty($_query = parent::toArray())) {
+            $_ret['script_score']['query'] = $_query;
         }
         
         return $_ret;

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\FunctionScore;
 
-use ElasticSearchPredicate\Endpoint\Query\QueryTrait;
+use ElasticSearchPredicate\Endpoint\Filter\FilterTrait;
 use ElasticSearchPredicate\Predicate\FunctionScore\Weight\WeightTrait;
 use ElasticSearchPredicate\Predicate\PredicateSet;
 
@@ -19,7 +19,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
  * Class AbstractFunction
  * @package   ElasticSearchPredicate\Predicate\FunctionScore
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
- * @property PredicateSet predicate
+ * @property PredicateSet filter
  * @property PredicateSet AND
  * @property PredicateSet and
  * @property PredicateSet OR
@@ -28,7 +28,7 @@ use ElasticSearchPredicate\Predicate\PredicateSet;
 abstract class AbstractFunction implements FunctionInterface {
     
     
-    use QueryTrait, WeightTrait;
+    use FilterTrait, WeightTrait;
     
     /**
      * @param $name
@@ -38,10 +38,10 @@ abstract class AbstractFunction implements FunctionInterface {
      */
     public function __call($name, $arguments): PredicateSet {
         if (empty($arguments)) {
-            return $this->getPredicate()->$name();
+            return $this->getFilterPredicate()->$name();
         }
         
-        return $this->getPredicate()->$name(...$arguments);
+        return $this->getFilterPredicate()->$name(...$arguments);
     }
     
     
@@ -52,11 +52,11 @@ abstract class AbstractFunction implements FunctionInterface {
      */
     public function __get($name): PredicateSet {
         $_name = strtolower($name);
-        if ($_name === 'predicate' || $_name === 'predicates') {
-            return $this->getPredicate();
+        if ($_name === 'filter' || $_name === 'filters') {
+            return $this->getFilterPredicate();
         }
         
-        return $this->getPredicate()->{$name};
+        return $this->getFilterPredicate()->{$name};
     }
     
     

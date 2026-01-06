@@ -37,6 +37,8 @@ use OpenSearch\Client;
  * @method PredicateSet Exists(string $term, array $options = [])
  * @method PredicateSet Missing(string $term, array $options = [])
  * @method PredicateSet Script(array $script)
+ * @method PredicateSet Neural(string $query_text, string $vector_field, array $options = [])
+ * @method PredicateSet ScriptScore(array $script, array $params = [])
  * @method PredicateSet nest()
  * @method NotPredicateSet not()
  * @method NestedPredicateSet nested(string $path)

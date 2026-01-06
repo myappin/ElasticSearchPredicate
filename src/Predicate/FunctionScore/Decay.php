@@ -111,8 +111,8 @@ class Decay extends AbstractFunction {
             })->flatten(1)->toArray(),
         ];
         
-        if (!empty($_query = $this->getQuery())) {
-            $_ret['filter'] = $_query;
+        if (!empty($_filter = $this->getFilter())) {
+            $_ret['filter'] = $_filter;
         }
         
         if (!empty($this->_weight)) {
