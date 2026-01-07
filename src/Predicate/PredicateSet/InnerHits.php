@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace ElasticSearchPredicate\Predicate\PredicateSet;
 
+use ElasticSearchPredicate\Endpoint\Fields\FieldsTrait;
 use JetBrains\PhpStorm\Pure;
 use stdClass;
 
@@ -18,6 +19,8 @@ use stdClass;
  * @author    Martin Lonsky (martin@lonsky.net, +420 736 645876)
  */
 class InnerHits {
+    
+    use FieldsTrait;
     
     
     /**
@@ -125,6 +128,18 @@ class InnerHits {
         }
         if ($this->_offset) {
             $_ret['offset'] = $this->_offset;
+        }
+        
+        if (!empty($_fields = $this->getFields())) {
+            $_ret['_source'] = false;
+            $_ret['fields'] = $_fields;
+        }
+        if (!empty($_source = $this->getSource())) {
+            $_ret['_source'] = $_source;
+            
+            if (isset($_ret['fields'])) {
+                unset($_ret['fields']);
+            }
         }
         
         return empty($_ret) ? new stdClass() : $_ret;
