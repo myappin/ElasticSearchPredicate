@@ -130,12 +130,12 @@ class InnerHits {
             $_ret['offset'] = $this->_offset;
         }
         
+        if (!empty($_source = $this->getSource())) {
+            $_ret['_source'] = $_source;
+        }
         if (!empty($_fields = $this->getFields())) {
             $_ret['_source'] = false;
             $_ret['fields'] = $_fields;
-        }
-        if (!empty($_source = $this->getSource())) {
-            $_ret['_source'] = $_source;
         }
         
         return empty($_ret) ? new stdClass() : $_ret;
