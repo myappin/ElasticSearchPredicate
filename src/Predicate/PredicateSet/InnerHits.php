@@ -136,10 +136,6 @@ class InnerHits {
         }
         if (!empty($_source = $this->getSource())) {
             $_ret['_source'] = $_source;
-            
-            if (isset($_ret['fields'])) {
-                unset($_ret['fields']);
-            }
         }
         
         return empty($_ret) ? new stdClass() : $_ret;
